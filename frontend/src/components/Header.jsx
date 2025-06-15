@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import logo from '../assets/logochibi_blanco.png'; // Asegúrate de que esta ruta a tu logo sea correcta
+import logo from '../assets/logochibi_blanco.png';
 import { LuUserRoundPlus } from "react-icons/lu";
 import { GrCart } from "react-icons/gr";
 import { GiHamburgerMenu } from "react-icons/gi";
@@ -10,29 +10,27 @@ import { ImUser } from "react-icons/im";
 const Header = () => {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
-    // Esto simula la autenticación. En un proyecto real, usarías un Contexto de Autenticación.
-    const isAuthenticated = true; // Cámbialo a 'true' para probar el estado de usuario logeado
-    const user = { username: "chibiUser", profile_picture: "" }; // Simula datos de usuario
+    const isAuthenticated = true; 
+    const user = { username: "chibiUser", profile_picture: "" };
 
     return (
-        <div className='shadow-2xl-md font-poppins bg-black relative z-40'>
+        <div className='shadow-2xl-md bg-black fixed top-0 left-0 right-0 z-40'>
             <div className='max-w-7xl mx-auto'>
-                <header className="flex justify-between items-center px-4 md:px-10 text-white p-3">
-                    {/* Logo - Link a la página de inicio */}
+                {/* Reducido el padding vertical de 'p-3' a 'p-2' */}
+                <header className="flex justify-between items-center px-4 md:px-10 text-white p-2"> 
                     <Link to="/">
-                        <img src={logo} alt="logo" width={180} className="md:w-[230px]" />
+                        {/* Reducido el 'width' del logo de '180' a '150' y 'md:w-[230px]' a 'md:w-[180px]' */}
+                        <img src={logo} alt="logo" width={150} className="md:w-[180px]" /> 
                     </Link>
 
-                    {/* Menú de navegación tradicional para pantallas grandes (desktop) */}
-                    {/* Será ocultado en móviles y visible en 'md' y más grandes */}
-                    <nav className="hidden md:flex items-center text-sm space-x-6 lg:space-x-8">
+                    {/* Reducido 'text-sm' a 'text-xs' y 'space-x-6 lg:space-x-8' a 'space-x-4 lg:space-x-6' */}
+                    <nav className="hidden md:flex items-center text-xs space-x-4 lg:space-x-6">
                         <Link to="/" className="hover:underline hover:text-chibi-green">Inicio</Link>
                         <Link to="/packs" className="hover:underline hover:text-chibi-green">Packs</Link>
                         <Link to="/tienda" className="hover:underline hover:text-chibi-green">Tienda</Link>
                         <Link to="/sobre-chibi" className="hover:underline hover:text-chibi-green">Sobre Chibi</Link>
                         
-                        {/* Iconos de carrito y usuario */}
-                        <Link to="/carrito" className="hover:text-chibi-green text-lg"><GrCart /></Link>
+                        <Link to="/carrito" className="hover:text-chibi-green text-base"><GrCart /></Link> {/* Ajustado a 'text-base' */}
                         
                         {isAuthenticated ? (
                             user?.profile_picture ? (
@@ -40,27 +38,26 @@ const Header = () => {
                                     <img
                                         src={user.profile_picture}
                                         alt="Foto de perfil"
-                                        className="rounded-full w-7 h-7 object-cover cursor-pointer"
+                                        className="rounded-full w-6 h-6 object-cover cursor-pointer" // Reducido a 'w-6 h-6'
                                     />
                                 </Link>
                             ) : (
                                 <Link to="/perfil" className="hover:text-chibi-green flex gap-1 items-center">
-                                    <ImUser className="text-xl font-extralight" />
+                                    <ImUser className="text-base font-extralight" /> {/* Ajustado a 'text-base' */}
                                     <p className="text-xs">{user.username.charAt(0).toUpperCase() + user.username.slice(1)}</p>
                                 </Link>
                             )
                         ) : (
-                            <Link to="/login" className="hover:text-chibi-green text-lg">
+                            <Link to="/login" className="hover:text-chibi-green text-base"> {/* Ajustado a 'text-base' */}
                                 <LuUserRoundPlus title="Iniciar sesión o registrarse" />
                             </Link>
                         )}
                     </nav>
 
-                    {/* Icono de hamburguesa - SIEMPRE VISIBLE */}
-                    {/* Ahora está en la parte derecha de la cabecera, junto con el navbar tradicional en desktop */}
+                    {/* Reducido 'text-xl md:text-xl' a 'text-lg md:text-lg' */}
                     <button
                         onClick={() => setIsSidebarOpen(true)}
-                        className="text-white text-xl md:text-xl ml-4 md:ml-0 cursor-pointer" // Añadimos un margen en móviles para separarlo, y lo quitamos en md (desktop)
+                        className="text-white text-lg md:text-lg ml-4 md:ml-0 cursor-pointer"
                         aria-label="Abrir menú"
                     >
                         <GiHamburgerMenu />
@@ -68,13 +65,12 @@ const Header = () => {
                 </header>
             </div>
 
-            {/* Sidebar deslizable (funcional en todas las resoluciones) */}
+            {/* Sidebar (mantendrá su tamaño) */}
             <div
                 className={`fixed inset-0 z-50 transition-transform duration-300 ease-in-out ${
                     isSidebarOpen ? "translate-x-0" : "translate-x-full"
                 }`}
             >
-                {/* Overlay oscuro que cubre el resto de la pantalla al abrir el sidebar */}
                 {isSidebarOpen && (
                     <div
                         className="absolute inset-0 bg-black/50 backdrop-blur-sm transition-opacity duration-300"
@@ -83,11 +79,9 @@ const Header = () => {
                     />
                 )}
 
-                {/* Contenido del sidebar */}
-                <div className="absolute right-0 bg-gray-900 w-64 xs:w-72 sm:w-80 h-full shadow-lg p-6 z-50 overflow-y-auto text-white">
-                    {/* Botón para cerrar el sidebar */}
+                <div className="absolute right-0 bg-black w-64 xs:w-72 sm:w-80 h-full shadow-lg p-6 z-50 overflow-y-auto text-white">
                     <button
-                        className="absolute top-4 right-4 text-3xl hover:text-chibi-green bg-transparent rounded-full p-1"
+                        className="absolute cursor-pointer top-4 right-4 text-3xl hover:text-chibi-green bg-transparent rounded-full p-1"
                         onClick={() => setIsSidebarOpen(false)}
                         aria-label="Cerrar menú"
                     >
@@ -95,13 +89,11 @@ const Header = () => {
                     </button>
 
                     <nav className="mt-12 space-y-6 text-l font-bold">
-                        {/* Elementos de navegación del sidebar */}
                         <Link to="/" className="block hover:text-chibi-green" onClick={() => setIsSidebarOpen(false)}>Inicio</Link>
                         <Link to="/packs" className="block hover:text-chibi-green" onClick={() => setIsSidebarOpen(false)}>Packs</Link>
                         <Link to="/tienda" className="block hover:text-chibi-green" onClick={() => setIsSidebarOpen(false)}>Tienda</Link>
                         <Link to="/sobre-chibi" className="block hover:text-chibi-green" onClick={() => setIsSidebarOpen(false)}>Sobre Chibi</Link>
                         
-                        {/* Iconos de carrito y usuario en el sidebar */}
                         <Link to="/carrito" className="flex items-center gap-2 hover:text-chibi-green text-lg" onClick={() => setIsSidebarOpen(false)}>
                             <GrCart /> Carrito
                         </Link>
@@ -127,7 +119,6 @@ const Header = () => {
                         )}
                     </nav>
 
-                    {/* Información de Contacto (usando emojis como placeholders) */}
                     <div className="mt-16 text-sm text-gray-300">
                         <h2 className="font-bold text-white mb-2">Contacto</h2>
                         <p className="mb-1">
@@ -138,7 +129,6 @@ const Header = () => {
                         </p>
                     </div>
 
-                    {/* Redes Sociales (usando emoji como placeholder) */}
                     <div className="mt-10">
                         <p className="font-bold mb-2 text-white">Síguenos</p>
                         <a

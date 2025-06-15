@@ -1,49 +1,42 @@
-import React from 'react';
-// This is the main App component that serves as the entry point for the application.
+import React from 'react'; // 'useState' ya no es necesario aquí
 import Header from './components/Header';
 import Hero from './components/Hero';
-import AboutUsSection from './components/AboutSection';
+import AboutSection from './components/AboutSection';
+import ServicesSection from './components/ServicesSection';
+import ProductList from './components/ProductList';
+import products from './data/products';
+import DailyTrainingSection from './components/DailyTrainingSection';
+import Footer from './components/Footer';
+import HorizontalGallery from './components/HorizontalGallery';
+import JoinOurTeamSection from './components/JoinOurTeamSection';
+import ChibiSkinSection from './components/ChibiSkinSection';
+import ScrollToTopButton from './components/ScrollToTopButton';
 
 function App() {
+
   return (
-  //   <div className='bg-blue-500  text-white p-4'>
-  //  componentes <br />
-  //  ------------------------
-  //   <ul>
-  //     <li>header</li>
-  //     <li> hero</li>
-  //     <li>perfect seccion </li>
-  //     <li>training seciton</li>
-  //     <li>training articles</li>
-  //     <li>footer</li>
-  //     <li>card</li>
-  //     <li>card filter</li>
-  //   </ul>
-  //   poages <br />
-  //   ------------------------
-  //   <ul>
-  //     <li>home</li>
-  //     <li>about</li>
-  //     <li>contact</li>
-  //     <li>blog</li>
-  //     <li>packs</li>
-  //     <li>register</li>
-  //     <li>tienda</li>
-  //     <li>profile</li>
-  //     <li>404</li>
-  //     <li>login</li>
-  //     <li>producto</li>
-  //     <li>carrito</li>
-  //     <li>carrito</li>
+    <div className='font-montserrat'>
+      <Header />
+      <Hero />
+      <AboutSection />
+      <ServicesSection />
+      
+  
+      <ProductList 
+        products={products} 
+        isHome={true} 
+      />
 
-  //   </ul>
-  //   </div>
+      <DailyTrainingSection />
+      <ChibiSkinSection />
+      <HorizontalGallery />
+      <JoinOurTeamSection />
+      
+      
+    <ScrollToTopButton />
+      <Footer></Footer>
 
-  <div>
-    <Header></Header>
-    <Hero></Hero>
-    <AboutUsSection></AboutUsSection>
-  </div>
+    </div>
   );
 }
 
