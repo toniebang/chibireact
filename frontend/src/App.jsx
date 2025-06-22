@@ -1,4 +1,5 @@
 import React from 'react'; // 'useState' ya no es necesario aquí
+import { ProductProvider } from './context/ProductContext';
 import Header from './components/Header';
 import Hero from './components/Hero';
 import AboutSection from './components/AboutSection';
@@ -11,32 +12,33 @@ import HorizontalGallery from './components/HorizontalGallery';
 import JoinOurTeamSection from './components/JoinOurTeamSection';
 import ChibiSkinSection from './components/ChibiSkinSection';
 import ScrollToTopButton from './components/ScrollToTopButton';
+import DailyScheduleStrip from './components/DailyScheduleStrip';
+import CustomerFeedback from './components/CustomerFeedback';
+
 
 function App() {
-
   return (
-    <div className='font-montserrat'>
-      <Header />
-      <Hero />
-      <AboutSection />
-      <ServicesSection />
-      
-  
-      <ProductList 
-        products={products} 
-        isHome={true} 
-      />
+    <ProductProvider>
+      <div className="font-montserrat">
+        <Header />
+        <Hero />
+        <AboutSection />
+        <ServicesSection />
 
-      <DailyTrainingSection />
-      <ChibiSkinSection />
-      <HorizontalGallery />
-      <JoinOurTeamSection />
-      
-      
-    <ScrollToTopButton />
-      <Footer></Footer>
+        <ProductList products={products} isHome={true} />
 
-    </div>
+        <DailyTrainingSection />
+        <DailyScheduleStrip />
+        <ChibiSkinSection />
+        <HorizontalGallery />
+        <CustomerFeedback />
+
+        <JoinOurTeamSection />
+
+        <ScrollToTopButton />
+        <Footer></Footer>
+      </div>
+    </ProductProvider>
   );
 }
 

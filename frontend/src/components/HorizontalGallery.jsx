@@ -103,7 +103,6 @@ const HorizontalGallery = () => {
           </div>
         </div>
       </div>
-      {/* Se elimina la renderización del componente Modal */}
     </section>
   );
 };

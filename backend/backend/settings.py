@@ -63,6 +63,7 @@ INSTALLED_APPS = [
     'django_filters',
     'veluxapp',
     'rest_framework_simplejwt',
+    'rest_framework_simplejwt.token_blacklist',
     'storages',
 ]
 

@@ -1,38 +1,69 @@
+// src/main.jsx o src/index.jsx
 import { StrictMode } from 'react';
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 import { createRoot } from 'react-dom/client';
-import './index.css'; // ¡Importante para tus estilos de Tailwind!
+import './index.css';
 
-import App from './App.jsx'; // Tu App.jsx ahora es el layout
+// Importa tus Context Providers
+import { ProductProvider } from './context/ProductContext';
+import { AuthProvider } from './context/AuthContext';
+// Importa el nuevo NotificationProvider
+import { NotificationProvider } from './context/NotificationContext';
+
+// Importa el componente de Toast
+import NotificationToast from './components/NotificationToast';
+
+import App from './App.jsx';
+import About from './pages/About.jsx';
+import ShopPage from './pages/ShopPage.jsx';
+import Packs from './pages/Packs.jsx';
+import Cart from './pages/Cart.jsx';
+import LoginPage from './pages/LoginPage.jsx';
 
 const router = createBrowserRouter([
   {
     path: '/',
-    element: <App />, // App.jsx es tu layout raíz
-    children: [ // Las rutas anidadas irán aquí cuando las crees
-      {
-        index: true, // Esta es la ruta por defecto para el path '/'
-        element: (
-          <h1 className="text-white text-center text-3xl mt-10">
-            ¡Bienvenido a Chibi! <br /> Tu Header está listo.
-          </h1>
-        ),
-      },
-      {
-        path: '*', // Ruta comodín para cualquier otra URL no definida (página 404)
-        element: (
-          <h1 className="text-white text-center text-4xl mt-20">
-            Página no encontrada (404)
-          </h1>
-        ),
-      },
-    ],
+    element: <App />,
+  },
+  {
+    path: '/tienda/',
+    element: <ShopPage/>,
+  },
+  {
+    path: '/carrito/',
+    element: <Cart/>,
+  },
+  {
+    path: '/sobre-chibi/',
+    element: <About/>,
+  },
+  {
+    path: '/packs/',
+    element: <Packs />,
+  },
+  {
+    path: '/login/',
+    element: <LoginPage />,
+  },
+  {
+    path: '*',
+    element: (
+      <h1 className="text-white text-center text-4xl mt-20">
+        Página no encontrada (404)
+      </h1>
+    ),
   },
 ]);
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    {/* Aquí irían tus Context Providers si los necesitas en el futuro */}
-    <RouterProvider router={router} />
+    <NotificationProvider>
+      <ProductProvider>
+        <AuthProvider>
+          <RouterProvider router={router} />
+        </AuthProvider>
+      </ProductProvider>
+      <NotificationToast />
+    </NotificationProvider>
   </StrictMode>
 );

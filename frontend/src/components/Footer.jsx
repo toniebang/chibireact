@@ -42,7 +42,7 @@ const Footer = () => {
                     y convertirte en tu mejor versión.
                   </p>
                   <Link 
-                    to="/acerca" 
+                    to="/sobre-chibi" 
                     className="inline-block bg-chibi-green text-white font-medium py-1.5 px-3 text-xs {/* Tamaño de texto y padding reducidos */}
                                hover:bg-black transition duration-300 mt-3" 
                   >
@@ -59,7 +59,7 @@ const Footer = () => {
                 <div className="flex justify-between">
                   <ul className="quick-links w-1/2 space-y-1 text-xs"> {/* Espaciado y texto más pequeño */}
                     <li><Link to="/" className="hover:text-chibi-green transition-colors duration-200">Inicio</Link></li>
-                    <li><Link to="/acerca" className="hover:text-chibi-green transition-colors duration-200">Acerca</Link></li>
+                    <li><Link to="/sobre-chibi" className="hover:text-chibi-green transition-colors duration-200">Acerca</Link></li>
                     <li><Link to="/blog" className="hover:text-chibi-green transition-colors duration-200">Novedades y Tips</Link></li>
                     <li><Link to="/packs" className="hover:text-chibi-green transition-colors duration-200">Nuestros precios</Link></li>
                     <li><Link to="/tienda" className="hover:text-chibi-green transition-colors duration-200">Tienda</Link></li>

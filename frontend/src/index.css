@@ -2,6 +2,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Righteous&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
 @import "tailwindcss";
+@import 'flag-icon-css/css/flag-icons.min.css';
 
 @theme {
   --font-roboto: "Roboto", sans-serif; 
@@ -23,5 +24,43 @@
   scrollbar-width: none;     /* Firefox */
 }
 
-/* src/index.css o tu archivo CSS principal */
-@import 'flag-icon-css/css/flag-icons.min.css';
+
+
+
+
+/* Keyframes para el deslizamiento horizontal */
+@keyframes slide-infinite {
+  from {
+    transform: translateX(0%); /* Empieza en la posición original */
+  }
+  to {
+    transform: translateX(-50%); /* Se desliza hasta la mitad de su contenido duplicado */
+  }
+}
+
+/* Clase para aplicar la animación */
+.animate-slide-infinite {
+  animation: slide-infinite 60s linear infinite; /* 60s es la duración, puedes ajustarla */
+  /* linear: velocidad constante
+     infinite: se repite indefinidamente */
+}
+
+/* Ocultar la barra de desplazamiento si no quieres que se vea */
+.custom-scrollbar::-webkit-scrollbar {
+  display: none; /* Para Webkit (Chrome, Safari) */
+}
+
+.custom-scrollbar {
+  -ms-overflow-style: none; /* Para IE y Edge */
+  scrollbar-width: none; /* Para Firefox */
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+  20%, 40%, 60%, 80% { transform: translateX(5px); }
+}
+
+.animate-shake {
+  animation: shake 0.82s cubic-bezier(.36,.07,.19,.97) both;
+}

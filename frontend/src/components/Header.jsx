@@ -1,3 +1,4 @@
+// src/components/Header.jsx
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import logo from '../assets/logochibi_blanco.png';
@@ -6,55 +7,75 @@ import { GrCart } from "react-icons/gr";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { IoClose } from "react-icons/io5";
 import { ImUser } from "react-icons/im";
+import { MdLogout } from "react-icons/md"; // Nuevo icono para logout
+
+// Importar el hook de autenticación
+import { useAuth } from '../context/AuthContext';
+
 
 const Header = () => {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
-    const isAuthenticated = true; 
-    const user = { username: "chibiUser", profile_picture: "" };
+    // Obtener el estado y las funciones del AuthContext
+    const { isAuthenticated, user, logout } = useAuth();
+
+    // Función para manejar el logout
+    const handleLogout = () => {
+        logout(); // Llama a la función logout del contexto
+        setIsSidebarOpen(false); // Cierra el sidebar después de hacer logout
+    };
 
     return (
         <div className='shadow-2xl-md bg-black fixed top-0 left-0 right-0 z-40'>
             <div className='max-w-7xl mx-auto'>
-                {/* Reducido el padding vertical de 'p-3' a 'p-2' */}
-                <header className="flex justify-between items-center px-4 md:px-10 text-white p-2"> 
+                <header className="flex justify-between items-center px-4 md:px-10 text-white p-2">
                     <Link to="/">
-                        {/* Reducido el 'width' del logo de '180' a '150' y 'md:w-[230px]' a 'md:w-[180px]' */}
-                        <img src={logo} alt="logo" width={150} className="md:w-[180px]" /> 
+                        <img src={logo} alt="logo" width={150} className="md:w-[180px]" />
                     </Link>
 
-                    {/* Reducido 'text-sm' a 'text-xs' y 'space-x-6 lg:space-x-8' a 'space-x-4 lg:space-x-6' */}
                     <nav className="hidden md:flex items-center text-xs space-x-4 lg:space-x-6">
                         <Link to="/" className="hover:underline hover:text-chibi-green">Inicio</Link>
                         <Link to="/packs" className="hover:underline hover:text-chibi-green">Packs</Link>
                         <Link to="/tienda" className="hover:underline hover:text-chibi-green">Tienda</Link>
                         <Link to="/sobre-chibi" className="hover:underline hover:text-chibi-green">Sobre Chibi</Link>
-                        
-                        <Link to="/carrito" className="hover:text-chibi-green text-base"><GrCart /></Link> {/* Ajustado a 'text-base' */}
-                        
+
+                        <Link to="/carrito" className="hover:text-chibi-green text-base"><GrCart /></Link>
+
                         {isAuthenticated ? (
-                            user?.profile_picture ? (
-                                <Link to="/perfil" className="hover:text-chibi-green">
-                                    <img
-                                        src={user.profile_picture}
-                                        alt="Foto de perfil"
-                                        className="rounded-full w-6 h-6 object-cover cursor-pointer" // Reducido a 'w-6 h-6'
-                                    />
-                                </Link>
-                            ) : (
-                                <Link to="/perfil" className="hover:text-chibi-green flex gap-1 items-center">
-                                    <ImUser className="text-base font-extralight" /> {/* Ajustado a 'text-base' */}
-                                    <p className="text-xs">{user.username.charAt(0).toUpperCase() + user.username.slice(1)}</p>
-                                </Link>
-                            )
+                            // Si está autenticado, muestra foto de perfil o icono de usuario
+                            <>
+                                {user?.profile_picture ? (
+                                    <Link to="/perfil" className="hover:text-chibi-green">
+                                        <img
+                                            src={user.profile_picture}
+                                            alt="Foto de perfil"
+                                            className="rounded-full w-6 h-6 object-cover cursor-pointer"
+                                        />
+                                    </Link>
+                                ) : (
+                                    <Link to="/perfil" className="hover:text-chibi-green flex gap-1 items-center">
+                                        <ImUser className="text-base font-extralight" />
+                                        {/* Asegúrate de que user.username exista antes de intentar acceder a él */}
+                                        {user?.username && <p className="text-xs">{user.username.charAt(0).toUpperCase() + user.username.slice(1)}</p>}
+                                    </Link>
+                                )}
+                                {/* Botón de Logout para desktop */}
+                                <button
+                                    onClick={handleLogout}
+                                    className="flex items-center text-xs text-white hover:underline hover:text-chibi-green bg-transparent border-none cursor-pointer p-0"
+                                    title="Cerrar sesión"
+                                >
+                                    <MdLogout className="text-base" />
+                                </button>
+                            </>
                         ) : (
-                            <Link to="/login" className="hover:text-chibi-green text-base"> {/* Ajustado a 'text-base' */}
+                            // Si no está autenticado, muestra el enlace de login/registro
+                            <Link to="/login" className="hover:text-chibi-green text-base">
                                 <LuUserRoundPlus title="Iniciar sesión o registrarse" />
                             </Link>
                         )}
                     </nav>
 
-                    {/* Reducido 'text-xl md:text-xl' a 'text-lg md:text-lg' */}
                     <button
                         onClick={() => setIsSidebarOpen(true)}
                         className="text-white text-lg md:text-lg ml-4 md:ml-0 cursor-pointer"
@@ -93,26 +114,37 @@ const Header = () => {
                         <Link to="/packs" className="block hover:text-chibi-green" onClick={() => setIsSidebarOpen(false)}>Packs</Link>
                         <Link to="/tienda" className="block hover:text-chibi-green" onClick={() => setIsSidebarOpen(false)}>Tienda</Link>
                         <Link to="/sobre-chibi" className="block hover:text-chibi-green" onClick={() => setIsSidebarOpen(false)}>Sobre Chibi</Link>
-                        
+
                         <Link to="/carrito" className="flex items-center gap-2 hover:text-chibi-green text-lg" onClick={() => setIsSidebarOpen(false)}>
                             <GrCart /> Carrito
                         </Link>
 
                         {isAuthenticated ? (
-                            user?.profile_picture ? (
-                                <Link to="/perfil" className="flex items-center gap-2 hover:text-chibi-green" onClick={() => setIsSidebarOpen(false)}>
-                                    <img
-                                        src={user.profile_picture}
-                                        alt="Foto de perfil"
-                                        className="rounded-full w-7 h-7 object-cover"
-                                    /> Mi Perfil
-                                </Link>
-                            ) : (
-                                <Link to="/perfil" className="flex items-center gap-2 hover:text-chibi-green" onClick={() => setIsSidebarOpen(false)}>
-                                    <ImUser className="text-xl" /> Mi Perfil
-                                </Link>
-                            )
+                            // Enlaces del sidebar si está autenticado
+                            <>
+                                {user?.profile_picture ? (
+                                    <Link to="/perfil" className="flex items-center gap-2 hover:text-chibi-green" onClick={() => setIsSidebarOpen(false)}>
+                                        <img
+                                            src={user.profile_picture}
+                                            alt="Foto de perfil"
+                                            className="rounded-full w-7 h-7 object-cover"
+                                        /> Mi Perfil
+                                    </Link>
+                                ) : (
+                                    <Link to="/perfil" className="flex items-center gap-2 hover:text-chibi-green" onClick={() => setIsSidebarOpen(false)}>
+                                        <ImUser className="text-xl" /> Mi Perfil
+                                    </Link>
+                                )}
+                                {/* Enlace de Logout para sidebar */}
+                                <button
+                                    onClick={handleLogout}
+                                    className="flex items-center gap-2 hover:text-chibi-green text-l font-bold bg-transparent border-none cursor-pointer p-0"
+                                >
+                                    <MdLogout className="text-xl" /> Cerrar Sesión
+                                </button>
+                            </>
                         ) : (
+                            // Enlace de login/registro si no está autenticado
                             <Link to="/login" className="flex items-center gap-2 hover:text-chibi-green" onClick={() => setIsSidebarOpen(false)}>
                                 <LuUserRoundPlus className="text-xl" /> Iniciar Sesión / Registrarse
                             </Link>
