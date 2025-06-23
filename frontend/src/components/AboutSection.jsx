@@ -26,7 +26,7 @@ const AboutSection = () => {
           <div className="w-full md:w-1/2 fitness-video-area"> 
             <div className="perfect-plan-right right-text"> 
               <h2 className="text-xl md:text-xl lg:text-xl font-semibold leading-tight mb-4 text-black">
-                SOMOS LA OPCION PERFECTA PARA TU TRANSFORMACIÓN
+                SOMOS LA OPCION PERFECTA PARA TU RENOVACIÓN
               </h2>
               <span className="block text-l md:text-l  mb-4 text-chibi-green"> 
                 En Chibi te acompañamos de la mano hasta que puedas lograr tu objetivo.

@@ -1,45 +1,46 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { FaShoppingCart } from 'react-icons/fa';
+import { FaShoppingCart } from 'react-icons/fa'; // Icono de carrito
+import { IoHeart } from 'react-icons/io5';      // Icono de corazón (asegúrate de tener 'react-icons' instalado)
 
 const ProductCard = ({ product }) => {
-  const { 
-    id, 
-    imagen1, 
-    nombre, 
-    precio, 
-    oferta, 
-    precio_rebaja, 
-    categorias, 
-    is_new 
+  const {
+    id,
+    imagen1,
+    nombre,
+    precio,
+    oferta,
+    precio_rebaja,
+    
+    is_new
   } = product;
 
   const getProductDetailsUrl = (productId) => `/tienda/${productId}`;
 
-  // Función auxiliar para formatear el precio
   const formatPrice = (value) => {
     if (typeof value !== 'number' || isNaN(value)) {
-      return 'N/A Fcs'; // Manejo para valores no numéricos
+      return 'N/A Fcs';
     }
     const formatter = new Intl.NumberFormat('es-AR', {
       style: 'decimal',
       minimumFractionDigits: 0,
       maximumFractionDigits: 0,
-      useGrouping: true // Asegura el uso de separadores de miles
+      useGrouping: true
     });
     return `${formatter.format(value)} Fcs`;
   };
 
   return (
-    <div className="single-product-item text-center relative overflow-hidden group
-                    transform transition-transform duration-300 hover:-translate-y-2 bg-white">
-      
-      <div className="img-holder relative w-full h-72 overflow-hidden"> 
+    <div className="single-product-item relative overflow-hidden group
+                    transform transition-transform duration-300 hover:-translate-y-2 bg-white
+                    flex flex-col">
+
+      <div className="img-holder relative w-full h-72 overflow-hidden">
         <Link to={getProductDetailsUrl(id)} className="block">
-          <img 
-            alt={nombre} 
-            src={imagen1} 
-            className="w-full h-full object-cover object-center transition-transform duration-300" 
+          <img
+            alt={nombre}
+            src={imagen1}
+            className="w-full h-full object-cover object-center transition-transform duration-300"
           />
         </Link>
 
@@ -55,39 +56,36 @@ const ProductCard = ({ product }) => {
           </div>
         )}
 
-        <button
-          className="absolute cursor-pointer bottom-4 right-4 bg-chibi-green text-white w-10 h-10 rounded-full flex items-center justify-center 
-                     hover:bg-black transition duration-300 z-10"
-          title="Añadir al carrito"
-        >
-          <FaShoppingCart />
-        </button>
+        <div className="absolute bottom-4 left-4 flex space-x-2 z-10 ">
+          <button
+            className="bg-white text-black w-10 h-10 rounded-full flex items-center justify-center
+                       border cursor-pointer border-gray-400 hover:bg-black hover:text-white transition duration-300" // ¡COMENTARIO ELIMINADO DE ESTA LÍNEA!
+            title="Añadir al carrito"
+          >
+            <FaShoppingCart className="text-base " />
+          </button>
+          <button
+            className="bg-white text-black w-10 h-10 rounded-full flex items-center justify-center
+                     cursor-pointer   border border-gray-400 hover:bg-black hover:text-white transition duration-300" // ¡COMENTARIO ELIMINADO DE ESTA LÍNEA!
+            title="Añadir a favoritos"
+          >
+            <IoHeart className="text-base " />
+          </button>
+        </div>
       </div>
 
-      <div className="title p-4">
+      <div className="title p-4 text-left">
         <Link to={getProductDetailsUrl(id)} className="mi-boton block hover:text-blue-600 transition-colors duration-200">
-          <h3 className="text-base font-medium mb-1 text-gray-800">{nombre}</h3>
+          <h3 className="text-sm font-medium mb-1 text-gray-800">{nombre}</h3>
         </Link>
-        
-        <ul className="gallery-filter list-inline text-center flex justify-center flex-wrap gap-2 mb-2">
-          {categorias && categorias.slice(0, 2).map((categoria, index) => (
-            <li key={index}>
-              <span className="text-[10px] text-gray-600 px-3 py-1 bg-gray-100 hover:bg-gray-200 transition-colors duration-200">
-                {categoria}
-              </span>
-            </li>
-          ))}
-        </ul>
-        
+
         {oferta ? (
-          <h2 className="text-lg font-semibold text-gray-800">
-            {/* Usamos la función formatPrice aquí y eliminamos el signo de dólar */}
-            <del className="before-rate text-gray-500 mr-2">{formatPrice(precio)}</del>
+          <h2 className="text-sm font-bold text-black mt-2">
+            <del className="before-rate text-red-400 mr-2 ">{formatPrice(precio)}</del>
             {formatPrice(precio_rebaja)}
           </h2>
         ) : (
-          <h2 className="text-lg font-semibold text-gray-800">
-            {/* Usamos la función formatPrice aquí y eliminamos el signo de dólar */}
+          <h2 className="text-sm font-bold text-black mt-2">
             {formatPrice(precio)}
           </h2>
         )}

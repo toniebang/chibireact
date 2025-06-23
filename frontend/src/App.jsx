@@ -28,7 +28,7 @@ function App() {
         <ProductList products={products} isHome={true} />
 
         <DailyTrainingSection />
-        <DailyScheduleStrip />
+        {/* <DailyScheduleStrip /> */}
         <ChibiSkinSection />
         <HorizontalGallery />
         <CustomerFeedback />

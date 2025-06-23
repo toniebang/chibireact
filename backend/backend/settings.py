@@ -40,6 +40,8 @@ REST_FRAMEWORK = {
     ),
 }
 
+GOOGLE_CLIENT_ID = config('GOOGLE_CLIENT_ID')
+GOOGLE_CLIENT_SECRET = config('GOOGLE_CLIENT_SECRET')
 # Opcional: Configuración de JWT
 from datetime import timedelta
 SIMPLE_JWT = {
@@ -105,6 +107,7 @@ else:
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173", # Dominio/puerto de tu frontend React en desarrollo
     "http://127.0.0.1:5173",
+    "http://192.168.0.110:5173"
     # "https://tu-dominio-frontend.com", # Tu dominio de producción
 ]
 

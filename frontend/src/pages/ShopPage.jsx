@@ -1,11 +1,11 @@
-// src/pages/ShopPage.jsx
-import React, { useState,  useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import Filters from '../components/Filters'; // Tu componente Filters
-import Header from '../components/Header';
+import Header from '../components/Header'; // Tu componente Header
 import ScrollToTopButton from '../components/ScrollToTopButton';
 import ProductList from '../components/ProductList'; // Tu ProductList
 import productsData from '../data/products'; // Los datos de tus productos
 import Footer from '../components/Footer'; // Tu componente Footer
+
 function ShopPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [filters, setFilters] = useState({
@@ -74,28 +74,40 @@ function ShopPage() {
 
   return (
     <>
-    <div className="shop-page container mx-auto px-4 py-8"> {/* Contenedor principal de la tienda */}
-        <Header /> {/* Componente de encabezado */}
-      <Filters
-        searchTerm={searchTerm}
-        onSearchChange={handleSearchChange}
-        filters={filters}
-        onFilterChange={handleFilterChange}
-      />
+      {/* Contenedor principal de la tienda, incluyendo el Header */}
+      <div className="shop-page container mx-auto py-8">
+        <Header /> {/* Asegúrate de que este Header pueda incluir la búsqueda y los iconos */}
 
-      <div className="mt-8"> {/* Margen superior para separar de los filtros */}
-        {filteredProducts.length > 0 ? (
-          <ProductList products={filteredProducts} isHome={false} /> // isHome en false para la tienda
-        ) : (
-          <p className="text-center text-gray-600 text-lg">No se encontraron productos que coincidan con los filtros aplicados.</p>
-        )}
+        {/* Contenedor Flex para la barra lateral y el contenido principal */}
+        <div className="flex flex-col md:flex-row mt-8 gap-8">
+          {/* Barra Lateral de Filtros */}
+          <aside className="w-full md:w-1/4">
+            <Filters
+              searchTerm={searchTerm}
+              onSearchChange={handleSearchChange}
+              filters={filters}
+              onFilterChange={handleFilterChange}
+            />
+          </aside>
+
+          {/* Contenido Principal de la Tienda (Lista de Productos) */}
+          <main className="w-full md:w-3/4">
+            {filteredProducts.length > 0 ? (
+              <ProductList
+                products={filteredProducts}
+                isHome={false} // isHome en false para la página de la tienda
+                gridColumns="grid-cols-2 sm:grid-cols-3 lg:grid-cols-4" // Define las columnas para la cuadrícula
+              />
+            ) : (
+              <p className="text-center text-gray-600 text-lg">No se encontraron productos que coincidan con los filtros aplicados.</p>
+            )}
+            {/* Aquí podría ir el componente de Paginación en el futuro */}
+          </main>
+        </div>
       </div>
-
-      {/* Aquí irá el componente de Paginación en el futuro */}
-    </div>
-      <ScrollToTopButton /> 
-      <Footer></Footer>
-</>
+      <ScrollToTopButton />
+      <Footer />
+    </>
   );
 }
 

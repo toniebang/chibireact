@@ -10,6 +10,7 @@
   --font-righeteous: "Righteous", sans-serif;
   --font-montserrat: "Montserrat", sans-serif;
   --font-playfair: "Playfair Display", serif;
+  --font-quicksand: "Quicksand", sans-serif;
   --color-chibi-green: #9bb60e ;
 }
 
@@ -26,6 +27,15 @@
 
 
 
+body {
+  overflow-x: hidden; /* Evita el desplazamiento horizontal */
+  width: 100%; /* Asegura que el cuerpo ocupe el 100% del ancho disponible */
+}
+
+/* Opcional, si el problema persiste, a veces se necesita en el html también */
+html {
+  overflow-x: hidden;
+}
 
 
 /* Keyframes para el deslizamiento horizontal */

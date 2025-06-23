@@ -1,4 +1,3 @@
-// src/components/ServicesSection.jsx
 import React from 'react';
 import { motion } from 'framer-motion'; // Importa motion
 
@@ -112,7 +111,8 @@ const ServicesSection = () => {
         </div>
 
         <motion.div
-          className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8"
+          // ¡CLASES MODIFICADAS AQUÍ PARA 2 COLUMNAS EN MÓVIL!
+          className="grid grid-cols-2 md:grid-cols-4 gap-2"
           // No necesitamos 'initial'/'whileInView' aquí, ya que 'containerVariants' en la sección padre
           // se encarga de orquestar las animaciones de los hijos.
         >
@@ -123,7 +123,7 @@ const ServicesSection = () => {
               data-toggle="modal"
               data-target={`#${service.id}`}
               className="single-shop-cta block relative overflow-hidden shadow-lg group cursor-pointer
-                         transform transition-transform duration-300 hover:-translate-y-2 hover:shadow-2xl"
+                                   transform transition-transform duration-300 hover:-translate-y-2 hover:shadow-2xl"
               variants={itemVariants} // Aplica las variantes de cada ítem aquí
             >
               <div className="img-holder-2 relative h-64">
@@ -134,9 +134,9 @@ const ServicesSection = () => {
                 />
 
                 <div className="absolute inset-x-0 bottom-0 p-4
-                                bg-gradient-to-t from-black/90 to-transparent
-                                text-white flex items-end">
-                  <h3 className="text-xl font-semibold leading-tight">{service.title}</h3>
+                                 bg-gradient-to-t from-black/100 to-transparent
+                                 text-white flex items-end">
+                  <h3 className="text-m font-semibold leading-tight">{service.title}</h3>
                 </div>
               </div>
             </motion.a>

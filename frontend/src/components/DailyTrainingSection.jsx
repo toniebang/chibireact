@@ -1,52 +1,54 @@
 import React from 'react';
 import { FaCheck } from 'react-icons/fa';
-import foto from '../assets/i-phone.png'; // Imagen del iPhone
+// ¡IMPORTAMOS LA IMAGEN DE LA TIENDA!
+import chibishop from '../assets/chibishop.jpg'; // Asegúrate de que 'chibishop.jpg' esté en tu carpeta 'src/assets/'
 
-const DailyTrainingSection = () => {
+const DailyTrainingSection = () => { // Considera renombrar este componente a algo como 'OurShopSection'
   return (
-    <section 
-      className="py-16" // Se elimina 'bg-white' ya que la imagen de fondo la reemplaza
-      style={{ 
-      
-        backgroundColor: '#000', // Color de fondo
-        backgroundSize: 'cover',      // Asegura que la imagen cubra toda el área
-        backgroundPosition: 'center', // Centra la imagen
-        backgroundRepeat: 'no-repeat' // Evita que la imagen se repita
+    <section
+      className="py-16"
+      style={{
+        backgroundColor: '#000', // Mantenemos el fondo negro como solicitaste
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat'
       }}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col md:flex-row items-center md:gap-12">
 
+          {/* COLUMNA DE LA IMAGEN: Ahora muestra chibishop.jpg */}
           <div className="w-full md:w-1/2 lg:w-7/12 mb-8 md:mb-0">
             <div className="img-holder">
-              <img 
-                src={foto} 
-                alt="Teléfono mostrando un plan de entrenamiento y dieta" 
-                className="w-full h-auto object-contain mx-auto max-w-sm md:max-w-none" 
+              <img
+                src={chibishop} // ¡IMAGEN CAMBIADA A chibishop.jpg!
+                alt="Fachada de Chibi Shop en Malabo" // Texto alternativo adaptado
+                className="w-full h-auto object-contain mx-auto max-w-sm md:max-w-none  shadow-xl" // Estilos para la imagen de la tienda
               />
             </div>
           </div>
 
+          {/* COLUMNA DEL CONTENIDO: Ahora habla de la tienda */}
           <div className="w-full md:w-1/2 lg:w-5/12 text-center md:text-left">
             <div className="content">
               <h1 className="text-3xl md:text-4xl font-light text-chibi-green mb-4">
-                HAZ TU PLAN DIARIO DE ENTRENAMIENTO Y DIETA CON NOSOTROS
+                VISITA NUESTRA TIENDA FÍSICA EN MALABO
               </h1>
-              <p className="text-lg text-white mb-6">
-                Será perfecto para tu salud y la de los que forman parte de tu vida.
+              <p className="text-m text-white mb-6">
+                Descubre toda la variedad de productos de Chibi Shop en persona. Nos puedes encontrar fácilmente <span className="font-bold">Detrás del antiguo Ayuntamiento de Malabo.</span>
               </p>
               <ul className="space-y-3 text-sm text-white">
                 <li className="flex items-center justify-center md:justify-start">
                   <FaCheck className="text-chibi-green mr-2" />
-                  Consigue el cuerpo fitness que todos desean
+                  Amplia selección de skincare, deportes, tés y más
                 </li>
                 <li className="flex items-center justify-center md:justify-start">
                   <FaCheck className="text-chibi-green mr-2" />
-                  Controla los resultados
+                  Asesoramiento personalizado de nuestros expertos
                 </li>
                 <li className="flex items-center justify-center md:justify-start">
                   <FaCheck className="text-chibi-green mr-2" />
-                  Forma parte de una comunidad
+                  Un ambiente acogedor para tu bienestar integral
                 </li>
               </ul>
             </div>
