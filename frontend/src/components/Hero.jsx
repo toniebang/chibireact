@@ -26,13 +26,13 @@ const Hero = () => {
         <div className='flex flex-col md:flex-row justify-center items-center space-y-4 md:space-y-0 md:space-x-6'>
           <Link
             to="/planes" 
-            className="inline-block bg-white border-l-2  text-chibi-green   py-2 px-4  text-sm md:text-sm hover:bg-black transition duration-600 ease-in-out"
+            className="inline-block bg-chibi-green border-l-2 font-bold  text-white   py-2 px-4  text-sm md:text-sm hover:bg-black transition duration-600 ease-in-out"
           >
           ÚNETE A CHIBI FITNESS
           </Link>
           <Link
             to="/planes" // Cambiamos la CTA a una ruta más relevante para fitness, como '/planes' o '/entrenamientos'
-            className="inline-block  bg-white border-l-2  text-chibi-green  py-2 px-4  text-sm md:text-sm hover:bg-black transition duration-600 ease-in-out"
+            className="inline-block  border-1 font-bold   text-white  py-2 px-4  text-sm md:text-sm hover:bg-black transition duration-600 ease-in-out"
           >
             EXPLORAR PRODUCTOS
           </Link>

@@ -2,6 +2,7 @@
 
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
+from .views_auth import GoogleAuthView # <- Importa desde views_auth
 from .views import (
     CategoriaProductosViewSet,
     ProductosViewSet,
@@ -29,4 +30,5 @@ router.register(r'elementos-pedido', ElementoPedidoViewSet) # Puede que no neces
 
 urlpatterns = [
     path('', include(router.urls)),
+     path('auth/google/', GoogleAuthView.as_view(), name='google_auth'),
 ]

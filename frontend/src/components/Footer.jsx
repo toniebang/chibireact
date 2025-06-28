@@ -60,7 +60,7 @@ const Footer = () => {
                   <ul className="quick-links w-1/2 space-y-1 text-xs"> {/* Espaciado y texto más pequeño */}
                     <li><Link to="/" className="hover:text-chibi-green transition-colors duration-200">Inicio</Link></li>
                     <li><Link to="/sobre-chibi" className="hover:text-chibi-green transition-colors duration-200">Acerca</Link></li>
-                    <li><Link to="/blog" className="hover:text-chibi-green transition-colors duration-200">Novedades y Tips</Link></li>
+            
                     <li><Link to="/packs" className="hover:text-chibi-green transition-colors duration-200">Nuestros precios</Link></li>
                     <li><Link to="/tienda" className="hover:text-chibi-green transition-colors duration-200">Tienda</Link></li>
                   </ul>
@@ -69,7 +69,7 @@ const Footer = () => {
                     <li><Link to="/packs" className="hover:text-chibi-green transition-colors duration-200">Asesoramiento</Link></li>
                     <li><Link to="/tienda/categoria/te" className="hover:text-chibi-green transition-colors duration-200">Tes de Chibi</Link></li>
                     <li><Link to="/packs" className="hover:text-chibi-green transition-colors duration-200">Entrenamiento</Link></li>
-                    <li><Link to="/tienda/categoria/suplementos" className="hover:text-chibi-green transition-colors duration-200">Supplementos</Link></li>
+                    <li><Link to="/tienda/categoria/suplementos" className="hover:text-chibi-green transition-colors duration-200">Suplementos</Link></li>
                   </ul>
                 </div>
               </div>

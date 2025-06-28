@@ -3,11 +3,38 @@ from ckeditor.fields import RichTextField
 from django.urls import reverse
 from django.db.models.signals import pre_save
 from django.utils.text import slugify
-from django.contrib.auth.models import User
+# REMOVE THIS LINE: from django.contrib.auth.models import User
+# IMPORTA settings para usar settings.AUTH_USER_MODEL
+from django.conf import settings
+from django.contrib.auth.models import AbstractUser
+
 # from .utils import resize_and_crop
 # Create your models here.
+class CustomUser(AbstractUser): # Si usas un modelo de usuario personalizado
+    # ... tus campos existentes como email, first_name, last_name, google_id ...
+    profile_picture = models.URLField(max_length=500, null=True, blank=True)
+    google_id = models.CharField(max_length=255, unique=True, null=True, blank=True)
 
-#    ------------------- Categoria -------------------------- 
+    groups = models.ManyToManyField(
+        'auth.Group',
+        verbose_name='groups',
+        blank=True,
+        help_text='The groups this user belongs to. A user will get all permissions '
+                    'granted to each of their groups.',
+        related_name="custom_user_set",
+        related_query_name="custom_user",
+    )
+    user_permissions = models.ManyToManyField(
+        'auth.Permission',
+        verbose_name='user permissions',
+        blank=True,
+        help_text='Specific permissions for this user.',
+        related_name="custom_user_set",
+        related_query_name="custom_user",
+    )
+
+
+#    ------------------- Categoria -------------------------- 
 
 class Categoria_Productos(models.Model):
     id = models.AutoField('ID', primary_key=True)
@@ -18,10 +45,9 @@ class Categoria_Productos(models.Model):
 
     class Meta:
         verbose_name_plural = 'Categorias de Productos'    
-        verbose_name = 'Categoria de Productos'    
-            
+        verbose_name = 'Categoria de Productos'        
 
-#    ------------------- Productos -------------------------- 
+#    ------------------- Productos -------------------------- 
     
 class Productos(models.Model):
     id = models.AutoField('ID',primary_key=True)
@@ -59,7 +85,6 @@ class Pack(models.Model):
         ('S', 'Chibi Sport'),
         ('B', 'Chibi Batidos'),
         ('A', 'Alimentos')
-      
     ]
     
     id = models.AutoField('Id', primary_key=True)
@@ -80,16 +105,17 @@ class Pack(models.Model):
     
     class Meta:
         verbose_name_plural = 'Packs'
-        verbose_name = 'Pack'    
+        verbose_name = 'Pack'        
     
     
-#    ------------------- Reviews -------------------------- 
+#    ------------------- Reviews -------------------------- 
 
 
 class Reviews(models.Model):
     producto = models.ForeignKey(Productos, on_delete=models.CASCADE, related_name='reviews', null=True)
     
-    usuario = models.ForeignKey(User, on_delete=models.CASCADE, related_name='reviews', default=1)
+    # ¡CAMBIO AQUÍ! Usar settings.AUTH_USER_MODEL
+    usuario = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='reviews', default=1)
     comentario = models.TextField('Comentario', unique=True, null=True)
     fecha = models.DateField('Fecha', auto_now_add=True)
     puntaje = models.IntegerField('Rating', default=5)
@@ -101,7 +127,7 @@ class Reviews(models.Model):
     class Meta:
         verbose_name_plural = 'Reviews'
         
-#    ------------------- Colaboradores -------------------------- 
+#    ------------------- Colaboradores -------------------------- 
         
 class Colaboradores(models.Model):
     nombre = models.CharField('Nombre de empresa', max_length=100)
@@ -116,7 +142,7 @@ class Colaboradores(models.Model):
         verbose_name = 'Colaborador'
     
     
-#    ------------------- Informacion-------------------------- 
+#    ------------------- Informacion-------------------------- 
 
 class Informacion(models.Model):
     correo = models.EmailField('Correo de Chibi')
@@ -141,7 +167,7 @@ class Correos(models.Model):
     fecha = models.DateField('Fecha de sucripción', auto_now_add=True)
     
     def __str__(self):
-        return f'Correo:{self.correo},    Nombre: {self.nombre}'
+        return f'Correo:{self.correo},     Nombre: {self.nombre}'
     
     class Meta:
         verbose_name_plural = 'Correos Suscritos'
@@ -161,7 +187,7 @@ class Equipo(models.Model):
     linkedin = models.CharField('Dirección de linkedin', max_length=300, null=True)
     
     def __str__(self) -> str:
-        return f'Nombre:{self.nombre},    departemento: {self.departamento}'
+        return f'Nombre:{self.nombre},     departemento: {self.departamento}'
     
     class Meta:
         verbose_name_plural = 'Equipo'
@@ -171,8 +197,10 @@ class Equipo(models.Model):
         
         
     
+    
 class Pedido(models.Model):
-    comprador = models.ForeignKey(User, on_delete=models.CASCADE)
+    # ¡CAMBIO AQUÍ! Usar settings.AUTH_USER_MODEL
+    comprador = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     productos =  models.ManyToManyField(Productos, through='ElementoPedido')
     fecha = models.DateTimeField(auto_now_add=True)
     vendido = models.BooleanField(default=False)
@@ -180,8 +208,6 @@ class Pedido(models.Model):
 
     def __str__(self):
         return f"Pedido {self.id} por {self.comprador.username}"
-
-
 
 
 class ElementoPedido(models.Model):

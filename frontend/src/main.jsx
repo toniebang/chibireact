@@ -9,6 +9,7 @@ import { ProductProvider } from './context/ProductContext';
 import { AuthProvider } from './context/AuthContext';
 import { NotificationProvider } from './context/NotificationContext';
 
+
 import notfound from './assets/404.png'; // Asegúrate de que esta ruta sea correcta para tu imagen 404
 // Importa el componente de Toast
 import NotificationToast from './components/NotificationToast';
@@ -20,7 +21,7 @@ import ShopPage from './pages/ShopPage.jsx';
 import Packs from './pages/Packs.jsx';
 import Cart from './pages/Cart.jsx';
 import Perfil from './pages/Perfil.jsx'; // Asegúrate de que esta ruta sea correcta para tu página de perfil
-
+import ProductDetail from './pages/ProductDetail.jsx'; // Asegúrate de que esta ruta sea correcta para tu página de detalles del producto
 // ¡IMPORTA EL NUEVO AuthPage en lugar de LoginPage!
 import AuthPage from './pages/AuthPage.jsx'; // <--- ¡Importación del nuevo AuthPage!
 
@@ -54,6 +55,10 @@ const router = createBrowserRouter([
     element: <Packs />,
   },
   {
+    path: '/detalles/',
+    element: <ProductDetail />,
+  },
+  {
     path: '/perfil/',
     element: <Perfil />,
   },
@@ -82,7 +87,7 @@ const router = createBrowserRouter([
     element: (
       <div className='flex font-montserrat flex-col items-center justify-center min-h-screen bg-gray-100'>
       <img src={notfound} alt="" />
-      <h1 className="text-black text-chibi-green text-center text-4xl mt-20">
+      <h1 className="text-chibi-green text-center text-4xl mt-20">
         Página no encontrada (404)
         </h1>
         <br />
@@ -101,7 +106,6 @@ createRoot(document.getElementById("root")).render(
       <NotificationProvider>
         <ProductProvider>
           <AuthProvider>
-            {/* RouterProvider y NotificationToast están dentro de los Contextos, lo cual es correcto. */}
             <RouterProvider router={router} />
           </AuthProvider>
         </ProductProvider>

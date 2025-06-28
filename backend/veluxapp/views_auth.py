@@ -1,20 +1,27 @@
 # veluxapp/views_auth.py
-from rest_framework import generics, status
+
+import os
+from django.conf import settings
+from django.contrib.auth import get_user_model
+# ¡ERROR MÍO! Faltaba 'generics' aquí
+from rest_framework import generics, status # <-- ¡AHORA SÍ ESTÁ 'generics'!
+from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny, IsAuthenticated
-from django.contrib.auth.models import User
-from .serializers import UserSerializer # Importa tu serializador de usuario
-from rest_framework.views import APIView
+from google.oauth2 import id_token
+from google.auth.transport import requests as google_requests
 from rest_framework_simplejwt.tokens import RefreshToken
-import requests # Necesario para verificar el ID Token de Google
-from django.conf import settings # Necesario para acceder a GOOGLE_CLIENT_ID desde settings
+
+from .serializers import UserSerializer, GoogleAuthSerializer
+
+User = get_user_model()
 
 
-# --- Vistas de Autenticación ---
+# --- Vistas de Autenticación Existentes ---
 
 class RegisterView(generics.CreateAPIView):
     queryset = User.objects.all()
-    permission_classes = (AllowAny,) # Permitir que cualquiera se registre
+    permission_classes = (AllowAny,)
     serializer_class = UserSerializer
 
     def create(self, request, *args, **kwargs):
@@ -22,7 +29,6 @@ class RegisterView(generics.CreateAPIView):
         serializer.is_valid(raise_exception=True)
         user = serializer.save()
 
-        # Generar tokens JWT inmediatamente después del registro
         refresh = RefreshToken.for_user(user)
         return Response({
             "user": serializer.data,
@@ -33,17 +39,15 @@ class RegisterView(generics.CreateAPIView):
 class UserProfileView(generics.RetrieveUpdateAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
-    permission_classes = (IsAuthenticated,) # Solo usuarios autenticados pueden ver/actualizar su perfil
+    permission_classes = (IsAuthenticated,)
 
     def get_object(self):
-        # Retorna el usuario autenticado para que pueda ver/actualizar su propio perfil
         return self.request.user
 
     def update(self, request, *args, **kwargs):
-        kwargs['partial'] = True  # Permitir actualizaciones parciales
+        kwargs['partial'] = True
         return super().update(request, *args, **kwargs)
 
-# --- Vista para el logout (opcional, pero buena práctica para invalidar refresh tokens) ---
 class LogoutView(APIView):
     permission_classes = (IsAuthenticated,)
 
@@ -51,77 +55,108 @@ class LogoutView(APIView):
         try:
             refresh_token = request.data["refresh_token"]
             token = RefreshToken(refresh_token)
-            token.blacklist() # Añade el refresh token a la lista negra
+            token.blacklist()
             return Response(status=status.HTTP_205_RESET_CONTENT)
         except Exception as e:
             return Response(status=status.HTTP_400_BAD_REQUEST, data={"detail": str(e)})
 
 
-# --- Vista para Autenticación con Google ---
+# --- ÚNICA Y CORRECTA DEFINICIÓN DE GoogleAuthView ---
 class GoogleAuthView(APIView):
-    permission_classes = (AllowAny,) # Permitir acceso sin autenticación inicial
+    permission_classes = [AllowAny]
 
     def post(self, request):
-        id_token = request.data.get('id_token')
-
-        if not id_token:
-            return Response({'detail': 'ID Token de Google no proporcionado.'}, status=status.HTTP_400_BAD_REQUEST)
+        serializer = GoogleAuthSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        id_token_from_frontend = serializer.validated_data.get('id_token')
 
         try:
-            # 1. Verificar el ID Token con Google
-            google_verify_url = 'https://oauth2.googleapis.com/tokeninfo'
-            response = requests.get(google_verify_url, params={'id_token': id_token})
-            response.raise_for_status() # Lanza una excepción para errores HTTP (4xx o 5xx)
-            
-            google_user_data = response.json()
+            google_client_id = os.environ.get('GOOGLE_CLIENT_ID')
+            if not google_client_id:
+                raise ValueError("GOOGLE_CLIENT_ID no configurado en las variables de entorno.")
 
-            # Verificar si el token es para tu aplicación (tu GOOGLE_CLIENT_ID)
-            if google_user_data['aud'] != settings.GOOGLE_CLIENT_ID:
-                return Response({'detail': 'ID Token no válido para esta aplicación.'}, status=status.HTTP_401_UNAUTHORIZED)
+            id_info = id_token.verify_oauth2_token(
+                id_token_from_frontend,
+                google_requests.Request(),
+                google_client_id
+            )
+
+            if id_info['iss'] not in ['accounts.google.com', 'https://accounts.google.com']:
+                raise ValueError('Token incorrecto (issuer).')
+            if not id_info.get('email_verified'):
+                raise ValueError('Email no verificado por Google.')
+
+            email = id_info.get('email')
+            google_user_id = id_info.get('sub')
+            first_name = id_info.get('given_name', '')
+            last_name = id_info.get('family_name', '')
+            profile_picture = id_info.get('picture', '')
             
-            # Asegurarse de que el email de Google haya sido verificado
-            if not google_user_data.get('email_verified'):
-                return Response({'detail': 'El email de Google no está verificado.'}, status=status.HTTP_401_UNAUTHORIZED)
-            
-            email = google_user_data['email']
-            google_id = google_user_data['sub'] # ID único de Google para el usuario
-            
-            # 2. Buscar/Crear Usuario Localmente
+
+            user = None 
+
             try:
                 user = User.objects.get(email=email)
-                # Si el usuario ya existe con ese email, lo autenticamos.
-                # Puedes añadir lógica para vincular cuentas si usas un sistema como social-auth-app-django.
-                # Por ahora, simplemente confiamos en el email como identificador principal.
-            except User.DoesNotExist:
-                # Crear un nuevo usuario si no existe
-                username = email.split('@')[0] # Usa la parte del email como username inicial
-                # Asegúrate de que el username sea único
-                if User.objects.filter(username=username).exists():
-                    # Si el username ya existe, hazlo único añadiendo una parte del google_id
-                    username = f"{username}_{google_id[:5]}"
-                
-                user = User.objects.create_user(
-                    username=username,
-                    email=email,
-                    first_name=google_user_data.get('given_name', ''),
-                    last_name=google_user_data.get('family_name', ''),
-                    # No se necesita contraseña si siempre se autentica via Google
-                )
-                user.is_active = True # Activar el usuario
-                user.save()
+                print(f"DEBUG: Usuario existente encontrado con email: {email}")
 
-            # 3. Generar Tokens JWT para el usuario local
+                if not user.first_name and first_name: user.first_name = first_name
+                if not user.last_name and last_name: user.last_name = last_name
+                if not user.profile_picture and profile_picture:
+                    user.profile_picture = profile_picture
+                if not user.google_id and google_user_id:
+                    user.google_id = google_user_id
+                
+                user.save()
+                print(f"DEBUG: Usuario existente actualizado: {user.email}")
+
+            except User.DoesNotExist:
+                print(f"DEBUG: Usuario con email {email} no existe. Creando nuevo usuario.")
+                
+                base_username = email.split('@')[0]
+                username = base_username
+                username_suffix = 1
+                while User.objects.filter(username=username).exists():
+                    username = f"{base_username}_{username_suffix}"
+                    username_suffix += 1
+                
+                try:
+                    user = User.objects.create_user(
+                        username=username,
+                        email=email,
+                        first_name=first_name,
+                        last_name=last_name,
+                        google_id=google_user_id,
+                        profile_picture=profile_picture,
+                        password='!'
+                    )
+                    user.is_active = True
+                    user.save()
+                    print(f"DEBUG: Nuevo usuario creado: {user.email}")
+
+                except Exception as e:
+                    print(f"ERROR: Falló la creación del usuario: {e}")
+                    raise 
+
+            print(f"DEBUG: Objeto 'user' antes de la generación del token: {user}")
+            if user is None:
+                print("CRÍTICO: La variable 'user' es None. Revisar la lógica de creación/recuperación del usuario.")
+                return Response(
+                    {"error": "No se pudo recuperar o crear el usuario."},
+                    status=status.HTTP_500_INTERNAL_SERVER_ERROR
+                )
+
             refresh = RefreshToken.for_user(user)
-            
+            user_data = UserSerializer(user).data
+
             return Response({
-                "user": UserSerializer(user).data,
+                "user": user_data,
                 "refresh": str(refresh),
                 "access": str(refresh.access_token),
             }, status=status.HTTP_200_OK)
 
-        except requests.exceptions.RequestException as e:
-            # Errores de red o HTTP al verificar el token de Google (ej. Google no responde)
-            return Response({'detail': f'Error al verificar token de Google: {e}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        except ValueError as e:
+            print(f"ERROR: Error de verificación de Google: {e}")
+            return Response({"error": f"Error de autenticación de Google: {str(e)}"}, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
-            # Otros errores inesperados durante el proceso de autenticación
-            return Response({'detail': f'Error de autenticación: {e}'}, status=status.HTTP_400_BAD_REQUEST)
+            print(f"ERROR: Error inesperado en GoogleAuthView: {e}")
+            return Response({"error": f"Error inesperado en el servidor: {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
