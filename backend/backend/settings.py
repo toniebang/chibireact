@@ -222,7 +222,7 @@ REST_FRAMEWORK = {
                                                     # Lo sobrescribirás en vistas específicas como los ViewSets.
     ),
     'DEFAULT_PAGINATION_CLASS': 'veluxapp.pagination.StandardResultsSetPagination',
-    'PAGE_SIZE': 10, # Esto es opcional si ya lo defines en la clase de paginación, pero es una buena práctica.
+    'PAGE_SIZE': 16, # Esto es opcional si ya lo defines en la clase de paginación, pero es una buena práctica.
 
 'DEFAULT_FILTER_BACKENDS': (
         'django_filters.rest_framework.DjangoFilterBackend',

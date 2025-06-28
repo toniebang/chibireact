@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom'; // <--- Importa useLocation aquí
 // Asegúrate de tener ambos logos en tu carpeta assets
 import logoMobile from '../assets/logochibi_negro.png';  // Para tema blanco (móvil)
 import logoDesktop from '../assets/logochibi_blanco.png'; // Para tema negro (desktop/tablet)
@@ -21,6 +21,7 @@ const Header = () => {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const { isAuthenticated, user, logout } = useAuth();
     const [isHeaderSolid, setIsHeaderSolid] = useState(false); 
+    const location = useLocation(); // <--- Obtén el objeto de ubicación actual aquí
 
     const [favoriteCount, setFavoriteCount] = useState(0); 
     const [cartCount, setCartCount] = useState(0); 
@@ -35,21 +36,37 @@ const Header = () => {
         }
     }, [isAuthenticated]);
 
+    // Lógica para cambiar el color del header al hacer scroll
     useEffect(() => {
         const handleScroll = () => {
-            // Un umbral de 60px es común, ajústalo si lo necesitas
-            if (window.scrollY > 60) { 
-                setIsHeaderSolid(true);
+            // Solo aplica la lógica de scroll si estamos en la página principal ('/')
+            // Y el tamaño de pantalla es desktop (md:), detectado por window.innerWidth
+            if (location.pathname === '/' && window.innerWidth >= 768) { // 768px es el breakpoint por defecto de md: en Tailwind
+                if (window.scrollY > 60) { 
+                    setIsHeaderSolid(true);
+                } else {
+                    setIsHeaderSolid(false);
+                }
             } else {
-                setIsHeaderSolid(false);
+                // Si no estamos en la página principal o es móvil, el header siempre debe ser sólido (negro en desktop, blanco en móvil)
+                setIsHeaderSolid(true); 
             }
         };
 
+        // Añadir y remover el event listener para limpiar
         window.addEventListener('scroll', handleScroll);
+        // También escucha el evento resize para recalcular el header si la ventana cambia de tamaño
+        window.addEventListener('resize', handleScroll); 
+        
+        // Llama a la función una vez al montar y cada vez que la ruta cambie
+        // Esto asegura que el estado inicial del header sea correcto al cargar la página o al navegar
+        handleScroll(); 
+        
         return () => {
             window.removeEventListener('scroll', handleScroll);
+            window.removeEventListener('resize', handleScroll); // Limpia también el listener de resize
         };
-    }, []);
+    }, [location.pathname]); // Dependencia en location.pathname para re-evaluar al cambiar de ruta
 
     const handleLogout = () => {
         logout();
@@ -62,12 +79,14 @@ const Header = () => {
 
     return (
         // Ajuste en las clases: Usamos un ternario para aplicar el fondo condicionalmente
+        // Si isHeaderSolid es true O NO estamos en la página principal, entonces bg-black en desktop.
+        // Si isHeaderSolid es false Y estamos en la página principal, entonces bg-transparent en desktop.
         <div 
             className={`
                 fixed top-0 left-0 right-0 z-40 shadow-sm 
                 bg-white 
                 transition-all duration-300 ease-in-out 
-                ${isHeaderSolid ? 'md:bg-black' : 'md:bg-transparent md:bg-opacity-0'}
+                ${(isHeaderSolid || location.pathname !== '/') ? 'md:bg-black' : 'md:bg-transparent'}
             `}
         >
             <div className='max-w-7xl mx-auto'>
@@ -246,7 +265,7 @@ const Header = () => {
                         )}
                     </nav>
 
-                    <div className="mt-8 text-xs text-gray-700 *:mb-3">
+                    <div className="mt-8 text-xs text-gray-700">
                         <h2 className="font-bold text-black mb-1">Contacto</h2>
                         <p className="mb-0.5">
                             <span className="mr-1">📞</span> +240 555 7667 14
