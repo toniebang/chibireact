@@ -26,7 +26,7 @@ SECRET_KEY = config('DJANGO_SECRET_KEY', default='a-very-insecure-fallback-key-f
 # DEBUG (BOOLEAN): force_type=bool para convertir "True"/"False" a booleanos
 DEBUG = config('DEBUG', default=False, cast=bool)
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='127.0.0.1', cast=Csv())
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
@@ -109,6 +109,28 @@ CORS_ALLOWED_ORIGINS = [
     # "https://tu-dominio-frontend.com", # Tu dominio de producción
 ]
 
+CORS_ALLOW_CREDENTIALS = True # Necesario para credenciales (cookies, JWT, etc.)
+CORS_EXPOSE_HEADERS = [
+    'X-Session-Key', # Añade esta cabecera aquí. Asegúrate de la capitalización ('X-Session-Key')
+    # También puedes añadir otras cabeceras estándar si no están ya expuestas
+    # 'Content-Type',
+    # 'ETag',
+    # 'Last-Modified',
+    # 'Cache-Control',
+]
+CORS_ALLOW_HEADERS = [
+    # ... las que ya tuvieras (accept, authorization, content-type, etc.) ...
+    'x-session-key',
+    'content-type',# Asegúrate de que esté aquí, a menudo en minúsculas para este setting.
+]
+CORS_ALLOW_METHODS = [
+    'DELETE',
+    'GET',
+    'OPTIONS', # Aunque no lo veas, es importante que esté permitido para el preflight
+    'POST',
+    'PUT',
+    'PATCH',
+]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -235,3 +257,4 @@ REST_FRAMEWORK = {
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
 ]
+

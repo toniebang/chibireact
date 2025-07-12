@@ -16,6 +16,8 @@ from veluxapp.models import (
     Equipo,
     ElementoPedido,
     Pedido,
+    Cart,
+    CartItem
 )
 
 # Obtener el modelo de usuario activo, que es tu CustomUser
@@ -93,6 +95,16 @@ class PedidoAdmin(admin.ModelAdmin):
     inlines = [ElementoPedidoInline]
     search_fields = ('comprador__username', 'comprador__email',)
 
+class CartItemInline(admin.TabularInline):
+    model = CartItem
+    extra = 1
+    fields = ('producto', 'cantidad', 'precio_unitario',) # Estos campos existen en CartItem
+    
+class CartAdmin(admin.ModelAdmin):
+    # En models.py: Cart tiene 'usuario', 'fecha_creacion', 'fecha_actualizacion'
+    list_display = ('usuario', 'fecha_creacion', 'fecha_actualizacion',) # Estos campos existen en Cart
+    inlines = [CartItemInline]
+    search_fields = ('usuario__username', 'usuario__email',)
 
 # No necesitas ProductoAdmin si ya tienes ProductosAdmin
 # class ProductoAdmin(admin.ModelAdmin):
@@ -110,3 +122,5 @@ admin.site.register(Pack, PackAdmin)
 admin.site.register(Correos, CorreosAdmin)
 admin.site.register(Equipo, EquipoAdmin)
 admin.site.register(Pedido, PedidoAdmin)
+admin.site.register(Cart)
+admin.site.register(CartItem)

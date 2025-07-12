@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom'; // <--- Importa useLocation aquí
-// Asegúrate de tener ambos logos en tu carpeta assets
-import logoMobile from '../assets/logochibi_negro.png';  // Para tema blanco (móvil)
-import logoDesktop from '../assets/logochibi_blanco.png'; // Para tema negro (desktop/tablet)
+import { Link, useLocation } from 'react-router-dom';
+import logoMobile from '../assets/logochibi_negro.png';
+import logoDesktop from '../assets/logochibi_blanco.png';
 
 import { LuUserRoundPlus } from "react-icons/lu";
 import { GrCart } from "react-icons/gr";
@@ -12,61 +11,55 @@ import { MdLogout } from "react-icons/md";
 import { FaInstagram, FaWhatsapp } from 'react-icons/fa';
 
 import { useAuth } from '../context/AuthContext';
+import { useCart } from '../context/CartContext'; // Importa useCart aquí
 
-// URL del avatar por defecto
 const DEFAULT_AVATAR_URL = "https://cdn-icons-png.flaticon.com/512/6596/6596121.png";
-
 
 const Header = () => {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const { isAuthenticated, user, logout } = useAuth();
-    const [isHeaderSolid, setIsHeaderSolid] = useState(false); 
-    const location = useLocation(); // <--- Obtén el objeto de ubicación actual aquí
+    const { cart } = useCart(); // Obtén el objeto del carrito del contexto
+    const [isHeaderSolid, setIsHeaderSolid] = useState(false);
+    const location = useLocation();
 
+    // Deriva el total de ítems del carrito directamente del objeto 'cart' del contexto
+    // Si 'cart' es null o undefined, total_items será 0
+    const cartItemCount = cart?.total_items || 0; 
+
+    // favoriteCount aún es estático.
     const [favoriteCount, setFavoriteCount] = useState(0); 
-    const [cartCount, setCartCount] = useState(0); 
 
     useEffect(() => {
         if (isAuthenticated) {
-            setFavoriteCount(5); 
-            setCartCount(3);    
+            setFavoriteCount(5); // Mantienes tu lógica actual para favoritos
         } else {
             setFavoriteCount(0);
-            setCartCount(0);
         }
     }, [isAuthenticated]);
 
     // Lógica para cambiar el color del header al hacer scroll
     useEffect(() => {
         const handleScroll = () => {
-            // Solo aplica la lógica de scroll si estamos en la página principal ('/')
-            // Y el tamaño de pantalla es desktop (md:), detectado por window.innerWidth
-            if (location.pathname === '/' && window.innerWidth >= 768) { // 768px es el breakpoint por defecto de md: en Tailwind
-                if (window.scrollY > 60) { 
+            if (location.pathname === '/' && window.innerWidth >= 768) {
+                if (window.scrollY > 60) {
                     setIsHeaderSolid(true);
                 } else {
                     setIsHeaderSolid(false);
                 }
             } else {
-                // Si no estamos en la página principal o es móvil, el header siempre debe ser sólido (negro en desktop, blanco en móvil)
-                setIsHeaderSolid(true); 
+                setIsHeaderSolid(true);
             }
         };
 
-        // Añadir y remover el event listener para limpiar
         window.addEventListener('scroll', handleScroll);
-        // También escucha el evento resize para recalcular el header si la ventana cambia de tamaño
-        window.addEventListener('resize', handleScroll); 
-        
-        // Llama a la función una vez al montar y cada vez que la ruta cambie
-        // Esto asegura que el estado inicial del header sea correcto al cargar la página o al navegar
-        handleScroll(); 
-        
+        window.addEventListener('resize', handleScroll);
+        handleScroll();
+
         return () => {
             window.removeEventListener('scroll', handleScroll);
-            window.removeEventListener('resize', handleScroll); // Limpia también el listener de resize
+            window.removeEventListener('resize', handleScroll);
         };
-    }, [location.pathname]); // Dependencia en location.pathname para re-evaluar al cambiar de ruta
+    }, [location.pathname]);
 
     const handleLogout = () => {
         logout();
@@ -78,14 +71,11 @@ const Header = () => {
     };
 
     return (
-        // Ajuste en las clases: Usamos un ternario para aplicar el fondo condicionalmente
-        // Si isHeaderSolid es true O NO estamos en la página principal, entonces bg-black en desktop.
-        // Si isHeaderSolid es false Y estamos en la página principal, entonces bg-transparent en desktop.
-        <div 
+        <div
             className={`
-                fixed top-0 left-0 right-0 z-40 shadow-sm 
-                bg-white 
-                transition-all duration-300 ease-in-out 
+                fixed top-0 left-0 right-0 z-40 shadow-sm
+                bg-white
+                transition-all duration-300 ease-in-out
                 ${(isHeaderSolid || location.pathname !== '/') ? 'md:bg-black' : 'md:bg-transparent'}
             `}
         >
@@ -102,11 +92,12 @@ const Header = () => {
                         <Link to="/tienda" className="px-2 py-1 hover:text-gray-400 hover:underline underline-offset-4 transition-colors duration-200">Tienda</Link>
                         <Link to="/sobre-chibi" className="px-2 py-1 hover:text-gray-400 hover:underline underline-offset-4 transition-colors duration-200">Sobre Chibi</Link>
 
+                        {/* Carrito de compra (Desktop) */}
                         <Link to="/carrito" className="relative p-2 hover:text-gray-400 text-xl transition-colors duration-200" title="Ver Carrito">
                             <GrCart />
-                            {cartCount > 0 && (
+                            {cartItemCount > 0 && (
                                 <span className="absolute -top-1 -right-1 bg-red-600 text-white text-xs font-bold rounded-full h-4 w-4 flex items-center justify-center leading-none" style={{fontSize: '0.65rem'}}>
-                                    {cartCount}
+                                    {cartItemCount}
                                 </span>
                             )}
                         </Link>
@@ -150,11 +141,12 @@ const Header = () => {
                     </nav>
 
                     <div className="flex items-center gap-3 md:hidden">
+                        {/* Carrito de compra (Mobile) */}
                         <Link to="/carrito" className="relative p-1.5 text-xl hover:text-gray-700 transition-colors duration-200" title="Ver Carrito">
                             <GrCart />
-                            {cartCount > 0 && (
+                            {cartItemCount > 0 && (
                                 <span className="absolute -top-1 -right-1 bg-red-600 text-white text-xs font-bold rounded-full h-4 w-4 flex items-center justify-center leading-none" style={{fontSize: '0.65rem'}}>
-                                    {cartCount}
+                                    {cartItemCount}
                                 </span>
                             )}
                         </Link>
@@ -238,11 +230,12 @@ const Header = () => {
                         <Link to="/tienda" className="block py-1 px-2 hover:text-gray-700 transition-colors duration-200" onClick={() => setIsSidebarOpen(false)}>Tienda</Link>
                         <Link to="/sobre-chibi" className="block py-1 px-2 hover:text-gray-700 transition-colors duration-200" onClick={() => setIsSidebarOpen(false)}>Sobre Chibi</Link>
 
+                        {/* Carrito de compra (Sidebar) */}
                         <Link to="/carrito" className="flex items-center gap-2 py-1 px-2 hover:text-gray-700 text-base transition-colors duration-200" onClick={() => setIsSidebarOpen(false)}>
                             <GrCart className="text-lg" /> Carrito
-                            {cartCount > 0 && (
+                            {cartItemCount > 0 && (
                                 <span className="ml-2 bg-red-600 text-white text-xs font-bold rounded-full px-2 py-1 leading-none">
-                                    {cartCount}
+                                    {cartItemCount}
                                 </span>
                             )}
                         </Link>

@@ -8,7 +8,7 @@ import './index.css';
 import { ProductProvider } from './context/ProductContext';
 import { AuthProvider } from './context/AuthContext';
 import { NotificationProvider } from './context/NotificationContext';
-
+import { CartProvider } from './context/CartContext.jsx';
 
 import notfound from './assets/404.png'; // Asegúrate de que esta ruta sea correcta para tu imagen 404
 // Importa el componente de Toast
@@ -105,9 +105,11 @@ createRoot(document.getElementById("root")).render(
     <GoogleOAuthProvider clientId={googleClientId}>
       <NotificationProvider>
         <ProductProvider>
+          <CartProvider>
           <AuthProvider>
             <RouterProvider router={router} />
           </AuthProvider>
+          </CartProvider>
         </ProductProvider>
         <NotificationToast />
       </NotificationProvider>

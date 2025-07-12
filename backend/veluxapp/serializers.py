@@ -16,6 +16,8 @@ from .models import (
     Equipo,
     Pedido,
     ElementoPedido,
+    Cart,       # <--- Importa el modelo Cart
+    CartItem,   # <--- Importa el modelo CartItem
 )
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer as JWTTokenObtainPairSerializer
 from django.utils import timezone
@@ -90,12 +92,20 @@ class EquipoSerializer(serializers.ModelSerializer):
 
 class ElementoPedidoSerializer(serializers.ModelSerializer):
     producto_nombre = serializers.CharField(source='producto.nombre', read_only=True)
+    # Añadimos la imagen del producto para Pedido, similar a como la teníamos en CartItem
+    producto_imagen1 = serializers.SerializerMethodField()
     
     class Meta:
         model = ElementoPedido
         fields = '__all__'
         read_only_fields = ('precio_unitario',)
 
+    def get_producto_imagen1(self, obj):
+        # Asegurarse de que el producto existe y tiene imagen1
+        if obj.producto and obj.producto.imagen1:
+            request = self.context.get('request')
+            return request.build_absolute_uri(obj.producto.imagen1.url) if request else obj.producto.imagen1.url
+        return None
 
 # --- Serializadores con dependencias (usan los serializadores base definidos arriba) ---
 
@@ -218,3 +228,118 @@ class CustomTokenObtainPairSerializer(JWTTokenObtainPairSerializer):
         data['user'] = UserSerializer(user).data 
 
         return data
+
+
+# --- Nuevos Serializers para el Carrito ---
+
+class ProductCartItemSerializer(serializers.ModelSerializer):
+    """
+    Serializador de producto simplificado para ser usado dentro de CartItemSerializer.
+    Incluye solo los campos relevantes para mostrar en el carrito.
+    """
+    class Meta:
+        model = Productos
+        fields = ['id', 'nombre', 'imagen1', 'precio'] # Campos relevantes para mostrar en el carrito
+
+    # Asegura que la URL de la imagen sea absoluta
+    imagen1 = serializers.SerializerMethodField()
+
+    def get_imagen1(self, obj):
+        if obj.imagen1:
+            request = self.context.get('request')
+            return request.build_absolute_uri(obj.imagen1.url) if request else obj.imagen1.url
+        return None
+
+
+class CartItemSerializer(serializers.ModelSerializer):
+    """
+    Serializador para los ítems individuales del carrito.
+    """
+    product = ProductCartItemSerializer(read_only=True) # Anida el serializador de producto
+    # Campo para recibir el ID del producto al añadir/actualizar.
+    # 'write_only=True' significa que solo se usa para la entrada de datos.
+    # 'source='product'' mapea este campo a la relación 'product' del modelo.
+    product_id = serializers.PrimaryKeyRelatedField(
+        queryset=Productos.objects.all(), source='product', write_only=True
+    )
+    
+    # Campo calculado para el subtotal de cada ítem
+    subtotal = serializers.ReadOnlyField() 
+
+    class Meta:
+        model = CartItem
+        fields = ['id', 'product', 'product_id', 'quantity', 'price_at_addition', 'subtotal']
+        # 'product' es de solo lectura porque lo anidamos para la salida (representación).
+        # 'price_at_addition' es de solo lectura porque se establece automáticamente en la vista.
+        read_only_fields = ['id', 'product', 'price_at_addition'] 
+
+
+class CartSerializer(serializers.ModelSerializer):
+    """
+    Serializador principal para el carrito, incluyendo sus ítems.
+    """
+    items = CartItemSerializer(many=True, read_only=True) # Lista de ítems del carrito
+    total_items = serializers.ReadOnlyField() # Campo calculado desde el modelo Cart (@property)
+    total_price = serializers.ReadOnlyField() # Campo calculado desde el modelo Cart (@property)
+    
+    # Usamos tu UserSerializer existente para mostrar la información del usuario si está asociado
+    user = UserSerializer(read_only=True) 
+
+    class Meta:
+        model = Cart
+        fields = ['id', 'user', 'session_key', 'items', 'total_items', 'total_price', 'created_at', 'updated_at']
+        read_only_fields = ['id', 'user', 'session_key', 'created_at', 'updated_at']
+
+
+# Serializadores de entrada para acciones específicas del carrito (no mapean directamente a un modelo)
+class AddToCartSerializer(serializers.Serializer):
+    """
+    Serializador para validar los datos de entrada al añadir un producto al carrito.
+    """
+    product_id = serializers.IntegerField()
+    quantity = serializers.IntegerField(default=1, min_value=1)
+
+    def validate_product_id(self, value):
+        try:
+            product = Productos.objects.get(id=value)
+            # Usando tus campos 'disponible' y 'stock' como booleanos
+            if not product.disponible:
+                raise serializers.ValidationError("Este producto no está disponible para la venta.")
+            if not product.stock: # Si 'stock' es True = en stock, False = fuera de stock
+                raise serializers.ValidationError("Este producto está fuera de stock.")
+            return value
+        except Productos.DoesNotExist:
+            raise serializers.ValidationError("Producto no encontrado.")
+
+
+class UpdateCartItemSerializer(serializers.Serializer):
+    """
+    Serializador para validar los datos de entrada al actualizar la cantidad de un ítem.
+    """
+    product_id = serializers.IntegerField()
+    quantity = serializers.IntegerField(min_value=0) # Permite 0 para eliminar el ítem
+
+    def validate_product_id(self, value):
+        try:
+            product = Productos.objects.get(id=value)
+            if not product.disponible:
+                raise serializers.ValidationError("Este producto no está disponible para la venta.")
+            return value
+        except Productos.DoesNotExist:
+            raise serializers.ValidationError("Producto no encontrado.")
+
+    def validate_quantity(self, value):
+        # Si la cantidad es > 0, validamos que el producto esté en stock.
+        # Si la cantidad es 0, asumimos que es una eliminación y la validación de stock no aplica.
+        if value > 0:
+            product_id = self.initial_data.get('product_id')
+            if product_id: # Solo si product_id está presente en los datos iniciales
+                try:
+                    product = Productos.objects.get(id=product_id)
+                    if not product.stock: # Si stock es booleano y es False
+                        raise serializers.ValidationError("Este producto está fuera de stock.")
+                except Productos.DoesNotExist:
+                    # Esto se manejará en `validate_product_id` o en la vista,
+                    # pero es bueno tener la excepción aquí también.
+                    pass
+        return value
