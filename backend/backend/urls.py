@@ -36,7 +36,7 @@ urlpatterns = [
     # --- URLs de Autenticación JWT ---
     # ¡TAMBIÉN CAMBIO AQUÍ! Eliminamos 'api/' de cada ruta de autenticación
     path('token/', CustomTokenObtainPairView.as_view(), name='token_obtain_pair'),
-    path('token/refresh/', TokenRefreshView.as_as_view(), name='token_refresh'),
+    path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 
     path('register/', RegisterView.as_view(), name='auth_register'),
     path('me/', UserProfileView.as_view(), name='user_profile'),
