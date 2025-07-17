@@ -98,7 +98,9 @@ const router = createBrowserRouter([
       </div>
     ),
   },
-]);
+], {
+  basename: '/chibireact-frontend/', // Asegúrate de que este basename coincida con la configuración de tu servidor
+});
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
