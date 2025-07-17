@@ -105,7 +105,8 @@ else:
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173", # Dominio/puerto de tu frontend React en desarrollo
     "http://127.0.0.1:5173",
-    "http://192.168.0.110:5173"
+    "http://192.168.0.110:5173",
+    "https://chibi-app-l5q6z.ondigitalocean.app",
     # "https://tu-dominio-frontend.com", # Tu dominio de producción
 ]
 
@@ -134,6 +135,7 @@ CORS_ALLOW_METHODS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'corsheaders.middleware.CorsMiddleware', # Middleware para CORS
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
