@@ -2,8 +2,8 @@
 
 from django.contrib import admin
 from django.urls import path, include
-from django.conf import settings # Importa settings
-from django.conf.urls.static import static # Importa static
+from django.conf import settings
+from django.conf.urls.static import static
 
 # Importamos las vistas estándar de simplejwt para refrescar tokens
 from rest_framework_simplejwt.views import TokenRefreshView
@@ -28,19 +28,22 @@ class CustomTokenObtainPairView(OriginalTokenObtainPairView):
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/', include('veluxapp.urls')), # Incluye las URLs de tu veluxapp
+    # --- ¡CAMBIO CRUCIAL AQUÍ! ---
+    # Eliminamos 'api/' porque App Platform ya lo manejará
+    path('', include('veluxapp.urls')), # Incluye las URLs de tu veluxapp
+    # -----------------------------
 
     # --- URLs de Autenticación JWT ---
-    # Usamos nuestra vista personalizada para el login
-    path('api/token/', CustomTokenObtainPairView.as_view(), name='token_obtain_pair'),
-    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'), # Endpoint para refrescar token
+    # ¡TAMBIÉN CAMBIO AQUÍ! Eliminamos 'api/' de cada ruta de autenticación
+    path('token/', CustomTokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('token/refresh/', TokenRefreshView.as_as_view(), name='token_refresh'),
 
-    path('api/register/', RegisterView.as_view(), name='auth_register'),       # Endpoint para registro
-    path('api/me/', UserProfileView.as_view(), name='user_profile'),             # Endpoint para perfil de usuario
-    path('api/logout/', LogoutView.as_view(), name='auth_logout'),             # Endpoint para logout
+    path('register/', RegisterView.as_view(), name='auth_register'),
+    path('me/', UserProfileView.as_view(), name='user_profile'),
+    path('logout/', LogoutView.as_view(), name='auth_logout'),
 
     # --- Nueva URL para Autenticación con Google ---
-    path('api/auth/google/', GoogleAuthView.as_view(), name='google_auth'),
+    path('auth/google/', GoogleAuthView.as_view(), name='google_auth'),
 ]
 
 # Solo para servir archivos media en modo DEBUG (desarrollo)
