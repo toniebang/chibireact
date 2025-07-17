@@ -22,18 +22,18 @@ const LoginForm = ({ onSwitchToRegister }) => {
 
   const formatErrorMessages = (errorObj) => {
     if (errorObj === null) {
-        console.log("formatErrorMessages: errorObj es explícitamente null (sin error activo).");
+        // console.log("formatErrorMessages: errorObj es explícitamente null (sin error activo).");
         return [];
     }
     if (!errorObj) {
-        console.log("formatErrorMessages: errorObj es undefined/falsy pero no null.");
+        // console.log("formatErrorMessages: errorObj es undefined/falsy pero no null.");
         return ['Ha ocurrido un error desconocido. (Objeto de error inválido)'];
     }
     if (errorObj.message) {
-      console.log("formatErrorMessages: Encontrada propiedad 'message':", errorObj.message);
+      // console.log("formatErrorMessages: Encontrada propiedad 'message':", errorObj.message);
       return [errorObj.message];
     }
-    console.log("formatErrorMessages: Estructura de error NO tiene 'message' como se esperaba:", errorObj);
+    // console.log("formatErrorMessages: Estructura de error NO tiene 'message' como se esperaba:", errorObj);
     return ['Ha ocurrido un error desconocido. (Error en el contrato de AuthContext)'];
   };
 
