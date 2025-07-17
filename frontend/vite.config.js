@@ -6,7 +6,7 @@ import tailwindcss from '@tailwindcss/vite' // Asegúrate de que este plugin est
 export default defineConfig({
   plugins: [react(), tailwindcss()],
   // --- AÑADE O MODIFICA ESTA LÍNEA ---
-  base: '/chibireact-frontend/', // Esto es CRUCIAL para que Vite genere las rutas correctas para tus assets en producción
+  base: '/', // Esto es CRUCIAL para que Vite genere las rutas correctas para tus assets en producción
   // ---------------------------------
   server: {
     host: true, // Esto es útil para el desarrollo local en contenedores o máquinas virtuales
