@@ -5,16 +5,31 @@ import tailwindcss from '@tailwindcss/vite'
 
 export default defineConfig({
   plugins: [react(), tailwindcss()],
-  base: '/', // Frontend en la raíz
+  base: '/',
   server: {
     host: true,
     proxy: {
       '/api': { // Cuando Vite ve una solicitud que empieza con '/api'
         target: 'http://localhost:8000', // La redirige a tu backend Django local
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api/, ''), // ¡Clave! Elimina '/api' antes de enviarla a Django
+        // *** ¡CAMBIO CRUCIAL AQUÍ! ELIMINAMOS LA REESCRITURA DEL PATH ***
+        // Ahora, si llamas a /api/token, el proxy enviará /api/token a Django
+        // Esto alineará el comportamiento de desarrollo con producción
       },
-      // Puedes añadir más proxies para /admin, /media, /static si los necesitas en desarrollo
+      // Puedes añadir un proxy para /admin si accedes al admin desde el mismo dominio de desarrollo
+      '/admin': {
+        target: 'http://localhost:8000',
+        changeOrigin: true,
+      },
+      // Si Django sirve staticfiles o mediafiles en desarrollo, también los podrías proxear
+      // '/static': {
+      //   target: 'http://localhost:8000',
+      //   changeOrigin: true,
+      // },
+      // '/media': {
+      //   target: 'http://localhost:8000',
+      //   changeOrigin: true,
+      // },
     }
   },
   build: {

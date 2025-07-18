@@ -30,20 +30,20 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     # --- ¡CAMBIO CRUCIAL AQUÍ! ---
     # Eliminamos 'api/' porque App Platform ya lo manejará
-    path('', include('veluxapp.urls')), # Incluye las URLs de tu veluxapp
+    path('api/', include('veluxapp.urls')), # Incluye las URLs de tu veluxapp
     # -----------------------------
 
     # --- URLs de Autenticación JWT ---
     # ¡TAMBIÉN CAMBIO AQUÍ! Eliminamos 'api/' de cada ruta de autenticación
-    path('token/', CustomTokenObtainPairView.as_view(), name='token_obtain_pair'),
-    path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('api/token/', CustomTokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 
-    path('register/', RegisterView.as_view(), name='auth_register'),
-    path('me/', UserProfileView.as_view(), name='user_profile'),
-    path('logout/', LogoutView.as_view(), name='auth_logout'),
+    path('api/register/', RegisterView.as_view(), name='auth_register'),
+    path('api/me/', UserProfileView.as_view(), name='user_profile'),
+    path('api/logout/', LogoutView.as_view(), name='auth_logout'),
 
     # --- Nueva URL para Autenticación con Google ---
-    path('auth/google/', GoogleAuthView.as_view(), name='google_auth'),
+    path('api/auth/google/', GoogleAuthView.as_view(), name='google_auth'),
 ]
 
 # Solo para servir archivos media en modo DEBUG (desarrollo)
