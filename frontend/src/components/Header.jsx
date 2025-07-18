@@ -7,6 +7,8 @@ import { LuUserRoundPlus } from "react-icons/lu";
 import { GrCart } from "react-icons/gr";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { IoClose, IoHeart } from "react-icons/io5";
+import { IoMdHeartEmpty } from "react-icons/io";
+
 import { MdLogout } from "react-icons/md";
 import { FaInstagram, FaWhatsapp } from 'react-icons/fa';
 
@@ -102,9 +104,9 @@ const Header = () => {
                             )}
                         </Link>
                         <Link to="/favoritos" className="relative p-2 hover:text-gray-400 text-xl transition-colors duration-200" title="Ver Favoritos">
-                            <IoHeart />
+                            <IoMdHeartEmpty />
                             {favoriteCount > 0 && (
-                                <span className="absolute -top-1 -right-1 bg-red-600 text-white text-xs font-bold rounded-full h-4 w-4 flex items-center justify-center leading-none" style={{fontSize: '0.65rem'}}>
+                                <span className="absolute -top-1 -right-1 bg-red-600 text-white text-sm font-bold rounded-full h-4 w-4 flex items-center justify-center leading-none" style={{fontSize: '0.65rem'}}>
                                     {favoriteCount}
                                 </span>
                             )}
@@ -152,9 +154,9 @@ const Header = () => {
                         </Link>
 
                         <Link to="/favoritos" className="relative p-1.5 text-xl hover:text-gray-700 transition-colors duration-200" title="Ver Favoritos">
-                            <IoHeart />
+                            <IoMdHeartEmpty />
                             {favoriteCount > 0 && (
-                                <span className="absolute -top-1 -right-1 bg-red-600 text-white text-xs font-bold rounded-full h-4 w-4 flex items-center justify-center leading-none" style={{fontSize: '0.65rem'}}>
+                                <span className="absolute -top-1 -right-1 bg-red-600 text-white text-s font-bold rounded-full h-4 w-4 flex items-center justify-center leading-none" style={{fontSize: '0.65rem'}}>
                                     {favoriteCount}
                                 </span>
                             )}
