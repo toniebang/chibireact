@@ -55,20 +55,24 @@ SIMPLE_JWT = {
 # Application definition
 
 INSTALLED_APPS = [
-    'corsheaders',
-     'ckeditor',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'veluxapp.apps.VeluxappConfig',
+    'storages', # Si storages no depende de tu modelo de usuario, puede ir aquí
+
+    # ¡TU APLICACIÓN CON EL MODELO DE USUARIO PERSONALIZADO DEBE IR AQUÍ!
+    'veluxapp.apps.VeluxappConfig', 
+
+    'corsheaders', # Estas pueden ir después de tu app principal si no tienen dependencias críticas de usuario
+    'ckeditor', # CKEditor no debería depender de tu modelo de usuario
     'rest_framework',
     'django_filters',
     'rest_framework_simplejwt',
     'rest_framework_simplejwt.token_blacklist',
-    'storages',
+    # ... cualquier otra app que dependa de tu modelo de usuario o que no sea core de Django
 ]
 
 
