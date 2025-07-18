@@ -63,9 +63,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'veluxapp.apps.VeluxappConfig',
     'rest_framework',
     'django_filters',
-    'veluxapp',
     'rest_framework_simplejwt',
     'rest_framework_simplejwt.token_blacklist',
     'storages',
@@ -271,8 +271,3 @@ REST_FRAMEWORK = {
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
 ]
-
-# Temporal: para depurar
-print(f"DEBUG: GOOGLE_CLIENT_ID desde .env es: {config('GOOGLE_CLIENT_ID', default='VARIABLE_NO_ENCONTRADA')}")
-print(f"DEBUG: GOOGLE_CLIENT_SECRET desde .env es: {config('GOOGLE_CLIENT_SECRET', default='VARIABLE_NO_ENCONTRADA')}")
-# Fin temporal
