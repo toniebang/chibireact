@@ -1,10 +1,12 @@
 # veluxapp/views_auth.py
 
 import os
+# ¡IMPORTANTE CAMBIO AQUÍ! Importa config de 'decouple', NO de 'dj_database_url'
+from decouple import config 
 from django.conf import settings
 from django.contrib.auth import get_user_model
-# ¡ERROR MÍO! Faltaba 'generics' aquí
-from rest_framework import generics, status # <-- ¡AHORA SÍ ESTÁ 'generics'!
+
+from rest_framework import generics, status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny, IsAuthenticated
@@ -71,7 +73,12 @@ class GoogleAuthView(APIView):
         id_token_from_frontend = serializer.validated_data.get('id_token')
 
         try:
-            google_client_id = os.environ.get('GOOGLE_CLIENT_ID')
+            # Aquí se usa config() de decouple, que es el que lee de .env
+            google_client_id = config('GOOGLE_CLIENT_ID')
+            
+            # Puedes quitar esta validación explícita si confías en decouple,
+            # ya que config() lanza un error si la variable no existe y no tiene default.
+            # Sin embargo, para más robustez en la vista, está bien mantenerla.
             if not google_client_id:
                 raise ValueError("GOOGLE_CLIENT_ID no configurado en las variables de entorno.")
 
@@ -92,7 +99,6 @@ class GoogleAuthView(APIView):
             last_name = id_info.get('family_name', '')
             profile_picture = id_info.get('picture', '')
             
-
             user = None 
 
             try:
@@ -127,7 +133,7 @@ class GoogleAuthView(APIView):
                         last_name=last_name,
                         google_id=google_user_id,
                         profile_picture=profile_picture,
-                        password='!'
+                        password='!' # Contraseña dummy para usuarios de Google
                     )
                     user.is_active = True
                     user.save()

@@ -40,6 +40,10 @@ REST_FRAMEWORK = {
 
 GOOGLE_CLIENT_ID = config('GOOGLE_CLIENT_ID')
 GOOGLE_CLIENT_SECRET = config('GOOGLE_CLIENT_SECRET')
+# Asegúrate de que esta variable esté presente para que tu backend pueda usarla
+if not GOOGLE_CLIENT_ID:
+    raise Exception("GOOGLE_CLIENT_ID no está configurado en las variables de entorno.")
+
 # Opcional: Configuración de JWT
 from datetime import timedelta
 SIMPLE_JWT = {
@@ -122,7 +126,15 @@ CORS_EXPOSE_HEADERS = [
 CORS_ALLOW_HEADERS = [
     # ... las que ya tuvieras (accept, authorization, content-type, etc.) ...
     'x-session-key',
-    'content-type',# Asegúrate de que esté aquí, a menudo en minúsculas para este setting.
+    'content-type',
+    'authorization',
+    'accept',
+    'accept-encoding',
+    'dnt',
+    'origin',
+    'user-agent',
+    'x-csrftoken',
+    'x-requested-with', # Asegúrate de que esté aquí, a menudo en minúsculas para este setting.
 ]
 CORS_ALLOW_METHODS = [
     'DELETE',
@@ -260,3 +272,7 @@ AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
 ]
 
+# Temporal: para depurar
+print(f"DEBUG: GOOGLE_CLIENT_ID desde .env es: {config('GOOGLE_CLIENT_ID', default='VARIABLE_NO_ENCONTRADA')}")
+print(f"DEBUG: GOOGLE_CLIENT_SECRET desde .env es: {config('GOOGLE_CLIENT_SECRET', default='VARIABLE_NO_ENCONTRADA')}")
+# Fin temporal
