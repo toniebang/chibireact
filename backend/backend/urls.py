@@ -35,15 +35,15 @@ urlpatterns = [
 
     # --- URLs de Autenticación JWT ---
     # ¡TAMBIÉN CAMBIO AQUÍ! Eliminamos 'api/' de cada ruta de autenticación
-    path('api/token/', CustomTokenObtainPairView.as_view(), name='token_obtain_pair'),
-    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('token/', CustomTokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 
-    path('api/register/', RegisterView.as_view(), name='auth_register'),
-    path('api/me/', UserProfileView.as_view(), name='user_profile'),
-    path('api/logout/', LogoutView.as_view(), name='auth_logout'),
+    path('register/', RegisterView.as_view(), name='auth_register'),
+    path('me/', UserProfileView.as_view(), name='user_profile'),
+    path('logout/', LogoutView.as_view(), name='auth_logout'),
 
     # --- Nueva URL para Autenticación con Google ---
-    path('api/auth/google/', GoogleAuthView.as_view(), name='google_auth'),
+    path('auth/google/', GoogleAuthView.as_view(), name='google_auth'),
 ]
 
 # Solo para servir archivos media en modo DEBUG (desarrollo)
