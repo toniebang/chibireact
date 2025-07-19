@@ -27,7 +27,6 @@ urlpatterns = [
 
     # Las URLs de veluxapp (productos, carrito) directamente en la raíz de lo que recibe Django
     # DigitalOcean envía '/productos/', '/cart/', etc.
-    path('', include('veluxapp.urls')),
 
     # URLs de Autenticación JWT, directamente en la raíz de lo que recibe Django
     # DigitalOcean envía '/token/', '/register/', etc.
@@ -37,6 +36,9 @@ urlpatterns = [
     path('me/', UserProfileView.as_view(), name='user_profile'),
     path('logout/', LogoutView.as_view(), name='auth_logout'),
     path('auth/google/', GoogleAuthView.as_view(), name='google_auth'),
+
+    path('', include('veluxapp.urls')),
+
 ]
 
 # Servir archivos media en desarrollo
