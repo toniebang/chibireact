@@ -1,7 +1,8 @@
 # veluxapp/urls.py
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from .views_auth import GoogleAuthView
+# from .views_auth import GoogleAuthView # <--- ¡ELIMINA ESTA IMPORTACIÓN!
+
 from .views import ( # Asegúrate de que todas tus vistas actuales estén importadas aquí
     CategoriaProductosViewSet,
     ProductosViewSet,
@@ -14,7 +15,7 @@ from .views import ( # Asegúrate de que todas tus vistas actuales estén import
     PedidoViewSet,
     ElementoPedidoViewSet,
 )
-from .views_cart import CartView # <--- ¡IMPORTA LA NUEVA VISTA DEL CARRITO!
+from .views_cart import CartView
 
 router = DefaultRouter()
 router.register(r'categorias', CategoriaProductosViewSet)
@@ -29,8 +30,8 @@ router.register(r'pedidos', PedidoViewSet)
 router.register(r'elementos-pedido', ElementoPedidoViewSet)
 
 urlpatterns = [
-    path('', include(router.urls)),
-    path('auth/google/', GoogleAuthView.as_view(), name='google_auth'),
+    path('', include(router.urls)), # Todas tus rutas de API RESTful (sin prefijo 'api/' aquí)
+    # path('auth/google/', GoogleAuthView.as_view(), name='google_auth'), # <--- ¡ELIMINA ESTA LÍNEA!
     # --- RUTAS DEL CARRITO ---
-    path('cart/', CartView.as_view(), name='cart_detail'), # Esta única URL maneja GET, POST, PUT, DELETE
+    path('cart/', CartView.as_view(), name='cart_detail'), # Rutas de carrito (sin prefijo 'api/' aquí)
 ]

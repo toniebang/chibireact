@@ -22,19 +22,17 @@ class CustomTokenObtainPairView(OriginalTokenObtainPairView):
 
 
 urlpatterns = [
-    # Admin de Django (accesible en /admin/)
     path('admin/', admin.site.urls),
-    
-    # URLs de tu veluxapp (sin el prefijo api/ porque App Platform ya lo maneja)
-    path('', include('veluxapp.urls')),
-    
-    # URLs de Autenticación JWT (sin el prefijo api/)
-    path('token/', CustomTokenObtainPairView.as_view(), name='token_obtain_pair'),
-    path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
-    path('register/', RegisterView.as_view(), name='auth_register'),
-    path('me/', UserProfileView.as_view(), name='user_profile'),
-    path('logout/', LogoutView.as_view(), name='auth_logout'),
-    path('auth/google/', GoogleAuthView.as_view(), name='google_auth'),
+
+    path('api/', include('veluxapp.urls')), # Aquí es donde el '/api/' se añade una vez
+
+    # --- URLs de Autenticación JWT (YA CON EL PREFIJO 'api/') ---
+    path('api/token/', CustomTokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('api/register/', RegisterView.as_view(), name='auth_register'),
+    path('api/me/', UserProfileView.as_view(), name='user_profile'),
+    path('api/logout/', LogoutView.as_view(), name='auth_logout'),
+    path('api/auth/google/', GoogleAuthView.as_view(), name='google_auth'), # Solo aquí
 ]
 
 # Servir archivos media en desarrollo
