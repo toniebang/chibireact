@@ -22,22 +22,21 @@ class CustomTokenObtainPairView(OriginalTokenObtainPairView):
 
 
 urlpatterns = [
-    # Mantenemos el admin fuera del prefijo /api/ para que sea https://chibi-app-l5q6z.ondigitalocean.app/admin/
-    path('admin/', admin.site.urls),
+    # Admin directamente en la raíz de lo que recibe Django
+    path('admin/', admin.site.urls), # DigitalOcean envía '/admin/'
 
-    # Todo lo demás (API y autenticación) irá bajo el prefijo /api/
-    # Aquí es donde se añade el /api/ UNA SOLA VEZ en Django.
-    path('api/', include([
-        path('', include('veluxapp.urls')), # Las URLs de veluxapp (ej. productos, carrito)
-                                            # se añadirán después de /api/
-        # URLs de Autenticación (también después de /api/)
-        path('token/', CustomTokenObtainPairView.as_view(), name='token_obtain_pair'),
-        path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
-        path('register/', RegisterView.as_view(), name='auth_register'),
-        path('me/', UserProfileView.as_view(), name='user_profile'),
-        path('logout/', LogoutView.as_view(), name='auth_logout'),
-        path('auth/google/', GoogleAuthView.as_view(), name='google_auth'),
-    ])),
+    # Las URLs de veluxapp (productos, carrito) directamente en la raíz de lo que recibe Django
+    # DigitalOcean envía '/productos/', '/cart/', etc.
+    path('', include('veluxapp.urls')),
+
+    # URLs de Autenticación JWT, directamente en la raíz de lo que recibe Django
+    # DigitalOcean envía '/token/', '/register/', etc.
+    path('token/', CustomTokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('register/', RegisterView.as_view(), name='auth_register'),
+    path('me/', UserProfileView.as_view(), name='user_profile'),
+    path('logout/', LogoutView.as_view(), name='auth_logout'),
+    path('auth/google/', GoogleAuthView.as_view(), name='google_auth'),
 ]
 
 # Servir archivos media en desarrollo
