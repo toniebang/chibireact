@@ -22,17 +22,22 @@ class CustomTokenObtainPairView(OriginalTokenObtainPairView):
 
 
 urlpatterns = [
+    # Mantenemos el admin fuera del prefijo /api/ para que sea https://chibi-app-l5q6z.ondigitalocean.app/admin/
     path('admin/', admin.site.urls),
 
-    path('api/', include('veluxapp.urls')), # Aquí es donde el '/api/' se añade una vez
-
-    # --- URLs de Autenticación JWT (YA CON EL PREFIJO 'api/') ---
-    path('api/token/', CustomTokenObtainPairView.as_view(), name='token_obtain_pair'),
-    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
-    path('api/register/', RegisterView.as_view(), name='auth_register'),
-    path('api/me/', UserProfileView.as_view(), name='user_profile'),
-    path('api/logout/', LogoutView.as_view(), name='auth_logout'),
-    path('api/auth/google/', GoogleAuthView.as_view(), name='google_auth'), # Solo aquí
+    # Todo lo demás (API y autenticación) irá bajo el prefijo /api/
+    # Aquí es donde se añade el /api/ UNA SOLA VEZ en Django.
+    path('api/', include([
+        path('', include('veluxapp.urls')), # Las URLs de veluxapp (ej. productos, carrito)
+                                            # se añadirán después de /api/
+        # URLs de Autenticación (también después de /api/)
+        path('token/', CustomTokenObtainPairView.as_view(), name='token_obtain_pair'),
+        path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+        path('register/', RegisterView.as_view(), name='auth_register'),
+        path('me/', UserProfileView.as_view(), name='user_profile'),
+        path('logout/', LogoutView.as_view(), name='auth_logout'),
+        path('auth/google/', GoogleAuthView.as_view(), name='google_auth'),
+    ])),
 ]
 
 # Servir archivos media en desarrollo
