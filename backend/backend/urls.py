@@ -22,14 +22,10 @@ class CustomTokenObtainPairView(OriginalTokenObtainPairView):
 
 
 urlpatterns = [
-    # Admin directamente en la raíz de lo que recibe Django
-    path('admin/', admin.site.urls), # DigitalOcean envía '/admin/'
+    # 1. ADMIN - DEBE SER EL PRIMERO ABSOLUTO
+    path('admin/', admin.site.urls),
 
-    # Las URLs de veluxapp (productos, carrito) directamente en la raíz de lo que recibe Django
-    # DigitalOcean envía '/productos/', '/cart/', etc.
-
-    # URLs de Autenticación JWT, directamente en la raíz de lo que recibe Django
-    # DigitalOcean envía '/token/', '/register/', etc.
+    # 2. RUTAS ESPECÍFICAS DE AUTENTICACIÓN
     path('token/', CustomTokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('register/', RegisterView.as_view(), name='auth_register'),
@@ -37,8 +33,9 @@ urlpatterns = [
     path('logout/', LogoutView.as_view(), name='auth_logout'),
     path('auth/google/', GoogleAuthView.as_view(), name='google_auth'),
 
+    # 3. ¡EL INCLUDE GENÉRICO PARA EL RESTO DE LA API - DEBE SER EL ÚLTIMO!
+    # Mueve esta línea al final de urlpatterns.
     path('', include('veluxapp.urls')),
-
 ]
 
 # Servir archivos media en desarrollo
