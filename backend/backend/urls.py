@@ -4,6 +4,7 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
+from django.http import HttpResponse
 
 # Importamos las vistas estándar de simplejwt para refrescar tokens
 from rest_framework_simplejwt.views import TokenRefreshView
@@ -20,10 +21,12 @@ class CustomTokenObtainPairView(OriginalTokenObtainPairView):
     """Vista personalizada para obtener tokens JWT."""
     serializer_class = CustomTokenObtainPairSerializer
 
-
+def ping(request):
+    return HttpResponse("pong")
 urlpatterns = [
     # 1. ADMIN - DEBE SER EL PRIMERO ABSOLUTO
     path('admin/', admin.site.urls),
+    path('ping/', ping),
 
     # 2. RUTAS ESPECÍFICAS DE AUTENTICACIÓN
     path('token/', CustomTokenObtainPairView.as_view(), name='token_obtain_pair'),
