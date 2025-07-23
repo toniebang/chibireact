@@ -25,7 +25,7 @@ def ping(request):
     return HttpResponse("pong")
 urlpatterns = [
     # 1. ADMIN - DEBE SER EL PRIMERO ABSOLUTO
-    path('admin/', admin.site.urls),
+    path('api/admin/', admin.site.urls),
     path('ping/', ping),
 
     # 2. RUTAS ESPECÍFICAS DE AUTENTICACIÓN
