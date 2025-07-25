@@ -250,6 +250,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles') # O donde quieras que se recojan los estáticos
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+WHITE_NOISE_MAX_AGE = 60 * 60 * 24 * 365
 # Configuración para archivos media (imágenes subidas por usuarios)
 # MEDIA_URL = '/media/'
 # MEDIA_ROOT = os.path.join(BASE_DIR, 'media') # Donde se guardarán las imágenes
