@@ -4,7 +4,6 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
-from django.http import HttpResponse
 
 # Importamos las vistas estándar de simplejwt para refrescar tokens
 from rest_framework_simplejwt.views import TokenRefreshView
@@ -21,14 +20,14 @@ class CustomTokenObtainPairView(OriginalTokenObtainPairView):
     """Vista personalizada para obtener tokens JWT."""
     serializer_class = CustomTokenObtainPairSerializer
 
-def ping(request):
-    return HttpResponse("pong")
-urlpatterns = [
-    # 1. ADMIN - DEBE SER EL PRIMERO ABSOLUTO
-    path('api/admin/', admin.site.urls),
-    path('ping/', ping),
 
-    # 2. RUTAS ESPECÍFICAS DE AUTENTICACIÓN
+urlpatterns = [
+    # 1. ADMIN: Se accede directamente via /admin/
+    # DigitalOcean envía /admin/ al backend, y Django lo resuelve aquí.
+    path('admin/', admin.site.urls),
+
+    # 2. AUTENTICACIÓN: Se accede via /api/token/, /api/register/, etc.
+    # DigitalOcean envía /token/, /register/, etc. al backend, y Django lo resuelve aquí.
     path('token/', CustomTokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('register/', RegisterView.as_view(), name='auth_register'),
@@ -36,12 +35,13 @@ urlpatterns = [
     path('logout/', LogoutView.as_view(), name='auth_logout'),
     path('auth/google/', GoogleAuthView.as_view(), name='google_auth'),
 
-    # 3. ¡EL INCLUDE GENÉRICO PARA EL RESTO DE LA API - DEBE SER EL ÚLTIMO!
-    # Mueve esta línea al final de urlpatterns.
+    # 3. VELUXAPP (tus APIs): Se accede via /api/categorias/, /api/productos/, /api/cart/, etc.
+    # DigitalOcean envía /categorias/, /productos/, /cart/, etc. al backend.
+    # Esta línea DEBE ser la última, ya que captura el resto de las URLs que no coinciden con las anteriores.
     path('', include('veluxapp.urls')),
 ]
 
-# Servir archivos media en desarrollo
+# Servir archivos media y static en desarrollo (NO AFECTA PRODUCCIÓN CON WHITENOISE)
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
