@@ -77,13 +77,16 @@ AWS_DEFAULT_ACL = 'public-read'
 # --- Configuración Condicional de Almacenamiento (Producción vs Desarrollo) ---
 if not DEBUG: # Si no estamos en modo DEBUG (es decir, en producción)
     # Almacenamiento para archivos de MEDIA (subidos por usuarios)
-    DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage' # Usar el backend directo de storages
-    MEDIA_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/media/' # La URL base para tus archivos media
+    DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+    MEDIA_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/media/'
 
     # Almacenamiento para archivos ESTÁTICOS (CSS, JS, imágenes del admin)
-    STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage' # Usar el backend directo de storages
-    STATIC_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/static/' # La URL base para tus archivos estáticos
+    STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+    STATIC_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/static/'
 
+    # AÑADE ESTO: STATIC_ROOT DEBE ESTAR DEFINIDO EN PRODUCCIÓN TAMBIÉN
+    # Es un directorio temporal donde collectstatic recolecta antes de subir a S3
+    STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles_build') # Puedes usar 'staticfiles' o 'static_temp' etc.
     print("INFO: Usando DigitalOcean Spaces para archivos estáticos y media en producción.")
 else: # En desarrollo (DEBUG=True)
     DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'
@@ -92,7 +95,6 @@ else: # En desarrollo (DEBUG=True)
 
     STATIC_URL = '/static/'
     STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-    # STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage' # Solo si usas Whitenoise en dev
     print("INFO: Usando almacenamiento local para archivos estáticos y media en desarrollo.")
 
 
