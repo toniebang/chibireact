@@ -84,7 +84,7 @@ AWS_S3_OBJECT_PARAMETERS = {
     'CacheControl': 'max-age=86400', # Opcional: Control de caché para navegadores
 }
 AWS_S3_FILE_OVERWRITE = False # No sobrescribir archivos con el mismo nombre
-
+AWS_STORAGE_BUCKET_NAME = os.environ.get('DO_SPACES_NAME')
 # Si habilitaste CDN, la URL base será la del CDN.
 # Si tu CDN Edge Endpoint es https://yourspace.yourregion.cdn.digitaloceanspaces.com
 # Entonces tu URL base para media será algo como:
@@ -94,7 +94,10 @@ AWS_S3_CUSTOM_DOMAIN = f'{config("DO_SPACES_NAME")}.{config("DO_SPACES_REGION")}
 # O si no usas CDN, será solo el endpoint
 # AWS_S3_CUSTOM_DOMAIN = None # Deja esto si no usas CDN y quieres usar el endpoint normal
 
-
+# --- Configuración para ARCHIVOS ESTÁTICOS en DigitalOcean Spaces ---
+STATIC_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/static/' # O si no usas CDN: f'{AWS_S3_ENDPOINT_URL}/{AWS_STORAGE_BUCKET_NAME}/static/'
+STATICFILES_STORAGE = 'storages.backends.s3.S3Storage' # <--- ESTO ES CLAVE para los estáticos
+# --- FIN Configuración para ARCHIVOS ESTÁTICOS ---
 # --- **Configuración de almacenamiento condicional** ---
 if not config('DEBUG', default=False, cast=bool):
     # En producción (DEBUG=False), usa DigitalOcean Spaces
@@ -151,7 +154,7 @@ CORS_ALLOW_METHODS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
+    # 'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -249,8 +252,8 @@ USE_TZ = True
 # Configuración para archivos estáticos (CSS, JS, etc.)
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles') # O donde quieras que se recojan los estáticos
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-WHITE_NOISE_MAX_AGE = 60 * 60 * 24 * 365
+# STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+# WHITE_NOISE_MAX_AGE = 60 * 60 * 24 * 365
 # Configuración para archivos media (imágenes subidas por usuarios)
 # MEDIA_URL = '/media/'
 # MEDIA_ROOT = os.path.join(BASE_DIR, 'media') # Donde se guardarán las imágenes
