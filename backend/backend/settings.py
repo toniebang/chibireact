@@ -281,6 +281,12 @@ REST_FRAMEWORK = {
 
 }
 
+
+# --- AÑADE ESTA LÍNEA ---
+FORCE_SCRIPT_NAME = '/api/' # Dile a Django que todas sus URLs están bajo el prefijo /api/
+# --- FIN DE LA LÍNEA ---
+
+
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
 ]
