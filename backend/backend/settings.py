@@ -227,3 +227,36 @@ FORCE_SCRIPT_NAME = '/api/'
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
 ]
+
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+        'storages': { # <--- ¡ESTE!
+            'handlers': ['console'],
+            'level': 'DEBUG', # <--- ¡MUY IMPORTANTE!
+            'propagate': False,
+        },
+        'boto3': { # <--- ¡ESTE!
+            'handlers': ['console'],
+            'level': 'DEBUG', # <--- ¡MUY IMPORTANTE!
+            'propagate': False,
+        },
+        'botocore': { # <--- ¡Y ESTE!
+            'handlers': ['console'],
+            'level': 'DEBUG', # <--- ¡MUY IMPORTANTE!
+            'propagate': False,
+        },
+    },
+}
