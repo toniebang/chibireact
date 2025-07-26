@@ -90,6 +90,19 @@ if not DEBUG: # Si no estamos en modo DEBUG (es decir, en producción)
     print("INFO: Usando DigitalOcean Spaces para archivos estáticos y media en producción.")
     print("INFO: DigitalOcean Spaces MEDIA/STATIC configured. Checking logging.") # <-- AÑADE ESTA LÍNEA TEMPORALMENTE
     print(f"DEFAULT_FILE_STORAGE set to: {DEFAULT_FILE_STORAGE}")
+    
+    
+    
+    print(f"DEBUG variable is: {DEBUG}")
+    print(f"DEFAULT_FILE_STORAGE set to: {DEFAULT_FILE_STORAGE}")
+    print(f"DO_SPACES_NAME: {AWS_STORAGE_BUCKET_NAME}") # <-- AÑADE ESTA
+    print(f"DO_SPACES_REGION: {AWS_S3_REGION_NAME}") # <-- AÑADE ESTA
+    print(f"AWS_ACCESS_KEY_ID (first 4 chars): {AWS_ACCESS_KEY_ID[:4]}") # <-- AÑADE ESTA
+    # NO imprimas el secreto completo. Esto es solo para verificar que se carga algo.
+    print(f"AWS_SECRET_ACCESS_KEY (first 4 chars): {AWS_SECRET_ACCESS_KEY[:4]}") # <-- AÑADE ESTA
+    
+    
+    
 else: # En desarrollo (DEBUG=True)
     DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'
     MEDIA_URL = '/media/'
@@ -242,7 +255,7 @@ LOGGING = {
     'loggers': {
         'django': {
             'handlers': ['console'],
-            'level': 'INFO',
+            'level': 'DEBUG', # <--- ¡MUY IMPORTANTE!
             'propagate': True,
         },
         'storages': { # <--- ¡ESTE!
