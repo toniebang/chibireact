@@ -4,8 +4,45 @@ import os
 from pathlib import Path
 from decouple import config, Csv
 
+
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+# --- INICIO DE LA CONFIGURACIÓN LOGGING
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console'],
+            'level': 'DEBUG', # <--- ¡MUY IMPORTANTE!
+            'propagate': True,
+        },
+        'storages': { # <--- ¡ESTE!
+            'handlers': ['console'],
+            'level': 'DEBUG', # <--- ¡MUY IMPORTANTE!
+            'propagate': False,
+        },
+        'boto3': { # <--- ¡ESTE!
+            'handlers': ['console'],
+            'level': 'DEBUG', # <--- ¡MUY IMPORTANTE!
+            'propagate': False,
+        },
+        'botocore': { # <--- ¡Y ESTE!
+            'handlers': ['console'],
+            'level': 'DEBUG', # <--- ¡MUY IMPORTANTE!
+            'propagate': False,
+        },
+    },
+}
+
+
 
 AUTH_USER_MODEL = 'veluxapp.CustomUser'
 
@@ -244,34 +281,3 @@ AUTHENTICATION_BACKENDS = [
 ]
 
 
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'handlers': {
-        'console': {
-            'class': 'logging.StreamHandler',
-        },
-    },
-    'loggers': {
-        'django': {
-            'handlers': ['console'],
-            'level': 'DEBUG', # <--- ¡MUY IMPORTANTE!
-            'propagate': True,
-        },
-        'storages': { # <--- ¡ESTE!
-            'handlers': ['console'],
-            'level': 'DEBUG', # <--- ¡MUY IMPORTANTE!
-            'propagate': False,
-        },
-        'boto3': { # <--- ¡ESTE!
-            'handlers': ['console'],
-            'level': 'DEBUG', # <--- ¡MUY IMPORTANTE!
-            'propagate': False,
-        },
-        'botocore': { # <--- ¡Y ESTE!
-            'handlers': ['console'],
-            'level': 'DEBUG', # <--- ¡MUY IMPORTANTE!
-            'propagate': False,
-        },
-    },
-}
