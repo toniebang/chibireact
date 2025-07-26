@@ -89,6 +89,7 @@ if not DEBUG: # Si no estamos en modo DEBUG (es decir, en producción)
     STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles_build') # Puedes usar 'staticfiles' o 'static_temp' etc.
     print("INFO: Usando DigitalOcean Spaces para archivos estáticos y media en producción.")
     print("INFO: DigitalOcean Spaces MEDIA/STATIC configured. Checking logging.") # <-- AÑADE ESTA LÍNEA TEMPORALMENTE
+    print(f"DEFAULT_FILE_STORAGE set to: {DEFAULT_FILE_STORAGE}")
 else: # En desarrollo (DEBUG=True)
     DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'
     MEDIA_URL = '/media/'
