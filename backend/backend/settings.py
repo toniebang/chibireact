@@ -114,7 +114,8 @@ AWS_DEFAULT_ACL = 'public-read'
 # --- Configuración Condicional de Almacenamiento (Producción vs Desarrollo) ---
 if not DEBUG: # Si no estamos en modo DEBUG (es decir, en producción)
     # Almacenamiento para archivos de MEDIA (subidos por usuarios)
-    DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+    # DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+    DEFAULT_FILE_STORAGE = 'backend.storages_backends.MediaStorage'
     MEDIA_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/media/'
 
     # Almacenamiento para archivos ESTÁTICOS (CSS, JS, imágenes del admin)
