@@ -115,11 +115,13 @@ AWS_DEFAULT_ACL = 'public-read'
 if not DEBUG: # Si no estamos en modo DEBUG (es decir, en producción)
     # Almacenamiento para archivos de MEDIA (subidos por usuarios)
     DEFAULT_FILE_STORAGE = 'backend.storages_backends.MediaStorage'
-    MEDIA_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/media/'
+    MEDIA_URL = f'https://{AWS_S3_REGION_NAME}.digitaloceanspaces.com/{config("AWS_LOCATION", default="media")}/'
 
     # Almacenamiento para archivos ESTÁTICOS (CSS, JS, imágenes del admin)
     STATICFILES_STORAGE = 'backend.storages_backends.StaticStorage'
-    STATIC_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/static/'
+    # STATIC_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/static/'
+    STATIC_URL = f'https://{AWS_S3_REGION_NAME}.digitaloceanspaces.com/{config("AWS_LOCATION_STATIC", default="static")}/'
+
 
     # AÑADE ESTO: STATIC_ROOT DEBE ESTAR DEFINIDO EN PRODUCCIÓN TAMBIÉN
     # Es un directorio temporal donde collectstatic recolecta antes de subir a S3
