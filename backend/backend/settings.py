@@ -201,7 +201,7 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     # 'whitenoise.middleware.WhiteNoiseMiddleware', # COMENTADO: Spaces sirve los estáticos
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'backend.middleware.RequestDebugMiddleware',
+    
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',

@@ -4,12 +4,7 @@ from django.contrib import admin
 from import_export.admin import ImportExportModelAdmin
 from django.contrib.auth import get_user_model
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
-from .forms import ProductoAdminForm
-import logging
 
-logger = logging.getLogger(__name__)
-
-# Importa tus modelos
 from veluxapp.models import (
     Categoria_Productos,
     Reviews,
@@ -70,38 +65,12 @@ class CorreosAdmin(admin.ModelAdmin):
     list_display = ('correo', 'nombre', 'fecha',) # Corregido: usa 'correo'
 
 class ProductosAdmin(admin.ModelAdmin):
-    
-    form = ProductoAdminForm
-    def get_form(self, request, obj=None, **kwargs):
-        logger.info(f"!!! ADMIN_DEBUG: get_form llamado para request.method: {request.method}")
-        logger.info(f"!!! ADMIN_DEBUG: request.FILES en admin.py (get_form): {request.FILES}")
-        logger.info(f"!!! ADMIN_DEBUG: request.META.CONTENT_TYPE en admin.py (get_form): {request.META.get('CONTENT_TYPE')}")
-        logger.info(f"!!! ADMIN_DEBUG: request.META.CONTENT_LENGTH en admin.py (get_form): {request.META.get('CONTENT_LENGTH')}")
-
-        form = super().get_form(request, obj, **kwargs)
-        form.request = request # Adjunta el objeto request a la instancia del formulario
-        logger.info(f"!!! ADMIN_DEBUG: Retornando formulario {form.__class__.__name__}")
-        return form
-
-    def save_model(self, request, obj, form, change):
-        logger.info(f"!!! ADMIN_DEBUG: save_model llamado para objeto: {obj.pk if obj.pk else 'nuevo'}")
-        logger.info(f"!!! ADMIN_DEBUG: request.FILES en admin.py (save_model): {request.FILES}")
-        # Comprueba por los campos de imagen reales
-        if obj.imagen1:
-            logger.info(f"!!! ADMIN_DEBUG: Imagen en objeto antes de save_model (imagen1): {obj.imagen1.name}")
-        if obj.imagen2:
-            logger.info(f"!!! ADMIN_DEBUG: Imagen en objeto antes de save_model (imagen2): {obj.imagen2.name}")
-        if obj.imagen3:
-            logger.info(f"!!! ADMIN_DEBUG: Imagen en objeto antes de save_model (imagen3): {obj.imagen3.name}")
-
-        super().save_model(request, obj, form, change)
-        logger.info(f"!!! ADMIN_DEBUG: save_model completado.")
-
     # En models.py: Productos tiene 'id', 'disponible', 'stock', 'prioridad', 'nombre', 'categoria', 'descripcion', 'lista_caracteristicas', 'imagen1', 'imagen2', 'imagen3', 'precio', 'oferta', 'precio_rebaja', 'fecha_subida'
     list_display=( 'nombre', 'precio', 'oferta', 'precio_rebaja','disponible', 'fecha_subida', 'stock') # Corregido: usa 'fecha_subida'
     search_fields = ('nombre',)
     list_filter = ('fecha_subida',) # Corregido: usa 'fecha_subida'
     list_per_page=12
+
 class ColaboradoresAdmin(admin.ModelAdmin):
     list_display=( 'nombre',)
     search_fields = ('nombre',)
