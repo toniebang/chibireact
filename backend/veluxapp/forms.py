@@ -1,13 +1,13 @@
 # veluxapp/forms.py
 from django import forms
-from .models import Producto # Reemplaza Producto con el nombre real de tu modelo
+from .models import Productos # Reemplaza Producto con el nombre real de tu modelo
 import logging
 
 logger = logging.getLogger(__name__)
 
 class ProductoAdminForm(forms.ModelForm):
     class Meta:
-        model = Producto # Reemplaza Producto con el nombre real de tu modelo
+        model = Productos # Reemplaza Producto con el nombre real de tu modelo
         fields = '__all__' # O lista tus campos explícitamente
 
     def __init__(self, *args, **kwargs):
@@ -40,8 +40,8 @@ class ProductoAdminForm(forms.ModelForm):
 
         instance = super().save(commit=False) # Obtiene la instancia sin guardarla aún en la DB
         logger.info(f"!!! FORM_DEBUG: Instancia creada/actualizada por el formulario: {instance}")
-        if instance.imagen:
-            logger.info(f"!!! FORM_DEBUG: Imagen adjunta a la instancia del modelo antes del commit final: {instance.imagen.name}")
+        if instance.imagen1:
+            logger.info(f"!!! FORM_DEBUG: Imagen adjunta a la instancia del modelo antes del commit final: {instance.imagen1.name}")
         else:
             logger.warning("!!! FORM_DEBUG: Imagen NO adjunta a la instancia del modelo antes del commit final.")
 
