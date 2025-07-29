@@ -8,6 +8,8 @@ from django.conf import settings # IMPORTA settings para usar settings.AUTH_USER
 from django.contrib.auth.models import AbstractUser
 from django.utils import timezone # Importa timezone para campos de fecha/hora
 
+import logging # Importa logging para registrar eventos
+logger = logging.getLogger(__name__) # Get a logger for this module
 
 # ------------------- Usuario Personalizado --------------------------
 class CustomUser(AbstractUser):
@@ -69,7 +71,17 @@ class Productos(models.Model):
     class Meta:
         verbose_name_plural = 'Productos'
         verbose_name = 'Producto'
+    def save(self, *args, **kwargs):
+        logger.info(f"!!! MODEL_DEBUG: save() method called for {self.__class__.__name__} (ID: {self.pk})")
+        if self.image_field_name: # If there's an image in this field
+            logger.info(f"!!! MODEL_DEBUG: Image field is present. File name: {self.image_field_name.name}")
+            logger.info(f"!!! MODEL_DEBUG: File size: {self.image_field_name.size} bytes")
+            logger.info(f"!!! MODEL_DEBUG: Image storage backend: {self.image_field_name.storage.__class__.__name__}")
+        else:
+            logger.info("!!! MODEL_DEBUG: No file found in the image field.")
 
+        super().save(*args, **kwargs) # Call Django's original save method
+        logger.info(f"!!! MODEL_DEBUG: {self.__class__.__name__} instance (ID: {self.pk}) saved.")
 # ------------------- Packs --------------------------
 class Pack(models.Model):
     OPCIONES_PACK = [

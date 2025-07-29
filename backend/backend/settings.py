@@ -140,6 +140,18 @@ if not DEBUG: # Si no estamos en modo DEBUG (es decir, en producción)
     # NO imprimas el secreto completo. Esto es solo para verificar que se carga algo.
     print(f"AWS_SECRET_ACCESS_KEY (first 4 chars): {AWS_SECRET_ACCESS_KEY[:4]}") # <-- AÑADE ESTA
     
+    # --- CRITICAL NEW DEBUG PRINTS ---
+    print(f"!!! SETTINGS_DEBUG (PROD): DEBUG is {DEBUG}")
+    print(f"!!! SETTINGS_DEBUG (PROD): DEFAULT_FILE_STORAGE set to {DEFAULT_FILE_STORAGE}")
+    print(f"!!! SETTINGS_DEBUG (PROD): MEDIA_URL set to {MEDIA_URL}")
+
+    # Import config here to ensure it works in this context
+    from decouple import config
+    _test_do_key = config('DO_SPACES_KEY', default='NOT_SET')
+    _test_bucket_name = config('DO_SPACES_NAME', default='NOT_SET')
+    print(f"!!! SETTINGS_DEBUG (PROD): DO_SPACES_KEY starts with {_test_do_key[:4]}")
+    print(f"!!! SETTINGS_DEBUG (PROD): DO_SPACES_NAME is {_test_bucket_name}")
+    # --- END OF CRITICAL NEW DEBUG PRINTS ---
     
     
 else: # En desarrollo (DEBUG=True)
