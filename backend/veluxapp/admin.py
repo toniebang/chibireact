@@ -4,6 +4,7 @@ from django.contrib import admin
 from import_export.admin import ImportExportModelAdmin
 from django.contrib.auth import get_user_model
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
+from .forms import ProductoAdminForm
 
 from veluxapp.models import (
     Categoria_Productos,
@@ -65,12 +66,13 @@ class CorreosAdmin(admin.ModelAdmin):
     list_display = ('correo', 'nombre', 'fecha',) # Corregido: usa 'correo'
 
 class ProductosAdmin(admin.ModelAdmin):
+    
     # En models.py: Productos tiene 'id', 'disponible', 'stock', 'prioridad', 'nombre', 'categoria', 'descripcion', 'lista_caracteristicas', 'imagen1', 'imagen2', 'imagen3', 'precio', 'oferta', 'precio_rebaja', 'fecha_subida'
+    form = ProductoAdminForm
     list_display=( 'nombre', 'precio', 'oferta', 'precio_rebaja','disponible', 'fecha_subida', 'stock') # Corregido: usa 'fecha_subida'
     search_fields = ('nombre',)
     list_filter = ('fecha_subida',) # Corregido: usa 'fecha_subida'
     list_per_page=12
-
 class ColaboradoresAdmin(admin.ModelAdmin):
     list_display=( 'nombre',)
     search_fields = ('nombre',)
