@@ -66,7 +66,11 @@ class CorreosAdmin(admin.ModelAdmin):
     list_display = ('correo', 'nombre', 'fecha',) # Corregido: usa 'correo'
 
 class ProductosAdmin(admin.ModelAdmin):
-    
+    def get_form(self, request, obj=None, **kwargs):
+        form = super().get_form(request, obj, **kwargs)
+        form.request = request # Adjunta el objeto request a la instancia del formulario
+        return form
+
     # En models.py: Productos tiene 'id', 'disponible', 'stock', 'prioridad', 'nombre', 'categoria', 'descripcion', 'lista_caracteristicas', 'imagen1', 'imagen2', 'imagen3', 'precio', 'oferta', 'precio_rebaja', 'fecha_subida'
     form = ProductoAdminForm
     list_display=( 'nombre', 'precio', 'oferta', 'precio_rebaja','disponible', 'fecha_subida', 'stock') # Corregido: usa 'fecha_subida'
