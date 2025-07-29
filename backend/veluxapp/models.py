@@ -73,10 +73,10 @@ class Productos(models.Model):
         verbose_name = 'Producto'
     def save(self, *args, **kwargs):
         logger.info(f"!!! MODEL_DEBUG: save() method called for {self.__class__.__name__} (ID: {self.pk})")
-        if self.image_field_name: # If there's an image in this field
-            logger.info(f"!!! MODEL_DEBUG: Image field is present. File name: {self.image_field_name.name}")
-            logger.info(f"!!! MODEL_DEBUG: File size: {self.image_field_name.size} bytes")
-            logger.info(f"!!! MODEL_DEBUG: Image storage backend: {self.image_field_name.storage.__class__.__name__}")
+        if self.imagen1: # If there's an image in this field
+            logger.info(f"!!! MODEL_DEBUG: Image field is present. File name: {self.imagen1.name}")
+            logger.info(f"!!! MODEL_DEBUG: File size: {self.imagen1.size} bytes")
+            logger.info(f"!!! MODEL_DEBUG: Image storage backend: {self.imagen1.storage.__class__.__name__}")
         else:
             logger.info("!!! MODEL_DEBUG: No file found in the image field.")
 
