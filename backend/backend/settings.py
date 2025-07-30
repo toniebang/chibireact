@@ -109,7 +109,7 @@ AWS_S3_OBJECT_PARAMETERS = {
 AWS_S3_FILE_OVERWRITE = False # No sobrescribir archivos con el mismo nombre
 
 # CRUCIAL: Asegura que los archivos subidos sean públicos por defecto
-AWS_DEFAULT_ACL = 'public-read'
+# AWS_DEFAULT_ACL = 'public-read'
 
 # --- Configuración Condicional de Almacenamiento (Producción vs Desarrollo) ---
 if not DEBUG: # Si no estamos en modo DEBUG (es decir, en producción)
