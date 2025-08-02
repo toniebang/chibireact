@@ -27,17 +27,17 @@ LOGGING = {
         'storages': { # <--- ¡ESTE!
             'handlers': ['console'],
             'level': 'DEBUG', # <--- ¡MUY IMPORTANTE!
-            'propagate': False,
+         
         },
         'boto3': { # <--- ¡ESTE!
             'handlers': ['console'],
             'level': 'DEBUG', # <--- ¡MUY IMPORTANTE!
-            'propagate': False,
+         
         },
         'botocore': { # <--- ¡Y ESTE!
             'handlers': ['console'],
             'level': 'DEBUG', # <--- ¡MUY IMPORTANTE!
-            'propagate': False,
+         
         },
     },
 }
@@ -114,9 +114,12 @@ AWS_DEFAULT_ACL = 'public-read'
 # --- Configuración Condicional de Almacenamiento (Producción vs Desarrollo) ---
 if not DEBUG: # Si no estamos en modo DEBUG (es decir, en producción)
     # Almacenamiento para archivos de MEDIA (subidos por usuarios)
-    DEFAULT_FILE_STORAGE = 'backend.storages_backends.MediaStorage'
+    # DEFAULT_FILE_STORAGE = 'backend.storages_backends.MediaStorage'
     # MEDIA_URL = f'https://{AWS_S3_REGION_NAME}.digitaloceanspaces.com/{config("AWS_LOCATION", default="media")}/'
-    MEDIA_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/media/'
+    
+    DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+    MEDIA_URL = f'https://{AWS_STORAGE_BUCKET_NAME}.{AWS_S3_REGION_NAME}.cdn.digitaloceanspaces.com/media/'
+    # MEDIA_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/media/'
     # Almacenamiento para archivos ESTÁTICOS (CSS, JS, imágenes del admin)
     STATICFILES_STORAGE = 'backend.storages_backends.StaticStorage'
     STATIC_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/static/'
