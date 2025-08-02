@@ -97,7 +97,7 @@ AWS_SECRET_ACCESS_KEY = DO_SPACES_SECRET
 AWS_STORAGE_BUCKET_NAME = DO_SPACES_NAME
 AWS_S3_ENDPOINT_URL = f'https://{DO_SPACES_REGION}.digitaloceanspaces.com'
 AWS_S3_REGION_NAME = DO_SPACES_REGION
-
+AWS_LOCATION = 'static'
 # Configuración del CDN (usando el nombre del bucket y región para construir el dominio)
 # Esto DEBE coincidir con el "CDN Endpoint" que ves en tu panel de DO Spaces
 AWS_S3_CUSTOM_DOMAIN = f'{AWS_STORAGE_BUCKET_NAME}.{AWS_S3_REGION_NAME}.cdn.digitaloceanspaces.com'
@@ -109,7 +109,7 @@ AWS_S3_OBJECT_PARAMETERS = {
 AWS_S3_FILE_OVERWRITE = False # No sobrescribir archivos con el mismo nombre
 
 # CRUCIAL: Asegura que los archivos subidos sean públicos por defecto
-# AWS_DEFAULT_ACL = 'public-read'
+AWS_DEFAULT_ACL = 'public-read'
 
 # --- Configuración Condicional de Almacenamiento (Producción vs Desarrollo) ---
 if not DEBUG: # Si no estamos en modo DEBUG (es decir, en producción)
