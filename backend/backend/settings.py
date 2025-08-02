@@ -107,7 +107,7 @@ AWS_S3_OBJECT_PARAMETERS = {
     'CacheControl': 'max-age=86400', # 1 día de caché
 }
 AWS_S3_FILE_OVERWRITE = False # No sobrescribir archivos con el mismo nombre
-
+AWS_QUERYSTRING_AUTH = False
 # CRUCIAL: Asegura que los archivos subidos sean públicos por defecto
 AWS_DEFAULT_ACL = 'public-read'
 
@@ -117,13 +117,13 @@ if not DEBUG: # Si no estamos en modo DEBUG (es decir, en producción)
     # DEFAULT_FILE_STORAGE = 'backend.storages_backends.MediaStorage'
     # MEDIA_URL = f'https://{AWS_S3_REGION_NAME}.digitaloceanspaces.com/{config("AWS_LOCATION", default="media")}/'
     
-    DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
     MEDIA_URL = f'https://{AWS_STORAGE_BUCKET_NAME}.{AWS_S3_REGION_NAME}.cdn.digitaloceanspaces.com/media/'
+    DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
     # MEDIA_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/media/'
     # Almacenamiento para archivos ESTÁTICOS (CSS, JS, imágenes del admin)
     STATICFILES_STORAGE = 'backend.storages_backends.StaticStorage'
-    STATIC_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/static/'
-    # STATIC_URL = f'https://{AWS_S3_REGION_NAME}.digitaloceanspaces.com/{config("AWS_LOCATION_STATIC", default="static")}/'
+    # STATIC_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/static/'
+    STATIC_URL = f'https://{AWS_S3_REGION_NAME}.digitaloceanspaces.com/{config("AWS_LOCATION_STATIC", default="static")}/'
     
     FILE_UPLOAD_MAX_MEMORY_SIZE = 52428800  # 50 MB (50 * 1024 * 1024)
     DATA_UPLOAD_MAX_MEMORY_SIZE = 52428800  # 50 MB
