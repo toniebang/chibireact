@@ -3,44 +3,12 @@
 import os
 from pathlib import Path
 from decouple import config, Csv
+from django.core.files.base import ContentFile  # En la sección de imports
 
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
-# --- INICIO DE LA CONFIGURACIÓN LOGGING
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'handlers': {
-        'console': {
-            'class': 'logging.StreamHandler',
-        },
-    },
-    'loggers': {
-        'django': {
-            'handlers': ['console'],
-            'level': 'DEBUG', # <--- ¡MUY IMPORTANTE!
-            'propagate': True,
-        },
-        'storages': { # <--- ¡ESTE!
-            'handlers': ['console'],
-            'level': 'DEBUG', # <--- ¡MUY IMPORTANTE!
-         
-        },
-        'boto3': { # <--- ¡ESTE!
-            'handlers': ['console'],
-            'level': 'DEBUG', # <--- ¡MUY IMPORTANTE!
-         
-        },
-        'botocore': { # <--- ¡Y ESTE!
-            'handlers': ['console'],
-            'level': 'DEBUG', # <--- ¡MUY IMPORTANTE!
-         
-        },
-    },
-}
 
 
 
@@ -166,6 +134,9 @@ else: # En desarrollo (DEBUG=True)
 
     STATIC_URL = '/static/'
     STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+    STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'veluxapp/static'),
+]
     print("INFO: Usando almacenamiento local para archivos estáticos y media en desarrollo.")
 
 
@@ -223,9 +194,12 @@ TEMPLATES = [
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
+                'django.template.context_processors.debug', # Asegura que DEBUG y otras variables estén disponibles en las plantillas
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'django.template.context_processors.media', # ¡CRUCIAL PARA MEDIA!
+                'django.template.context_processors.static', # ¡ESTO ES CRUCIAL PARA LOS ARCHIVOS ESTÁTICOS!
             ],
         },
     },
@@ -291,10 +265,15 @@ REST_FRAMEWORK = {
     ),
     'DEFAULT_RENDERER_CLASSES': (
         'rest_framework.renderers.JSONRenderer',
+         'rest_framework.renderers.BrowsableAPIRenderer',
     ),
 }
 
-FORCE_SCRIPT_NAME = '/api/'
+# Solo aplica FORCE_SCRIPT_NAME en producción
+if os.environ.get('APP_ENV') == 'production':
+    FORCE_SCRIPT_NAME = '/api/'
+else:
+    FORCE_SCRIPT_NAME = '/'
 
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',

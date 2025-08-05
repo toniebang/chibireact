@@ -34,7 +34,7 @@ class GoogleAuthSerializer(serializers.Serializer):
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('id', 'username', 'email', 'password', 'first_name', 'last_name', 'profile_picture', 'google_id')
+        fields = ('id', 'username', 'email', 'password', 'first_name', 'last_name', 'profile_picture', 'google_id', 'is_superuser')
         extra_kwargs = {'password': {'write_only': True, 'required': False}}
         read_only_fields = ('id', 'username', 'email', 'google_id', 'profile_picture')
 

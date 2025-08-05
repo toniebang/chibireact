@@ -5,7 +5,7 @@ import { createRoot } from 'react-dom/client';
 import './index.css';
 
 // Importa tus Context Providers
-import { ProductProvider } from './context/ProductContext';
+import  ProductProvider  from './context/ProductContext';
 import { AuthProvider } from './context/AuthContext';
 import { NotificationProvider } from './context/NotificationContext';
 import { CartProvider } from './context/CartContext.jsx';
@@ -20,6 +20,7 @@ import About from './pages/About.jsx';
 import ShopPage from './pages/ShopPage.jsx';
 import Packs from './pages/Packs.jsx';
 import Cart from './pages/Cart.jsx';
+
 import Perfil from './pages/Perfil.jsx'; // Asegúrate de que esta ruta sea correcta para tu página de perfil
 import ProductDetail from './pages/ProductDetail.jsx'; // Asegúrate de que esta ruta sea correcta para tu página de detalles del producto
 // ¡IMPORTA EL NUEVO AuthPage en lugar de LoginPage!
@@ -27,6 +28,8 @@ import AuthPage from './pages/AuthPage.jsx'; // <--- ¡Importación del nuevo Au
 
 // ¡IMPORTA EL GOOGLE OAUTH PROVIDER!
 import { GoogleOAuthProvider } from '@react-oauth/google';
+import Edit from './pages/Edit.jsx';
+
 const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 // Opcional: Verificación para depuración
 if (!googleClientId) {
@@ -37,6 +40,10 @@ const router = createBrowserRouter([
   {
     path: '/',
     element: <App />,
+  },
+  {
+    path: '/edit/',
+    element: <Edit/>,
   },
   {
     path: '/tienda/',

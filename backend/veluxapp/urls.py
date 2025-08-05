@@ -1,4 +1,5 @@
 # veluxapp/urls.py
+from venv import create
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 # from .views_auth import GoogleAuthView # <--- ¡ELIMINA ESTA IMPORTACIÓN!
@@ -14,6 +15,7 @@ from .views import ( # Asegúrate de que todas tus vistas actuales estén import
     EquipoViewSet,
     PedidoViewSet,
     ElementoPedidoViewSet,
+    create_product, get_presigned_url
 )
 from .views_cart import CartView
 
@@ -34,4 +36,8 @@ urlpatterns = [
     # path('auth/google/', GoogleAuthView.as_view(), name='google_auth'), # <--- ¡ELIMINA ESTA LÍNEA!
     # --- RUTAS DEL CARRITO ---
     path('cart/', CartView.as_view(), name='cart_detail'), # Rutas de carrito (sin prefijo 'api/' aquí)
+    # --- RUTAS DE ARCHIVOS ---
+    path('create-product/', create_product, name='create_product'), # Ruta para crear un producto
+    path('get-presigned-url/', get_presigned_url, name='get-presigned-url'),
+    # Puedes agregar más rutas aquí según sea necesario
 ]

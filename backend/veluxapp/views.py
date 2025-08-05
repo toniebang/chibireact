@@ -1,11 +1,14 @@
 # veluxapp/views.py
-
+import os
+import boto3
 from rest_framework import viewsets, permissions, status
 from rest_framework.response import Response
-from rest_framework.decorators import action
+from rest_framework.decorators import action, api_view, permission_classes
+from rest_framework.permissions import AllowAny # <-- Importa esto
 from django.db import transaction
 from rest_framework import filters
 from django_filters.rest_framework import DjangoFilterBackend
+from .permissions import IsAdminUserOrReadOnly
 
 from .models import (
     Categoria_Productos,
@@ -32,21 +35,108 @@ from .serializers import (
     ElementoPedidoSerializer,
 )
 
+# Asegúrate de que estas variables estén cargadas en el entorno
+DO_SPACES_KEY = os.environ.get('DO_SPACES_KEY')
+DO_SPACES_SECRET = os.environ.get('DO_SPACES_SECRET')
+DO_SPACES_NAME = os.environ.get('DO_SPACES_NAME')
+DO_SPACES_REGION = os.environ.get('DO_SPACES_REGION')
 # Puedes definir permisos globales o por vista.
 # is_authenticated_or_read_only permite GET a todos, y POST/PUT/DELETE solo a autenticados.
 # IsAdminUser permite solo a administradores.
 # IsAuthenticated solo a usuarios logueados.
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def get_presigned_url(request):
+    """
+    Endpoint para generar una URL pre-firmada para la subida directa a DigitalOcean Spaces.
+    Recibe el nombre del archivo desde el frontend.
+    """
+    file_name = request.data.get('file_name')
+    if not file_name:
+        return Response({'error': 'No se proporcionó el nombre del archivo'}, status=400)
 
+    # Configuración del cliente de S3
+    session = boto3.session.Session()
+    client = session.client(
+        's3',
+        region_name=DO_SPACES_REGION,
+        endpoint_url=f'https://{DO_SPACES_REGION}.digitaloceanspaces.com',
+        aws_access_key_id=DO_SPACES_KEY,
+        aws_secret_access_key=DO_SPACES_SECRET
+    )
+
+    try:
+        # Genera la URL pre-firmada para una operación PUT (subir)
+        # La URL expirará en 3600 segundos (1 hora)
+        presigned_url = client.generate_presigned_url(
+            ClientMethod='put_object',
+            Params={
+                'Bucket': DO_SPACES_NAME,
+                'Key': f'media/{file_name}', # Define la ruta donde se guardará en tu Space
+                'ACL': 'public-read' # Puedes cambiar esto si quieres que los archivos no sean públicos
+            },
+            ExpiresIn=3600
+        )
+        return Response({'presigned_url': presigned_url})
+    except Exception as e:
+        return Response({'error': str(e)}, status=500)
+
+
+
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def create_product(request):
+    """
+    Endpoint para recibir los datos del producto, incluyendo las 3 URLs de las imágenes,
+    y guardarlos en la base de datos.
+    """
+    name = request.data.get('nombre')
+    descripcion = request.data.get('descripcion', '')
+    precio = request.data.get('precio')
+    stock = request.data.get('stock', True)
+    disponible = request.data.get('disponible', True)
+    
+    # Recibe las 3 URLs de las imágenes
+    imagen1_url = request.data.get('imagen1_url', '')
+    imagen2_url = request.data.get('imagen2_url', '')
+    imagen3_url = request.data.get('imagen3_url', '')
+
+    if not all([name, precio]):
+        return Response({'error': 'Faltan datos obligatorios (nombre, precio).'}, status=400)
+
+    try:
+        with transaction.atomic():
+            # Crea el producto, asignando directamente las URLs a los campos ImageField
+            product = Productos.objects.create(
+                nombre=name,
+                descripcion=descripcion,
+                precio=precio,
+                stock=stock,
+                disponible=disponible,
+                imagen1=imagen1_url,
+                imagen2=imagen2_url,
+                imagen3=imagen3_url
+                # No olvides añadir cualquier otro campo que sea obligatorio
+            )
+        
+        return Response({'message': 'Producto creado con éxito.', 'product_id': product.id}, status=201)
+
+    except Exception as e:
+        return Response({'error': str(e)}, status=500)
+    
+    
 class CategoriaProductosViewSet(viewsets.ModelViewSet):
     queryset = Categoria_Productos.objects.all()
     serializer_class = CategoriaProductosSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    # Solo los superadministradores pueden crear, actualizar o borrar productos
+    permission_classes = [IsAdminUserOrReadOnly]
 
 
 class ProductosViewSet(viewsets.ModelViewSet):
     queryset = Productos.objects.all()
     serializer_class = ProductosSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+        # Solo los superadministradores pueden crear, actualizar o borrar categorías
+    permission_classes = [IsAdminUserOrReadOnly]
 
  # --- Configuraciones de Filtrado para Productos ---
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]

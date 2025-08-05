@@ -1,5 +1,5 @@
 import React from 'react'; // 'useState' ya no es necesario aquí
-import { ProductProvider } from './context/ProductContext';
+import ProductProvider from './context/ProductContext';
 import Header from './components/Header';
 import Hero from './components/Hero';
 import AboutSection from './components/AboutSection';

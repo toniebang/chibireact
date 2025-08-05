@@ -4,14 +4,9 @@ import axios from 'axios';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
-const ProductContext = createContext({
-  products: [],
-  loading: false,
-  error: null,
-  fetchProducts: () => {},
-});
+const ProductContext = createContext();
 
-export const ProductProvider = ({ children }) => {
+export default function ProductProvider({ children }) {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -20,33 +15,16 @@ export const ProductProvider = ({ children }) => {
     setLoading(true);
     setError(null);
     try {
-      const response = await axios.get(`${API_BASE_URL}/productos`);
-      
-      // --- CAMBIO CLAVE AQUÍ ---
-      // Accede a la propiedad 'results' si existe, si no, usa response.data directamente
+      const response = await axios.get(`${API_BASE_URL}/productos/`);
       const fetchedProducts = Array.isArray(response.data) ? response.data : response.data.results;
-
-      // Un chequeo adicional por si 'results' también es undefined o null en algún caso
       if (!fetchedProducts) {
-          throw new Error("La respuesta de la API no contiene una lista de productos válida.");
+        throw new Error("La respuesta de la API no contiene una lista de productos válida.");
       }
-      // --- FIN DEL CAMBIO CLAVE ---
-
       setProducts(fetchedProducts);
-      console.log("Productos cargados:", fetchedProducts); // Para depuración, ahora loguea el array real
+      console.log("Productos cargados:", fetchedProducts);
     } catch (err) {
       console.error("Error al cargar productos:", err);
-      if (axios.isAxiosError(err)) {
-        if (err.response) {
-          setError(`Error del servidor: ${err.response.status} - ${err.response.data?.message || 'Error desconocido'}`);
-        } else if (err.request) {
-          setError("No se recibió respuesta del servidor. Por favor, comprueba tu conexión a internet.");
-        } else {
-          setError(`Error al configurar la petición: ${err.message}`);
-        }
-      } else {
-        setError(`Ocurrió un error inesperado: ${err.message}`);
-      }
+      setError(err.message);
     } finally {
       setLoading(false);
     }
@@ -68,7 +46,7 @@ export const ProductProvider = ({ children }) => {
       {children}
     </ProductContext.Provider>
   );
-};
+}
 
 export const useProducts = () => {
   const context = useContext(ProductContext);
@@ -77,5 +55,3 @@ export const useProducts = () => {
   }
   return context;
 };
-
-export default ProductContext;
