@@ -19,6 +19,8 @@ SECRET_KEY = config('DJANGO_SECRET_KEY', default='a-very-insecure-fallback-key-f
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG', default=False, cast=bool)
+# AÑADE ESTA LÍNEA AQUÍ
+print(f"!!! FINAL_DEBUG_CHECK: La variable DEBUG es: {DEBUG} y su tipo es: {type(DEBUG)}")
 
 ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='127.0.0.1', cast=Csv())
 
