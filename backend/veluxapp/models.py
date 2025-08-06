@@ -72,16 +72,18 @@ class Productos(models.Model):
         verbose_name_plural = 'Productos'
         verbose_name = 'Producto'
     def save(self, *args, **kwargs):
-        logger.info(f"!!! MODEL_DEBUG: save() method called for {self.__class__.__name__} (ID: {self.pk})")
-        if self.imagen1: # If there's an image in this field
-            logger.info(f"!!! MODEL_DEBUG: Image field is present. File name: {self.imagen1.name}")
-            logger.info(f"!!! MODEL_DEBUG: File size: {self.imagen1.size} bytes")
-            logger.info(f"!!! MODEL_DEBUG: Image storage backend: {self.imagen1.storage.__class__.__name__}")
+    # Cambia todas las líneas 'logger.info' por 'print()'
+        print(f"!!! MODEL_DEBUG: save() method called for {self.__class__.__name__} (ID: {self.pk})")
+        if self.imagen1:
+            print(f"!!! MODEL_DEBUG: Image field is present. File name: {self.imagen1.name}")
+            print(f"!!! MODEL_DEBUG: File size: {self.imagen1.size} bytes")
+        # ESTA ES LA LÍNEA MÁS IMPORTANTE
+            print(f"!!! MODEL_DEBUG: Image storage backend: {self.imagen1.storage.__class__.__name__}")
         else:
-            logger.info("!!! MODEL_DEBUG: No file found in the image field.")
+            print("!!! MODEL_DEBUG: No file found in the image field.")
 
-        super().save(*args, **kwargs) # Call Django's original save method
-        logger.info(f"!!! MODEL_DEBUG: {self.__class__.__name__} instance (ID: {self.pk}) saved.")
+        super().save(*args, **kwargs)
+        print(f"!!! MODEL_DEBUG: {self.__class__.__name__} instance (ID: {self.pk}) saved.")
 # ------------------- Packs --------------------------
 class Pack(models.Model):
     OPCIONES_PACK = [
