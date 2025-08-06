@@ -5,12 +5,12 @@ from decouple import config
 
 
 class StaticStorage(S3Boto3Storage):
-    location = config("AWS_LOCATION_STATIC", default="static")
+    location = "static"
     default_acl = "public-read"
     file_overwrite = True
 
 
 class MediaStorage(S3Boto3Storage):
-    location = config("AWS_LOCATION", default="media")
+    location = "media"
     default_acl = "public-read"
     file_overwrite = False

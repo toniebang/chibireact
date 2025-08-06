@@ -5,7 +5,13 @@ from pathlib import Path
 from decouple import config, Csv
 from django.core.files.base import ContentFile  # En la sección de imports
 
+import logging
 
+logging.basicConfig(level=logging.DEBUG)
+logging.getLogger('boto3').setLevel(logging.DEBUG)
+logging.getLogger('botocore').setLevel(logging.DEBUG)
+
+from backend.storages_backends import MediaStorage, StaticStorage
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -18,7 +24,8 @@ AUTH_USER_MODEL = 'veluxapp.CustomUser'
 SECRET_KEY = config('DJANGO_SECRET_KEY', default='a-very-insecure-fallback-key-for-dev')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = config('DEBUG', default=False, cast=bool)
+# DEBUG = config('DEBUG', default=False, cast=bool)
+DEBUG = False
 # AÑADE ESTA LÍNEA AQUÍ
 print(f"!!! FINAL_DEBUG_CHECK: La variable DEBUG es: {DEBUG} y su tipo es: {type(DEBUG)}")
 
@@ -71,7 +78,7 @@ AWS_LOCATION = 'static'
 # Configuración del CDN (usando el nombre del bucket y región para construir el dominio)
 # Esto DEBE coincidir con el "CDN Endpoint" que ves en tu panel de DO Spaces
 AWS_S3_CUSTOM_DOMAIN = f'{AWS_STORAGE_BUCKET_NAME}.{AWS_S3_REGION_NAME}.cdn.digitaloceanspaces.com'
-
+USE_SPACES = config("USE_SPACES", default=False, cast=bool)
 # Parámetros por defecto para objetos subidos a S3/Spaces
 AWS_S3_OBJECT_PARAMETERS = {
     'CacheControl': 'max-age=86400', # 1 día de caché
@@ -81,55 +88,26 @@ AWS_QUERYSTRING_AUTH = False
 # CRUCIAL: Asegura que los archivos subidos sean públicos por defecto
 AWS_DEFAULT_ACL = 'public-read'
 
-# --- Configuración Condicional de Almacenamiento (Producción vs Desarrollo) ---
-if not DEBUG: # Si no estamos en modo DEBUG (es decir, en producción)
-    # Almacenamiento para archivos de MEDIA (subidos por usuarios)
-    # DEFAULT_FILE_STORAGE = 'backend.storages_backends.MediaStorage'
-    # MEDIA_URL = f'https://{AWS_S3_REGION_NAME}.digitaloceanspaces.com/{config("AWS_LOCATION", default="media")}/'
-    
+# ------------------- Nueva configuración basada en USE_SPACES -------------------
+USE_SPACES = config("USE_SPACES", default=False, cast=bool)
+print(f"!!! DEBUG: USE_SPACES = {USE_SPACES}")
+if USE_SPACES:
+    DEFAULT_FILE_STORAGE = 'backend.storages_backends.MediaStorage'
     MEDIA_URL = f'https://{AWS_STORAGE_BUCKET_NAME}.{AWS_S3_REGION_NAME}.cdn.digitaloceanspaces.com/media/'
-    DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-    # MEDIA_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/media/'
-    # Almacenamiento para archivos ESTÁTICOS (CSS, JS, imágenes del admin)
+    
     STATICFILES_STORAGE = 'backend.storages_backends.StaticStorage'
-    # STATIC_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/static/'
     STATIC_URL = f'https://{AWS_S3_REGION_NAME}.digitaloceanspaces.com/{config("AWS_LOCATION_STATIC", default="static")}/'
     
-    FILE_UPLOAD_MAX_MEMORY_SIZE = 52428800  # 50 MB (50 * 1024 * 1024)
-    DATA_UPLOAD_MAX_MEMORY_SIZE = 52428800  # 50 MB
+    STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles_build')
+    FILE_UPLOAD_MAX_MEMORY_SIZE = 52428800
+    DATA_UPLOAD_MAX_MEMORY_SIZE = 52428800
 
-    # AÑADE ESTO: STATIC_ROOT DEBE ESTAR DEFINIDO EN PRODUCCIÓN TAMBIÉN
-    # Es un directorio temporal donde collectstatic recolecta antes de subir a S3
-    STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles_build') # Puedes usar 'staticfiles' o 'static_temp' etc.
-    print("INFO: Usando DigitalOcean Spaces para archivos estáticos y media en producción.")
-    print("INFO: DigitalOcean Spaces MEDIA/STATIC configured. Checking logging.") # <-- AÑADE ESTA LÍNEA TEMPORALMENTE
-    print(f"DEFAULT_FILE_STORAGE set to: {DEFAULT_FILE_STORAGE}")
-    
-    
-    
-    print(f"DEBUG variable is: {DEBUG}")
-    print(f"DEFAULT_FILE_STORAGE set to: {DEFAULT_FILE_STORAGE}")
-    print(f"DO_SPACES_NAME: {AWS_STORAGE_BUCKET_NAME}") # <-- AÑADE ESTA
-    print(f"DO_SPACES_REGION: {AWS_S3_REGION_NAME}") # <-- AÑADE ESTA
-    print(f"AWS_ACCESS_KEY_ID (first 4 chars): {AWS_ACCESS_KEY_ID[:4]}") # <-- AÑADE ESTA
-    # NO imprimas el secreto completo. Esto es solo para verificar que se carga algo.
-    print(f"AWS_SECRET_ACCESS_KEY (first 4 chars): {AWS_SECRET_ACCESS_KEY[:4]}") # <-- AÑADE ESTA
-    
-    # --- CRITICAL NEW DEBUG PRINTS ---
-    print(f"!!! SETTINGS_DEBUG (PROD): DEBUG is {DEBUG}")
-    print(f"!!! SETTINGS_DEBUG (PROD): DEFAULT_FILE_STORAGE set to {DEFAULT_FILE_STORAGE}")
-    print(f"!!! SETTINGS_DEBUG (PROD): MEDIA_URL set to {MEDIA_URL}")
-
-    # Import config here to ensure it works in this context
-    from decouple import config
-    _test_do_key = config('DO_SPACES_KEY', default='NOT_SET')
-    _test_bucket_name = config('DO_SPACES_NAME', default='NOT_SET')
-    print(f"!!! SETTINGS_DEBUG (PROD): DO_SPACES_KEY starts with {_test_do_key[:4]}")
-    print(f"!!! SETTINGS_DEBUG (PROD): DO_SPACES_NAME is {_test_bucket_name}")
-    # --- END OF CRITICAL NEW DEBUG PRINTS ---
-    
-    
-else: # En desarrollo (DEBUG=True)
+    print("INFO: Usando DigitalOcean Spaces para archivos estáticos y media.")
+    print(f"DEFAULT_FILE_STORAGE: {DEFAULT_FILE_STORAGE}")
+    print(f"MEDIA_URL: {MEDIA_URL}")
+    print(f"AWS_ACCESS_KEY_ID (first 4): {AWS_ACCESS_KEY_ID[:4]}")
+    print(f"AWS_SECRET_ACCESS_KEY (first 4): {AWS_SECRET_ACCESS_KEY[:4]}")
+else:
     DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'
     MEDIA_URL = '/media/'
     MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
@@ -137,11 +115,10 @@ else: # En desarrollo (DEBUG=True)
     STATIC_URL = '/static/'
     STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
     STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'veluxapp/static'),
-]
-    print("INFO: Usando almacenamiento local para archivos estáticos y media en desarrollo.")
-
-
+        os.path.join(BASE_DIR, 'veluxapp/static'),
+    ]
+    print("INFO: Usando almacenamiento local para archivos estáticos y media.")
+print(f"DO_SPACES_KEY (first 4): {config('DO_SPACES_KEY', default='NOPE')[:4]}")
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
     "http://127.0.0.1:5173",
@@ -282,3 +259,6 @@ AUTHENTICATION_BACKENDS = [
 ]
 
 
+print(f"!!! FINAL DEBUG CHECK: DEFAULT_FILE_STORAGE = {DEFAULT_FILE_STORAGE}")
+print("!!! FINAL DEBUG CHECK: USE_SPACES =", USE_SPACES)
+print("!!! FINAL DEBUG CHECK: DEFAULT_FILE_STORAGE =", DEFAULT_FILE_STORAGE)
