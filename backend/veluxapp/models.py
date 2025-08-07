@@ -7,7 +7,7 @@ from django.utils.text import slugify
 from django.conf import settings # IMPORTA settings para usar settings.AUTH_USER_MODEL
 from django.contrib.auth.models import AbstractUser
 from django.utils import timezone # Importa timezone para campos de fecha/hora
-
+from backend.storages_backends import MediaStorage
 import logging # Importa logging para registrar eventos
 logger = logging.getLogger(__name__) # Get a logger for this module
 
@@ -57,9 +57,9 @@ class Productos(models.Model):
     categoria = models.ManyToManyField(Categoria_Productos)
     descripcion = models.TextField('Descripción del producto(Opcional)', blank=True)
     lista_caracteristicas = models.CharField('Lista de detalles', max_length=200, help_text='Deben ir separados por comas. ej: tamaño: 23x21, marca: Nike, fecha de caducidad, tipo, etc...')
-    imagen1 = models.ImageField('Foto o imagen', upload_to='productos/', help_text='Esta es la imagen que aparecerá como vista previa en la tienda, debe ser la mejor.')
-    imagen2 = models.ImageField('Foto o imagen 3', upload_to='productos/')
-    imagen3 = models.ImageField('Foto o imagen 3', upload_to='productos/')
+    imagen1 = models.ImageField('Foto o imagen', upload_to='productos/', help_text='Esta es la imagen que aparecerá como vista previa en la tienda, debe ser la mejor.', storage=MediaStorage())
+    imagen2 = models.ImageField('Foto o imagen 3', upload_to='productos/', storage=MediaStorage())
+    imagen3 = models.ImageField('Foto o imagen 3', upload_to='productos/', storage=MediaStorage())
     precio = models.IntegerField('Precio (XAF)') # Se mantiene como IntegerField
     oferta = models.BooleanField('En oferta', default=False)
     precio_rebaja = models.IntegerField('Precio de oferta (XAF)', default=0) # Se mantiene como IntegerField

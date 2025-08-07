@@ -78,7 +78,7 @@ AWS_LOCATION = 'static'
 # Configuración del CDN (usando el nombre del bucket y región para construir el dominio)
 # Esto DEBE coincidir con el "CDN Endpoint" que ves en tu panel de DO Spaces
 AWS_S3_CUSTOM_DOMAIN = f'{AWS_STORAGE_BUCKET_NAME}.{AWS_S3_REGION_NAME}.cdn.digitaloceanspaces.com'
-USE_SPACES = config("USE_SPACES", default=False, cast=bool)
+
 # Parámetros por defecto para objetos subidos a S3/Spaces
 AWS_S3_OBJECT_PARAMETERS = {
     'CacheControl': 'max-age=86400', # 1 día de caché
@@ -91,12 +91,13 @@ AWS_DEFAULT_ACL = 'public-read'
 # ------------------- Nueva configuración basada en USE_SPACES -------------------
 USE_SPACES = config("USE_SPACES", default=False, cast=bool)
 print(f"!!! DEBUG: USE_SPACES = {USE_SPACES}")
+
 if USE_SPACES:
     DEFAULT_FILE_STORAGE = 'backend.storages_backends.MediaStorage'
     MEDIA_URL = f'https://{AWS_STORAGE_BUCKET_NAME}.{AWS_S3_REGION_NAME}.cdn.digitaloceanspaces.com/media/'
     
     STATICFILES_STORAGE = 'backend.storages_backends.StaticStorage'
-    STATIC_URL = f'https://{AWS_S3_REGION_NAME}.digitaloceanspaces.com/{config("AWS_LOCATION_STATIC", default="static")}/'
+    STATIC_URL = f'https://{AWS_STORAGE_BUCKET_NAME}.{AWS_S3_REGION_NAME}.cdn.digitaloceanspaces.com/{AWS_LOCATION}/'    
     
     STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles_build')
     FILE_UPLOAD_MAX_MEMORY_SIZE = 52428800
@@ -151,6 +152,7 @@ CORS_ALLOW_METHODS = [
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     # 'whitenoise.middleware.WhiteNoiseMiddleware', # COMENTADO: Spaces sirve los estáticos
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -160,7 +162,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
 ]
 
 ROOT_URLCONF = 'backend.urls'
@@ -259,6 +260,11 @@ AUTHENTICATION_BACKENDS = [
 ]
 
 
-print(f"!!! FINAL DEBUG CHECK: DEFAULT_FILE_STORAGE = {DEFAULT_FILE_STORAGE}")
-print("!!! FINAL DEBUG CHECK: USE_SPACES =", USE_SPACES)
-print("!!! FINAL DEBUG CHECK: DEFAULT_FILE_STORAGE =", DEFAULT_FILE_STORAGE)
+print("=== CONFIG CHECK ===")
+print(f"DEBUG: {DEBUG}")
+print(f"USE_SPACES: {USE_SPACES}")
+print(f"DEFAULT_FILE_STORAGE: {DEFAULT_FILE_STORAGE}")
+print(f"STATICFILES_STORAGE: {STATICFILES_STORAGE if USE_SPACES else 'django default'}")
+print(f"MEDIA_URL: {MEDIA_URL}")
+print(f"STATIC_URL: {STATIC_URL}")
+print("====================")
