@@ -26,7 +26,7 @@ urlpatterns = [
     # DigitalOcean envía /admin/ al backend, y Django lo resuelve aquí.
     path('admin/', admin.site.urls),
 
-    # 2. AUTENTICACIÓN: Se accede via /api/token/, /api/register/, etc.
+    
     # DigitalOcean envía /token/, /register/, etc. al backend, y Django lo resuelve aquí.
     path('token/', CustomTokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),

@@ -169,7 +169,7 @@ AUTHENTICATION_BACKENDS = [
 ]
 
 # === FORCE SCRIPT NAME ===
-FORCE_SCRIPT_NAME = '/api/' if os.environ.get('APP_ENV') == 'production' else '/'
+# FORCE_SCRIPT_NAME = '/api/' if os.environ.get('APP_ENV') == 'production' else '/'
 
 # =====================
 # CORS CONFIGURATION
