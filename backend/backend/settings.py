@@ -64,9 +64,9 @@ INSTALLED_APPS = [
 
 # === MIDDLEWARE ===
 MIDDLEWARE = [
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
-    # 'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -169,7 +169,7 @@ AUTHENTICATION_BACKENDS = [
 ]
 
 # === FORCE SCRIPT NAME ===
-# FORCE_SCRIPT_NAME = '/api/' if os.environ.get('APP_ENV') == 'production' else '/'
+FORCE_SCRIPT_NAME = None
 
 # =====================
 # CORS CONFIGURATION
@@ -217,33 +217,35 @@ if USE_SPACES:
     DEFAULT_FILE_STORAGE = 'backend.storages_backends.MediaStorage'
     MEDIA_URL = f'https://{AWS_STORAGE_BUCKET_NAME}.{AWS_S3_REGION_NAME}.cdn.digitaloceanspaces.com/media/'
 
-    STATICFILES_STORAGE = 'backend.storages_backends.StaticStorage'
-    STATIC_URL = f'https://{AWS_STORAGE_BUCKET_NAME}.{AWS_S3_REGION_NAME}.cdn.digitaloceanspaces.com/{AWS_LOCATION}/'
-    STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles_build')
+    # STATICFILES_STORAGE = 'backend.storages_backends.StaticStorage'
+    # STATIC_URL = f'https://{AWS_STORAGE_BUCKET_NAME}.{AWS_S3_REGION_NAME}.cdn.digitaloceanspaces.com/{AWS_LOCATION}/'
+    # STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles_build')
 
     FILE_UPLOAD_MAX_MEMORY_SIZE = 52428800
     DATA_UPLOAD_MAX_MEMORY_SIZE = 52428800
 
-    print("INFO: Usando DigitalOcean Spaces para archivos estáticos y media.")
+    print("INFO: Usando DigitalOcean Spaces para archivos media.")
 else:
     DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'
     MEDIA_URL = '/media/'
     MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-    STATIC_URL = '/static/'
-    STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-    STATICFILES_DIRS = [
+    
+    print("INFO: Usando almacenamiento local para archivos media.")
+    
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATICFILES_DIRS = [
         os.path.join(BASE_DIR, 'veluxapp/static'),
     ]
-    print("INFO: Usando almacenamiento local para archivos estáticos y media.")
+
 
 # === DEBUG PRINTS ===
 print("=== CONFIG CHECK ===")
 print(f"DEBUG: {DEBUG}")
 print(f"USE_SPACES: {USE_SPACES}")
 print(f"DEFAULT_FILE_STORAGE: {DEFAULT_FILE_STORAGE}")
-print(f"STATICFILES_STORAGE: {STATICFILES_STORAGE if USE_SPACES else 'django default'}")
-print(f"MEDIA_URL: {MEDIA_URL}")
+
 print(f"STATIC_URL: {STATIC_URL}")
 print(f"DO_SPACES_KEY (first 4): {config('DO_SPACES_KEY', default='NOPE')[:4]}")
 print("====================")

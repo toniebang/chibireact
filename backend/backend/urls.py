@@ -28,17 +28,17 @@ urlpatterns = [
 
     
     # DigitalOcean envía /token/, /register/, etc. al backend, y Django lo resuelve aquí.
-    path('token/', CustomTokenObtainPairView.as_view(), name='token_obtain_pair'),
-    path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
-    path('register/', RegisterView.as_view(), name='auth_register'),
-    path('me/', UserProfileView.as_view(), name='user_profile'),
-    path('logout/', LogoutView.as_view(), name='auth_logout'),
-    path('auth/google/', GoogleAuthView.as_view(), name='google_auth'),
+    path('api/token/', CustomTokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('api/register/', RegisterView.as_view(), name='auth_register'),
+    path('api/me/', UserProfileView.as_view(), name='user_profile'),
+    path('api/logout/', LogoutView.as_view(), name='auth_logout'),
+    path('api/auth/google/', GoogleAuthView.as_view(), name='google_auth'),
 
+    path('api/', include('veluxapp.urls')),
     # 3. VELUXAPP (tus APIs): Se accede via /api/categorias/, /api/productos/, /api/cart/, etc.
     # DigitalOcean envía /categorias/, /productos/, /cart/, etc. al backend.
     # Esta línea DEBE ser la última, ya que captura el resto de las URLs que no coinciden con las anteriores.
-    path('api/', include('veluxapp.urls')),
 ]
 
 # Servir archivos media y static en desarrollo (NO AFECTA PRODUCCIÓN CON WHITENOISE)
