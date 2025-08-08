@@ -12,9 +12,9 @@ from decouple import config, Csv
 from backend.storages_backends import MediaStorage, StaticStorage
 
 # === LOGGING CONFIGURATION ===
-logging.basicConfig(level=logging.DEBUG)
-logging.getLogger('boto3').setLevel(logging.DEBUG)
-logging.getLogger('botocore').setLevel(logging.DEBUG)
+# logging.basicConfig(level=logging.DEBUG)
+# logging.getLogger('boto3').setLevel(logging.DEBUG)
+# logging.getLogger('botocore').setLevel(logging.DEBUG)
 
 # === PROJECT PATH ===
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -64,9 +64,9 @@ INSTALLED_APPS = [
 
 # === MIDDLEWARE ===
 MIDDLEWARE = [
-    'whitenoise.middleware.WhiteNoiseMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
