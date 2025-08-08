@@ -38,7 +38,7 @@ urlpatterns = [
     # 3. VELUXAPP (tus APIs): Se accede via /api/categorias/, /api/productos/, /api/cart/, etc.
     # DigitalOcean envía /categorias/, /productos/, /cart/, etc. al backend.
     # Esta línea DEBE ser la última, ya que captura el resto de las URLs que no coinciden con las anteriores.
-    path('', include('veluxapp.urls')),
+    path('api/', include('veluxapp.urls')),
 ]
 
 # Servir archivos media y static en desarrollo (NO AFECTA PRODUCCIÓN CON WHITENOISE)
