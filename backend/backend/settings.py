@@ -233,12 +233,15 @@ else:
     
     print("INFO: Usando almacenamiento local para archivos media.")
     
+    
+    
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_DIRS = [
         os.path.join(BASE_DIR, 'veluxapp/static'),
     ]
 
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # === DEBUG PRINTS ===
 print("=== CONFIG CHECK ===")
