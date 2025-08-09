@@ -158,8 +158,8 @@ class ReviewsViewSet(viewsets.ModelViewSet):
 
 # --- Configuraciones de Filtrado para Reviews ---
     filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
-    filterset_fields = ['usuario', 'rating', 'producto', 'disponible'] # Filtra por usuario, rating, producto, etc.
-    ordering_fields = ['fecha_creacion', 'rating'] # Ordena por fecha de creación o rating
+    filterset_fields = ['usuario', 'puntaje', 'producto', 'disponible'] # Filtra por usuario, puntaje, producto, etc.
+    ordering_fields = ['fecha_creacion', 'puntaje'] # Ordena por fecha de creación o puntaje
 
 
     def perform_create(self, serializer):

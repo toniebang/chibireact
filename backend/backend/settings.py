@@ -9,7 +9,7 @@ from pathlib import Path
 from datetime import timedelta
 from decouple import config, Csv
 
-from backend.storages_backends import MediaStorage, StaticStorage
+from backend.storages_backends import MediaStorage
 
 # === LOGGING CONFIGURATION ===
 # logging.basicConfig(level=logging.DEBUG)
@@ -21,7 +21,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # === SECURITY ===
 SECRET_KEY = config('DJANGO_SECRET_KEY', default='a-very-insecure-fallback-key-for-dev')
-DEBUG = False  # config('DEBUG', default=False, cast=bool)
+DEBUG = config('DEBUG', default=False, cast=bool)
 ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='127.0.0.1', cast=Csv())
 
 # === USER MODEL ===
@@ -217,9 +217,7 @@ if USE_SPACES:
     DEFAULT_FILE_STORAGE = 'backend.storages_backends.MediaStorage'
     MEDIA_URL = f'https://{AWS_STORAGE_BUCKET_NAME}.{AWS_S3_REGION_NAME}.cdn.digitaloceanspaces.com/media/'
 
-    # STATICFILES_STORAGE = 'backend.storages_backends.StaticStorage'
-    # STATIC_URL = f'https://{AWS_STORAGE_BUCKET_NAME}.{AWS_S3_REGION_NAME}.cdn.digitaloceanspaces.com/{AWS_LOCATION}/'
-    # STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles_build')
+
 
     FILE_UPLOAD_MAX_MEMORY_SIZE = 52428800
     DATA_UPLOAD_MAX_MEMORY_SIZE = 52428800

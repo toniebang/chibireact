@@ -31,7 +31,7 @@ const Hero = () => {
           ÚNETE A CHIBI FITNESS
           </Link>
           <Link
-            to="/planes" // Cambiamos la CTA a una ruta más relevante para fitness, como '/planes' o '/entrenamientos'
+            to="/tienda" // Cambiamos la CTA a una ruta más relevante para fitness, como '/planes' o '/entrenamientos'
             className="inline-block  border-1 font-bold   text-white  py-2 px-4  text-sm md:text-sm hover:bg-black transition duration-600 ease-in-out"
           >
             EXPLORAR PRODUCTOS

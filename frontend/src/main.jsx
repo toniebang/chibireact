@@ -21,8 +21,8 @@ import ShopPage from './pages/ShopPage.jsx';
 import Packs from './pages/Packs.jsx';
 import Cart from './pages/Cart.jsx';
 
-import Perfil from './pages/Perfil.jsx'; // Asegúrate de que esta ruta sea correcta para tu página de perfil
-import ProductDetail from './pages/ProductDetail.jsx'; // Asegúrate de que esta ruta sea correcta para tu página de detalles del producto
+import ProfilePage from './pages/ProfilePage.jsx'; // Asegúrate de que esta ruta sea correcta para tu página de perfil
+import ProductDetails from './pages/ProductDetails.jsx'; // Asegúrate de que esta ruta sea correcta para tu página de detalles del producto
 // ¡IMPORTA EL NUEVO AuthPage en lugar de LoginPage!
 import AuthPage from './pages/AuthPage.jsx'; // <--- ¡Importación del nuevo AuthPage!
 
@@ -62,12 +62,12 @@ const router = createBrowserRouter([
     element: <Packs />,
   },
   {
-    path: '/detalles/',
-    element: <ProductDetail />,
+    path: '/tienda/:id',
+    element: <ProductDetails />,
   },
   {
     path: '/perfil/',
-    element: <Perfil />,
+    element: <ProfilePage />,
   },
   // --- NUEVAS RUTAS PARA AUTH ---
   {

@@ -336,6 +336,7 @@ export const AuthProvider = ({ children }) => {
     accessToken,
     refreshToken,
     isAuthenticated: !!user && !!accessToken,
+    isSuperuser: user?.is_superuser || false,
     loading,
     error,
     login,

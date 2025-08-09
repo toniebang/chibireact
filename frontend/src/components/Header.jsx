@@ -4,7 +4,8 @@ import logoMobile from '../assets/logochibi_negro.png';
 import logoDesktop from '../assets/logochibi_blanco.png';
 
 import { LuUserRoundPlus } from "react-icons/lu";
-import { GrCart } from "react-icons/gr";
+// import { GrCart } from "react-icons/gr";
+import { FiShoppingCart } from "react-icons/fi";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { IoClose, IoHeart } from "react-icons/io5";
 import { IoMdHeartEmpty } from "react-icons/io";
@@ -13,33 +14,28 @@ import { MdLogout } from "react-icons/md";
 import { FaInstagram, FaWhatsapp } from 'react-icons/fa';
 
 import { useAuth } from '../context/AuthContext';
-import { useCart } from '../context/CartContext'; // Importa useCart aquí
+import { useCart } from '../context/CartContext';
 
 const DEFAULT_AVATAR_URL = "https://cdn-icons-png.flaticon.com/512/6596/6596121.png";
 
 const Header = () => {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const { isAuthenticated, user, logout } = useAuth();
-    const { cart } = useCart(); // Obtén el objeto del carrito del contexto
+    const { cart } = useCart();
     const [isHeaderSolid, setIsHeaderSolid] = useState(false);
     const location = useLocation();
 
-    // Deriva el total de ítems del carrito directamente del objeto 'cart' del contexto
-    // Si 'cart' es null o undefined, total_items será 0
     const cartItemCount = cart?.total_items || 0; 
-
-    // favoriteCount aún es estático.
     const [favoriteCount, setFavoriteCount] = useState(0); 
 
     useEffect(() => {
         if (isAuthenticated) {
-            setFavoriteCount(5); // Mantienes tu lógica actual para favoritos
+            setFavoriteCount(3);
         } else {
             setFavoriteCount(0);
         }
     }, [isAuthenticated]);
 
-    // Lógica para cambiar el color del header al hacer scroll
     useEffect(() => {
         const handleScroll = () => {
             if (location.pathname === '/' && window.innerWidth >= 768) {
@@ -94,9 +90,16 @@ const Header = () => {
                         <Link to="/tienda" className="px-2 py-1 hover:text-gray-400 hover:underline underline-offset-4 transition-colors duration-200">Tienda</Link>
                         <Link to="/sobre-chibi" className="px-2 py-1 hover:text-gray-400 hover:underline underline-offset-4 transition-colors duration-200">Sobre Chibi</Link>
 
+                        {/* Link visible solo para superuser */}
+                        {isAuthenticated && user?.is_superuser && (
+                            <Link to="/edit" className="px-2 py-1 hover:text-gray-400 hover:underline underline-offset-4 transition-colors duration-200">
+                                Subir Productos
+                            </Link>
+                        )}
+
                         {/* Carrito de compra (Desktop) */}
                         <Link to="/carrito" className="relative p-2 hover:text-gray-400 text-xl transition-colors duration-200" title="Ver Carrito">
-                            <GrCart />
+                           <FiShoppingCart />
                             {cartItemCount > 0 && (
                                 <span className="absolute -top-1 -right-1 bg-red-600 text-white text-xs font-bold rounded-full h-4 w-4 flex items-center justify-center leading-none" style={{fontSize: '0.65rem'}}>
                                     {cartItemCount}
@@ -145,7 +148,7 @@ const Header = () => {
                     <div className="flex items-center gap-3 md:hidden">
                         {/* Carrito de compra (Mobile) */}
                         <Link to="/carrito" className="relative p-1.5 text-xl hover:text-gray-700 transition-colors duration-200" title="Ver Carrito">
-                            <GrCart />
+                               <FiShoppingCart />
                             {cartItemCount > 0 && (
                                 <span className="absolute -top-1 -right-1 bg-red-600 text-white text-xs font-bold rounded-full h-4 w-4 flex items-center justify-center leading-none" style={{fontSize: '0.65rem'}}>
                                     {cartItemCount}
@@ -232,9 +235,20 @@ const Header = () => {
                         <Link to="/tienda" className="block py-1 px-2 hover:text-gray-700 transition-colors duration-200" onClick={() => setIsSidebarOpen(false)}>Tienda</Link>
                         <Link to="/sobre-chibi" className="block py-1 px-2 hover:text-gray-700 transition-colors duration-200" onClick={() => setIsSidebarOpen(false)}>Sobre Chibi</Link>
 
+                        {/* Link visible solo para superuser en sidebar */}
+                        {isAuthenticated && user?.is_superuser && (
+                            <Link
+                                to="/edit"
+                                className="block py-1 px-2 hover:text-gray-700 transition-colors duration-200"
+                                onClick={() => setIsSidebarOpen(false)}
+                            >
+                                Subir Productos
+                            </Link>
+                        )}
+
                         {/* Carrito de compra (Sidebar) */}
                         <Link to="/carrito" className="flex items-center gap-2 py-1 px-2 hover:text-gray-700 text-base transition-colors duration-200" onClick={() => setIsSidebarOpen(false)}>
-                            <GrCart className="text-lg" /> Carrito
+                            <FiShoppingCart className="text-lg" /> Carrito
                             {cartItemCount > 0 && (
                                 <span className="ml-2 bg-red-600 text-white text-xs font-bold rounded-full px-2 py-1 leading-none">
                                     {cartItemCount}
@@ -242,7 +256,7 @@ const Header = () => {
                             )}
                         </Link>
                         <Link to="/favoritos" className="flex items-center gap-2 py-1 px-2 hover:text-gray-700 text-base transition-colors duration-200" onClick={() => setIsSidebarOpen(false)}>
-                            <IoHeart className="text-lg" /> Favoritos
+                            <IoMdHeartEmpty className="text-lg" /> Favoritos
                             {favoriteCount > 0 && (
                                 <span className="ml-2 bg-red-600 text-white text-xs font-bold rounded-full px-2 py-1 leading-none">
                                     {favoriteCount}
@@ -260,7 +274,7 @@ const Header = () => {
                         )}
                     </nav>
 
-                    <div className="mt-8 text-xs text-gray-700">
+                    <div className="mt-8 text-sm text-gray-700">
                         <h2 className="font-bold text-black mb-1">Contacto</h2>
                         <p className="mb-0.5">
                             <span className="mr-1">📞</span> +240 555 7667 14
