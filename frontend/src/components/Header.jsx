@@ -16,7 +16,7 @@ import { FaInstagram, FaWhatsapp } from 'react-icons/fa';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
 
-const DEFAULT_AVATAR_URL = "https://cdn-icons-png.flaticon.com/512/6596/6596121.png";
+const DEFAULT_AVATAR_URL = "https://thumb.ac-illust.com/51/51e1c1fc6f50743937e62fca9b942694_t.jpeg";
 
 const Header = () => {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
