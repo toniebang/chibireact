@@ -77,7 +77,7 @@ const Header = () => {
                 ${(isHeaderSolid || location.pathname !== '/') ? 'md:bg-black' : 'md:bg-transparent'}
             `}
         >
-            <div className='max-w-7xl mx-auto'>
+            <div className='max-w-7xl mx-auto font-montserrat'>
                 <header className="flex justify-between items-center px-4 md:px-6 text-black md:text-white py-0.5 md:py-1">
                     <Link to="/" className="flex-shrink-0">
                         <img src={logoMobile} alt="Chibi Logo (Mobile)" width={70} className="md:hidden h-auto ml-2" />

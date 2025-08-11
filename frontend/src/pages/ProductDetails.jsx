@@ -8,7 +8,7 @@ import { useCart } from '../context/CartContext';
 import ProductCard from '../components/ProductCard';
 import { FaShoppingCart, FaBolt } from 'react-icons/fa';
 import { BsCartCheck } from 'react-icons/bs';
-
+import ProductDetailsSkeleton from '../components/ProductDetailsSkeleton';
 
 const formatPrice = (value) => {
   if (typeof value !== 'number' || isNaN(value)) return 'N/A XAF';

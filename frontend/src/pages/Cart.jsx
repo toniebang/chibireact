@@ -15,6 +15,12 @@ const formatPrice = (v) => {
   return `${v.toLocaleString('es-ES')} XAF`;
 };
 
+const splitChips = (raw) =>
+  (raw || '')
+    .split(',')
+    .map(s => s.trim())
+    .filter(Boolean);
+
 const Cart = () => {
   const navigate = useNavigate();
   const {
@@ -25,12 +31,10 @@ const Cart = () => {
     clearCart,
   } = useCart();
 
-  // Items seguros (soporta varias formas de estructura)
   const items = cart?.items || cart?.line_items || [];
 
-  // Precio por ítem (considera oferta)
   const getUnitPrice = (it) => {
-    const p = it.product || it; // si viene it.product, úsalo
+    const p = it.product || it;
     if (!p) return 0;
     const precio = Number(p.precio) || 0;
     const offer = Boolean(p.oferta);
@@ -43,7 +47,7 @@ const Cart = () => {
       const qty = Number(it.quantity || it.qty || 1);
       return acc + getUnitPrice(it) * qty;
     }, 0);
-    return { subtotal, total: subtotal }; // aquí podrías sumar envío/impuestos si aplica
+    return { subtotal, total: subtotal };
   }, [items]);
 
   const handleDec = async (it) => {
@@ -71,8 +75,7 @@ const Cart = () => {
   };
 
   const handleCheckout = () => {
-    // aquí podrías dirigir a una página de checkout real
-    navigate('/perfil?tab=pedidos'); // o a /auth si quieres forzar login
+    navigate('/perfil?tab=pedidos');
   };
 
   return (
@@ -100,8 +103,8 @@ const Cart = () => {
           </div>
         ) : (
           <>
-            {/* Lista de items */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              {/* Lista */}
               <div className="lg:col-span-2">
                 <div className="divide-y border border-gray-200 bg-white">
                   {items.map((it) => {
@@ -112,6 +115,7 @@ const Cart = () => {
                     const img = p?.imagen1 || p?.imagen2 || p?.imagen3 || '';
                     const unit = getUnitPrice(it);
                     const line = unit * qty;
+                    const chips = splitChips(p?.lista_caracteristicas);
 
                     return (
                       <div key={pid} className="p-3 sm:p-4 flex gap-3">
@@ -141,8 +145,22 @@ const Cart = () => {
                             </button>
                           </div>
 
-                          {/* Precio y cantidad */}
-                          <div className="mt-2 flex flex-wrap items-center justify-between gap-3">
+                          {/* Chips de especificaciones */}
+                          {chips.length > 0 && (
+                            <div className="mt-2 flex flex-wrap gap-1.5">
+                              {chips.map((c, i) => (
+                                <span
+                                  key={i}
+                                  className="text-[11px] border border-gray-300 px-2 py-0.5 rounded-none bg-white text-gray-700"
+                                >
+                                  {c}
+                                </span>
+                              ))}
+                            </div>
+                          )}
+
+                          {/* Precio, cantidad y subtotal */}
+                          <div className="mt-3 flex flex-wrap items-center justify-between gap-3">
                             <div className="flex items-baseline gap-2">
                               <span className="text-base font-semibold text-gray-900">
                                 {formatPrice(unit)}
@@ -175,7 +193,6 @@ const Cart = () => {
                             </div>
                           </div>
 
-                          {/* Total línea */}
                           <div className="mt-2 text-sm text-gray-700">
                             Subtotal: <span className="font-medium">{formatPrice(line)}</span>
                           </div>
@@ -209,7 +226,6 @@ const Cart = () => {
                   <span>Subtotal</span>
                   <span className="font-medium">{formatPrice(totals.subtotal)}</span>
                 </div>
-                {/* Aquí podrías añadir envío/impuestos si aplica */}
                 <div className="text-base flex items-center justify-between py-3 font-semibold">
                   <span>Total</span>
                   <span>{formatPrice(totals.total)}</span>

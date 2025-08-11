@@ -8,7 +8,7 @@ const Packs = () => {
     return (
         <>
             <Header />
-            <main className="min-h-[60vh] flex flex-col items-center justify-center text-center px-4">
+            <main className="min-h-[60vh] font-montserrat flex flex-col items-center justify-center text-center px-4">
                 <FaBoxOpen className="text-amber-700 text-6xl mb-4" />
                 <h1 className="text-3xl md:text-4xl font-semibold text-gray-800 mb-2">
                     No hay packs disponibles

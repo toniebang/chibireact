@@ -1,5 +1,5 @@
 // src/pages/ShopPage.jsx
-import React, { useEffect, useMemo, useState, useRef } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import ScrollToTopButton from '../components/ScrollToTopButton';
@@ -7,6 +7,8 @@ import ProductList from '../components/ProductList';
 import FilterBarModern from '../components/FilterBarModern';
 import PaginationClassic from '../components/PaginationClassic';
 import { useAuth } from '../context/AuthContext';
+import ProductSkeleton from "../components/ProductSkeleton";
+
 
 const PAGE_SIZE = 16;
 
@@ -21,7 +23,7 @@ const ShopPage = () => {
 
   // UI
   const [searchTerm, setSearchTerm] = useState('');
-  const [committedSearch, setCommittedSearch] = useState('');
+  const [committedSearch, setCommittedSearch] = useState(''); // lo que filtra la grilla cuando no hay selección por ID
   const [onOffer, setOnOffer] = useState(false);
   const [category, setCategory] = useState('');
   const [sortKey, setSortKey] = useState('relevance');
@@ -31,7 +33,7 @@ const ShopPage = () => {
   const [categories, setCategories] = useState([]);
   const [products, setProducts] = useState([]);
   const [count, setCount] = useState(0);
-  const [pageSize] = useState(PAGE_SIZE);
+  const [pageSize, setPageSize] = useState(PAGE_SIZE);
   const [nextUrl, setNextUrl] = useState(null);
   const [prevUrl, setPrevUrl] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -41,9 +43,7 @@ const ShopPage = () => {
   const [suggestions, setSuggestions] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [loadingSuggestions, setLoadingSuggestions] = useState(false);
-
-  // Para cancelar resultados viejos
-  const lastReqId = useRef(0);
+  const [selectedId, setSelectedId] = useState(null); // 👈 ID del ítem elegido en la lista
 
   // ordering param
   const ordering = useMemo(() => {
@@ -51,7 +51,7 @@ const ShopPage = () => {
       case 'price_asc':  return 'precio';
       case 'price_desc': return '-precio';
       case 'date_desc':  return '-fecha_subida';
-      default:           return undefined;
+      default:           return undefined; // relevance
     }
   }, [sortKey]);
 
@@ -68,7 +68,7 @@ const ShopPage = () => {
     return () => { alive = false; };
   }, [authAxios]);
 
-  // Debounce de texto (para sugerencias)
+  // Debounce de texto (para SUGERENCIAS, no para filtrar grilla)
   const [debouncedSearch, setDebouncedSearch] = useState('');
   useEffect(() => {
     const t = setTimeout(() => setDebouncedSearch(searchTerm.trim()), 250);
@@ -112,14 +112,26 @@ const ShopPage = () => {
     return () => controller.abort();
   }, [authAxios, debouncedSearch]);
 
-  // Fetch productos (lista normal)
-  const fetchProducts = async (targetPage = 1, overrideSearch) => {
-    const reqId = ++lastReqId.current;
+  // Fetch productos (por ID exacto o búsqueda normal)
+  const fetchProducts = async (targetPage = 1, opts = {}) => {
+    const forceId = opts.forceId ?? selectedId ?? null; // si viene ID, priorizamos búsqueda por id
     setLoading(true);
     setError('');
     try {
+      if (forceId) {
+        // 👉 Trae 1 producto exacto por ID
+        const res = await authAxios.get(`/productos/${forceId}/`);
+        setProducts(res.data ? [res.data] : []);
+        setCount(res.data ? 1 : 0);
+        setNextUrl(null);
+        setPrevUrl(null);
+        setPage(1);
+        return;
+      }
+
+      // 👉 Búsqueda paginada normal
       const params = buildParams({
-        search: (overrideSearch ?? committedSearch) || undefined,
+        search: committedSearch || undefined,
         categoria: category || undefined,
         oferta: onOffer || undefined,
         ordering,
@@ -128,8 +140,6 @@ const ShopPage = () => {
       });
 
       const res = await authAxios.get('/productos/', { params });
-      if (reqId !== lastReqId.current) return;
-
       const { results = [], count = 0, next = null, previous = null } = res.data || {};
       setProducts(results);
       setCount(count);
@@ -138,7 +148,6 @@ const ShopPage = () => {
       setPage(targetPage);
       if (targetPage !== page) window.scrollTo({ top: 0, behavior: 'smooth' });
     } catch (err) {
-      if (reqId !== lastReqId.current) return;
       console.error(err);
       setError('No se pudieron cargar los productos.');
       setProducts([]);
@@ -146,42 +155,13 @@ const ShopPage = () => {
       setNextUrl(null);
       setPrevUrl(null);
     } finally {
-      if (reqId === lastReqId.current) setLoading(false);
+      setLoading(false);
     }
   };
 
-  // 🚀 Fetch producto exacto por ID (cuando seleccionas de la lista)
-  const fetchProductById = async (id) => {
-    const reqId = ++lastReqId.current;
-    setLoading(true);
-    setError('');
-
-    try {
-      const res = await authAxios.get(`/productos/${id}/`);
-      if (reqId !== lastReqId.current) return;
-
-      const prod = res.data;
-      setProducts(prod ? [prod] : []);
-      setCount(prod ? 1 : 0);
-      setNextUrl(null);
-      setPrevUrl(null);
-      setPage(1);
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    } catch (err) {
-      if (reqId !== lastReqId.current) return;
-      console.error(err);
-      setError('No se pudo cargar el producto seleccionado.');
-      setProducts([]);
-      setCount(0);
-      setNextUrl(null);
-      setPrevUrl(null);
-    } finally {
-      if (reqId === lastReqId.current) setLoading(false);
-    }
-  };
-
-  // Refetch al cambiar filtros/orden/búsqueda comprometida
+  // Refetch al cambiar filtros/orden/búsqueda comprometida, si NO hay selectedId
   useEffect(() => {
+    if (selectedId) return; // si hay un seleccionado por ID, no pisamos la vista exacta
     fetchProducts(1);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [committedSearch, onOffer, category, ordering]);
@@ -192,68 +172,91 @@ const ShopPage = () => {
     fetchProducts(p);
   };
 
-  // Handlers de búsqueda
+  // Handlers de búsqueda con autocompletado
   const handleSearchChange = (value) => {
     setSearchTerm(value);
     setShowSuggestions(true);
+    setSelectedId(null); // si el usuario vuelve a escribir, salimos de "vista por ID"
   };
 
-  // 🔥 Selección desde autocompletado → cargar por ID (exacto)
   const handleSelectSuggestion = (item) => {
     setSearchTerm(item.nombre);
-    setCommittedSearch(item.nombre); // solo para mostrar el término/contador
-    setCategory('');
-    setOnOffer(false);
-    setSortKey('relevance');
+    setCommittedSearch(item.nombre);   // visible en UI
+    setSelectedId(item.id);            // 👈 clave: guardamos el ID
     setShowSuggestions(false);
-
-    fetchProductById(item.id);
+    fetchProducts(1, { forceId: item.id }); // 👈 traemos ese producto exacto
   };
 
-  // Enter → búsqueda por texto normal (pueden salir varios)
   const handleSearchSubmit = () => {
     const term = searchTerm.trim();
     setCommittedSearch(term);
-    setCategory('');
-    setOnOffer(false);
-    setSortKey('relevance');
+    setSelectedId(null);               // búsqueda normal (no por ID)
     setShowSuggestions(false);
-    fetchProducts(1, term);
+    fetchProducts(1, { forceId: null });
   };
+
+  const handleClearFilters = () => {
+  setSearchTerm('');
+  setCommittedSearch('');
+  setOnOffer(false);
+  setCategory('');
+  setSortKey('relevance');
+  setSelectedId(null);
+  setPage(1);
+  setSuggestions([]);
+  setShowSuggestions(false);
+  fetchProducts(1, { forceId: null }); // recarga lista completa
+};
+
 
   return (
     <>
       <Header />
 
-      <div className="max-w-7xl mx-auto px-4 md:px-6 mt-24">
+      <div className=" max-w-7xl mx-auto font-montserrat px-4 md:px-6 mt-24">
+        {/* Filtros modernos con autocompletado */}
         <FilterBarModern
           categories={categories}
-          // Search controlado
           searchTerm={searchTerm}
           setSearchTerm={handleSearchChange}
           onSearchSubmit={handleSearchSubmit}
-          // Autocomplete
           suggestions={suggestions}
           showSuggestions={showSuggestions}
           loadingSuggestions={loadingSuggestions}
           onSelectSuggestion={handleSelectSuggestion}
           hideSuggestions={() => setShowSuggestions(false)}
-          // Filtros
           category={category}
-          setCategory={(v) => { setCategory(v); setPage(1); }}
+          setCategory={(v) => {
+            setCategory(v);
+            setPage(1);
+            setSelectedId(null);
+          }}
           onOffer={onOffer}
-          setOnOffer={(v) => { setOnOffer(v); setPage(1); }}
+          setOnOffer={(v) => {
+            setOnOffer(v);
+            setPage(1);
+            setSelectedId(null);
+          }}
           sortKey={sortKey}
-          setSortKey={(v) => { setSortKey(v); setPage(1); }}
+          setSortKey={(v) => {
+            setSortKey(v);
+            setPage(1);
+            setSelectedId(null);
+          }}
           loading={loading}
+          onClearFilters={handleClearFilters} // 👈 NUEVO
         />
 
-        {committedSearch && (
+        {/* Contador: solo cuando hay búsqueda comprometida y NO estamos en vista por ID */}
+        {committedSearch && !selectedId && (
           <div className="mt-4 text-sm text-gray-600">
-            {loading ? 'Cargando…' : `${count} producto${count === 1 ? '' : 's'} encontrados`}
+            {loading
+              ? "Cargando…"
+              : `${count} producto${count === 1 ? "" : "s"} encontrados`}
           </div>
         )}
 
+        {/* Grid */}
         <div className="mt-3">
           <ProductList
             products={products}
@@ -264,19 +267,22 @@ const ShopPage = () => {
           />
         </div>
 
-        <div className="mt-10 mb-6 px-6 flex items-center justify-between">
-          <PaginationClassic
-            page={page}
-            totalPages={totalPages}
-            hasPrev={Boolean(prevUrl)}
-            hasNext={Boolean(nextUrl)}
-            onPageChange={goToPage}
-          />
-          <div className="text-sm text-gray-600 whitespace-nowrap">
-            Página <span className="font-medium text-gray-800">{page}</span> de{' '}
-            <span className="font-medium text-gray-800">{totalPages}</span>
+        {/* Paginación (ocúltala cuando mostramos un producto por ID) */}
+        {!selectedId && (
+          <div className="mt-10 px-8 mb-6 flex items-center justify-between">
+            <PaginationClassic
+              page={page}
+              totalPages={totalPages}
+              hasPrev={Boolean(prevUrl)}
+              hasNext={Boolean(nextUrl)}
+              onPageChange={goToPage}
+            />
+            <div className="text-sm text-gray-600 whitespace-nowrap flex-shrink-0">
+              Página <span className="font-medium text-gray-800">{page}</span>{" "}
+              de <span className="font-medium text-gray-800">{totalPages}</span>
+            </div>
           </div>
-        </div>
+        )}
       </div>
 
       <ScrollToTopButton />

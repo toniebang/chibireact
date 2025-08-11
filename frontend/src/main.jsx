@@ -107,18 +107,21 @@ const router = createBrowserRouter([
   },
 ]);
 
+// src/main.jsx
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <GoogleOAuthProvider clientId={googleClientId}>
       <NotificationProvider>
-        <ProductProvider>
+        <AuthProvider>
           <CartProvider>
-          <AuthProvider>
-            <RouterProvider router={router} />
-          </AuthProvider>
+            <ProductProvider>
+              <RouterProvider router={router} />
+            </ProductProvider>
           </CartProvider>
-        </ProductProvider>
-        <NotificationToast />
+
+          {/* El toast puede ir aquí dentro del árbol para leer notificaciones */}
+          <NotificationToast />
+        </AuthProvider>
       </NotificationProvider>
     </GoogleOAuthProvider>
   </StrictMode>
