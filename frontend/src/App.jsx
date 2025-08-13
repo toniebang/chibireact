@@ -26,6 +26,9 @@ function App() {
       <ServicesSection />
 
       {/* Home: muestra 4 destacados (ProductList ya corta a 4 cuando isHome=true) */}
+      <div className='max-w-7xl mx-auto px-4 text-xl font-light sm:px-6 lg:px-8'>
+        <p>NUESTROS PRODUCTOS DESTACADOS</p>
+      </div>
       <ProductList
         products={products}
         loading={loading}

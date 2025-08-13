@@ -102,7 +102,7 @@ const Header = () => {
                         )}
 
                         {/* Carrito de compra (Desktop) */}
-                        <Link to="/carrito" className="relative p-2 hover:text-gray-400 text-xl transition-colors duration-200" title="Ver Carrito">
+                        <Link to="/carrito" className="relative p-2 hover:text-gray-400 text-2xl transition-colors duration-200" title="Ver Carrito">
                            <FiShoppingCart />
                             {cartItemCount > 0 && (
                                 <span className="absolute -top-1 -right-1 bg-red-600 text-white text-xs font-bold rounded-full h-4 w-4 flex items-center justify-center leading-none" style={{fontSize: '0.65rem'}}>
@@ -110,13 +110,13 @@ const Header = () => {
                                 </span>
                             )}
                         </Link>
-                        <Link to="/favoritos" className="relative p-2 hover:text-gray-400 text-xl transition-colors duration-200" title="Ver Favoritos">
+                        <Link to="/favoritos" className="relative p-2 hover:text-gray-400 text-2xl transition-colors duration-200" title="Ver Favoritos">
                             <IoMdHeartEmpty />
-                            {favoriteCount > 0 && (
+                            {/* {favoriteCount > 0 && (
                                 <span className="absolute -top-1 -right-1 bg-red-600 text-white text-sm font-bold rounded-full h-4 w-4 flex items-center justify-center leading-none" style={{fontSize: '0.65rem'}}>
                                     {favoriteCount}
                                 </span>
-                            )}
+                            )} */}
                         </Link>
 
                         {isAuthenticated ? (
@@ -133,7 +133,7 @@ const Header = () => {
                                 )}
                             </Link>
                         ) : (
-                            <Link to="/login" className="p-2 hover:text-gray-400 text-xl transition-colors duration-200" title="Iniciar sesión o registrarse">
+                            <Link to="/login" className="p-2 hover:text-gray-400 text-2xl transition-colors duration-200" title="Iniciar sesión o registrarse">
                                 <LuUserRoundPlus />
                             </Link>
                         )}

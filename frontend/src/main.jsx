@@ -23,6 +23,7 @@ import ShopPage from './pages/ShopPage.jsx';
 import Packs from './pages/Packs.jsx';
 import Cart from './pages/Cart.jsx';
 import ChibiSkinPage from './pages/ChibiSkinPage.jsx';
+import FavoritesPage from './pages/FavoritePage.jsx';
 
 import ProfilePage from './pages/ProfilePage.jsx'; // Asegúrate de que esta ruta sea correcta para tu página de perfil
 import ProductDetails from './pages/ProductDetails.jsx'; // Asegúrate de que esta ruta sea correcta para tu página de detalles del producto
@@ -53,6 +54,11 @@ const router = createBrowserRouter([
     element: <ShopPage/>,
   },
   {
+    path: '/favoritos',
+    element: <FavoritesPage />,
+  },
+  {
+    
     path: '/carrito/',
     element: <Cart/>,
   },

@@ -16,7 +16,7 @@ const TrainerSection = () => {
             Conoce a nuestro entrenador estrella
           </h2>
           <p className="text-gray-700 text-lg leading-relaxed mb-6">
-            Tenemos al mejor entrenador: <span className="font-semibold">Héctor</span>.  
+            Tenemos al mejor entrenador: <span className="font-semibold">El_Shabazz</span>.  
             Con su experiencia y métodos innovadores, te ayuda a transformar tu cuerpo en menos de dos meses.  
             Entrena con disciplina, pasión y resultados garantizados.
           </p>
