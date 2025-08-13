@@ -84,7 +84,7 @@ const ChibiSkinSection = () => {
             </motion.ul>
             <motion.a
               href="/chibi-skin" 
-              className="inline-flex items-center bg-chibi-green text-white py-3 px-6 
+              className="inline-flex items-center bg-chibi-green hover:bg-black text-white py-3 px-6 
                          hover:bg-chibi-green-dark transition-colors duration-300 text-base shadow-md"
               variants={itemVariants}
             >

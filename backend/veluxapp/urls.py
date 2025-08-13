@@ -15,6 +15,7 @@ from .views import ( # Asegúrate de que todas tus vistas actuales estén import
     EquipoViewSet,
     PedidoViewSet,
     ElementoPedidoViewSet,
+    FavoriteViewSet,
     create_product, get_presigned_url
 )
 from .views_cart import CartView
@@ -30,6 +31,7 @@ router.register(r'correos', CorreosViewSet)
 router.register(r'equipo', EquipoViewSet)
 router.register(r'pedidos', PedidoViewSet)
 router.register(r'elementos-pedido', ElementoPedidoViewSet)
+router.register(r'favoritos', FavoriteViewSet, basename='favoritos')
 
 urlpatterns = [
     path('', include(router.urls)), # Todas tus rutas de API RESTful (sin prefijo 'api/' aquí)

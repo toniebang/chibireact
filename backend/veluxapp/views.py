@@ -18,6 +18,7 @@ from .models import (
     Colaboradores,
     Informacion,
     Correos,
+    Favorite,
     Equipo,
     Pedido,
     ElementoPedido,
@@ -26,6 +27,7 @@ from .serializers import (
     CategoriaProductosSerializer,
     ProductosSerializer,
     PackSerializer,
+    FavoriteSerializer,
     ReviewsSerializer,
     ColaboradoresSerializer,
     InformacionSerializer,
@@ -297,3 +299,20 @@ class ElementoPedidoViewSet(viewsets.ModelViewSet):
     queryset = ElementoPedido.objects.all()
     serializer_class = ElementoPedidoSerializer
     permission_classes = [permissions.IsAdminUser] # Solo administradores pueden gestionar elementos de pedido directamente
+    
+    
+class FavoriteViewSet(viewsets.ModelViewSet):
+    serializer_class = FavoriteSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        return Favorite.objects.filter(user=self.request.user)
+
+    # opcional: endpoint /favorites/toggle/
+    def create(self, request, *args, **kwargs):
+        product_id = request.data.get('product_id')
+        fav, created = Favorite.objects.get_or_create(user=request.user, product_id=product_id)
+        if not created:
+            fav.delete()
+            return Response({'detail': 'removed'}, status=status.HTTP_200_OK)
+        return Response({'detail': 'added'}, status=status.HTTP_201_CREATED)

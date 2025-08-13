@@ -25,9 +25,12 @@ const Packs = () => {
                     Ir a la tienda
                 </Link>
             </main>
+
+   
             <Footer />
         </>
     );
 }
 
 export default Packs;
+

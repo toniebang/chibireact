@@ -9,6 +9,8 @@ import  ProductProvider  from './context/ProductContext';
 import { AuthProvider } from './context/AuthContext';
 import { NotificationProvider } from './context/NotificationContext';
 import { CartProvider } from './context/CartContext.jsx';
+import { FavoritesProvider } from './context/FavoritesContext';
+
 
 import notfound from './assets/404.png'; // Asegúrate de que esta ruta sea correcta para tu imagen 404
 // Importa el componente de Toast
@@ -20,6 +22,7 @@ import About from './pages/About.jsx';
 import ShopPage from './pages/ShopPage.jsx';
 import Packs from './pages/Packs.jsx';
 import Cart from './pages/Cart.jsx';
+import ChibiSkinPage from './pages/ChibiSkinPage.jsx';
 
 import ProfilePage from './pages/ProfilePage.jsx'; // Asegúrate de que esta ruta sea correcta para tu página de perfil
 import ProductDetails from './pages/ProductDetails.jsx'; // Asegúrate de que esta ruta sea correcta para tu página de detalles del producto
@@ -65,6 +68,7 @@ const router = createBrowserRouter([
     path: '/tienda/:id',
     element: <ProductDetails />,
   },
+  { path: '/chibi-skin', element: <ChibiSkinPage /> },
   {
     path: '/perfil/',
     element: <ProfilePage />,
@@ -112,17 +116,17 @@ createRoot(document.getElementById("root")).render(
   <StrictMode>
     <GoogleOAuthProvider clientId={googleClientId}>
       <NotificationProvider>
-        <AuthProvider>
+        <ProductProvider>
           <CartProvider>
-            <ProductProvider>
-              <RouterProvider router={router} />
-            </ProductProvider>
+            <AuthProvider>
+              <FavoritesProvider>
+                <RouterProvider router={router} />
+              </FavoritesProvider>
+            </AuthProvider>
           </CartProvider>
-
-          {/* El toast puede ir aquí dentro del árbol para leer notificaciones */}
-          <NotificationToast />
-        </AuthProvider>
+        </ProductProvider>
+        <NotificationToast />
       </NotificationProvider>
     </GoogleOAuthProvider>
   </StrictMode>
-);
+)

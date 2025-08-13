@@ -10,6 +10,8 @@ import { GiHamburgerMenu } from "react-icons/gi";
 import { IoClose, IoHeart } from "react-icons/io5";
 import { IoMdHeartEmpty } from "react-icons/io";
 
+import { useFavorites } from '../context/FavoritesContext'
+
 import { MdLogout } from "react-icons/md";
 import { FaInstagram, FaWhatsapp } from 'react-icons/fa';
 
@@ -26,15 +28,17 @@ const Header = () => {
     const location = useLocation();
 
     const cartItemCount = cart?.total_items || 0; 
-    const [favoriteCount, setFavoriteCount] = useState(0); 
+    // const [favoriteCount, setFavoriteCount] = useState(0); 
 
-    useEffect(() => {
-        if (isAuthenticated) {
-            setFavoriteCount(3);
-        } else {
-            setFavoriteCount(0);
-        }
-    }, [isAuthenticated]);
+    const { count: favoriteCount } = useFavorites();
+
+    // useEffect(() => {
+    //     if (isAuthenticated) {
+    //         setFavoriteCount(3);
+    //     } else {
+    //         setFavoriteCount(0);
+    //     }
+    // }, [isAuthenticated]);
 
     useEffect(() => {
         const handleScroll = () => {

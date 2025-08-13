@@ -1,5 +1,6 @@
 import React, { useMemo, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { useFavorites } from '../context/FavoritesContext';
 import { IoMdHeartEmpty } from 'react-icons/io';
 import { IoHeart } from 'react-icons/io5';
 import { FaPlus } from 'react-icons/fa';
@@ -19,8 +20,11 @@ const ProductCard = ({ product, onAddToCart }) => {
   } = product || {};
 
   const { cart, addToCart } = useCart();
-  const [fav, setFav] = useState(false);
+  // const [fav, setFav] = useState(false);
   const [added, setAdded] = useState(false);
+const { isFavorite, toggleFavorite } = useFavorites();
+const fav = isFavorite(id);
+
 
   useEffect(() => {
     setAdded(false);
@@ -62,11 +66,11 @@ const ProductCard = ({ product, onAddToCart }) => {
     }
   };
 
-  const toggleFav = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setFav((f) => !f);
-  };
+const toggleFav = (e) => {
+  e.preventDefault();
+  toggleFavorite(id);
+  // si quieres notificación, aquí llamas a tu NotificationContext
+};
 
   return (
     <Link

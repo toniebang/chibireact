@@ -6,6 +6,7 @@ import AboutSection from './components/AboutSection';
 import ServicesSection from './components/ServicesSection';
 import ProductList from './components/ProductList';
 import DailyTrainingSection from './components/DailyTrainingSection';
+import TrainerSection from './components/TrainerSection';
 import Footer from './components/Footer';
 import HorizontalGallery from './components/HorizontalGallery';
 import JoinOurTeamSection from './components/JoinOurTeamSection';
@@ -35,6 +36,7 @@ function App() {
 
       <DailyTrainingSection />
       <ChibiSkinSection />
+      <TrainerSection />
       <HorizontalGallery />
       <CustomerFeedback />
       <JoinOurTeamSection />

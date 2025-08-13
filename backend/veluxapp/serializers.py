@@ -13,6 +13,7 @@ from .models import (
     Colaboradores,
     Informacion,
     Correos,
+    Favorite,
     Equipo,
     Pedido,
     ElementoPedido,
@@ -25,6 +26,10 @@ from datetime import timedelta
 
 User = get_user_model()
 
+class FavoriteSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Favorite
+        fields = ('id', 'product')
 
 # --- Serializadores Base (sin dependencias de otros serializadores personalizados) ---
 

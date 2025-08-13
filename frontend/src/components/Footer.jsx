@@ -22,7 +22,7 @@ const Footer = () => {
 
   return (
     <> {/* Usamos un fragmento para envolver las dos secciones del footer */}
-      <footer className="bg-black text-gray-300 py-12"> {/* Reducido el padding vertical */}
+      <footer className="bg-black font-montserrat text-gray-300 py-12"> {/* Reducido el padding vertical */}
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-wrap -mx-4">
 
