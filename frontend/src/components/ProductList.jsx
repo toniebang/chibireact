@@ -21,7 +21,7 @@ const ProductList = ({ products = [], isHome = false, gridColumns = "grid-cols-2
   return (
     <section className="py-10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {!isHome && <h2 className="text-2xl font-light text-center mb-12">{sectionTitle}</h2>}
+        {/* {!isHome && <h2 className="text-2xl font-light text-center mb-12">{sectionTitle}</h2>} */}
 
         {/* Grid */}
         <div className={`grid ${gridColumns} gap-8`}>

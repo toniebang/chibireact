@@ -7,6 +7,10 @@ import ProductList from '../components/ProductList';
 import ProductSkeleton from '../components/ProductSkeleton';
 import PaginationClassic from '../components/PaginationClassic';
 import { Leaf, Droplets, Sparkles, ShieldCheck } from 'lucide-react';
+import chibiskin1 from "../assets/chibiskin1.jpg";
+import chibiskin2 from "../assets/chibiskin2.jpg";
+import chibiskin3 from "../assets/chibiskin3.jpg";
+import chibiskin4 from "../assets/chibiskin4.webp";
 
 const PAGE_SIZE = 16;
 
@@ -15,6 +19,8 @@ const buildParams = (obj) =>
   Object.fromEntries(
     Object.entries(obj).filter(([_, v]) => v !== undefined && v !== '' && v !== false && v !== null)
   );
+
+const normalize = (s) => (s || '').toLowerCase().replace(/\s+/g, '');
 
 const ChibiSkinPage = () => {
   const { authAxios } = useAuth();
@@ -32,63 +38,95 @@ const ChibiSkinPage = () => {
   const [loadingProds, setLoadingProds] = useState(false);
   const [error, setError] = useState('');
 
-  // Hero “mediano”: ya estaba, lo dejamos con un padding medio (py-10/14)
-  // 1) Buscar la categoría "Chibi Skin"
+  // --- Buscar la categoría "Chibi Skin" de forma robusta ---
   useEffect(() => {
     let alive = true;
-    (async () => {
+
+    const findChibiSkinCategory = async () => {
       setLoadingCat(true);
       setError('');
+
       try {
-        const res = await authAxios.get('/categorias/');
+        // 1) Intento por search (si tu backend soporta busqueda)
+        try {
+          const resSearch = await authAxios.get('/categorias/', {
+            params: { search: 'chibi', page_size: 200 }
+          });
+          if (!alive) return;
+          const listSearch = resSearch.data?.results || [];
+          const viaSearch = listSearch.find(
+            (c) =>
+              normalize(c.nombre) === 'chibiskin' ||
+              (c.nombre || '').toLowerCase().includes('chibi skin')
+          );
+          if (viaSearch?.id) {
+            console.log('[ChibiSkin] Categoría encontrada via search:', viaSearch);
+            setCatId(viaSearch.id);
+            return;
+          }
+        } catch (e) {
+          // si falla search, seguimos con fallback
+        }
+
+        // 2) Fallback: traer muchas categorías y buscar por nombre
+        const res = await authAxios.get('/categorias/', { params: { page_size: 200 } });
         if (!alive) return;
         const list = res.data?.results || [];
         const found = list.find(
-          c =>
-            (c.nombre || '').toLowerCase().replace(/\s+/g, '') === 'chibiskin' ||
+          (c) =>
+            normalize(c.nombre) === 'chibiskin' ||
             (c.nombre || '').toLowerCase().includes('chibi skin')
         );
+
         if (found?.id) {
+          console.log('[ChibiSkin] Categoría encontrada via fallback:', found);
           setCatId(found.id);
         } else {
+          console.warn('[ChibiSkin] No se encontró la categoría "Chibi Skin". Lista:', list);
           setCatId(null);
           setError('No se encontró la categoría "Chibi Skin".');
         }
-      } catch {
+      } catch (e) {
         if (!alive) return;
+        console.error('[ChibiSkin] Error cargando categorías:', e);
         setError('No se pudieron cargar las categorías.');
         setCatId(null);
       } finally {
         if (alive) setLoadingCat(false);
       }
-    })();
-    return () => {
-      alive = false;
     };
+
+    findChibiSkinCategory();
+    return () => { alive = false; };
   }, [authAxios]);
 
-  // 2) Cargar productos por esa categoría
+  // --- Cargar productos por esa categoría ---
   const fetchProducts = async (targetPage = 1) => {
     if (!catId) return;
     setLoadingProds(true);
     setError('');
     try {
       const params = buildParams({
-        categoria: catId,
+        categoria: catId,          // <- el backend espera el ID
         page: targetPage,
         page_size: PAGE_SIZE,
         ordering: '-fecha_subida',
       });
 
+      console.log('[ChibiSkin] Fetch productos params =>', params);
+
       const res = await authAxios.get('/productos/', { params });
       const { results = [], count = 0, next = null, previous = null } = res.data || {};
+      console.log('[ChibiSkin] Productos recibidos =>', results.length);
+
       setProducts(results);
       setCount(count);
       setNextUrl(next);
       setPrevUrl(previous);
       setPage(targetPage);
       if (targetPage !== page) window.scrollTo({ top: 0, behavior: 'smooth' });
-    } catch {
+    } catch (e) {
+      console.error('[ChibiSkin] Error cargando productos:', e);
       setError('No se pudieron cargar los productos.');
       setProducts([]);
       setCount(0);
@@ -114,14 +152,8 @@ const ChibiSkinPage = () => {
     fetchProducts(p);
   };
 
-  // --- NUEVO: Galería (4 imágenes) ---
-  // Puedes cambiar estas URLs por tus imágenes reales del admin/CDN.
-  const galleryImages = [
-    '/images/chibiskin1.jpg',
-    '/images/chibiskin2.jpg',
-    '/images/chibiskin3.jpg',
-    '/images/chibiskin4.jpg',
-  ];
+  // Galería
+  const galleryImages = [chibiskin1, chibiskin2, chibiskin3, chibiskin4];
 
   return (
     <>
@@ -154,7 +186,6 @@ const ChibiSkinPage = () => {
             </div>
           </div>
 
-          {/* Beneficios/servicios (igual que antes) */}
           <div className="grid grid-cols-2 gap-4 font-montserrat">
             <div className="border border-gray-200 p-4 bg-white">
               <Leaf className="w-6 h-6 text-chibi-green mb-2" />
@@ -188,7 +219,7 @@ const ChibiSkinPage = () => {
         </div>
       </section>
 
-      {/* --- NUEVO: Galería (4 imágenes) --- */}
+      {/* Galería (4 imágenes) */}
       <section id="galeria" className="max-w-7xl font-montserrat mx-auto px-4 md:px-6 py-10">
         <h2 className="text-2xl font-light text-gray-900 mb-6">Galería Chibi Skin</h2>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -213,7 +244,6 @@ const ChibiSkinPage = () => {
       <main id="productos" className="max-w-7xl font-montserrat mx-auto px-4 md:px-6 pb-12">
         <h2 className="text-2xl font-light mb-4">Línea Chibi Skin</h2>
 
-        {/* Estados de carga/errores */}
         {loadingCat ? (
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6">
             {Array.from({ length: 8 }).map((_, i) => <ProductSkeleton key={i} />)}
@@ -238,7 +268,6 @@ const ChibiSkinPage = () => {
               />
             )}
 
-            {/* Paginación */}
             {products.length > 0 && (
               <div className="mt-8 flex items-center justify-between">
                 <PaginationClassic
@@ -259,7 +288,6 @@ const ChibiSkinPage = () => {
           </>
         )}
 
-        {/* Nota de calidad */}
         <p className="mt-10 text-sm text-gray-600 leading-relaxed">
           Nuestros productos Chibi Skin son cuidadosamente seleccionados y preparados para
           ofrecerte la mejor calidad. Cada artículo se revisa antes de llegar a tus manos,
