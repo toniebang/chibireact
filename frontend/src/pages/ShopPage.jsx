@@ -136,14 +136,17 @@ const ShopPage = () => {
         return;
       }
 
+      const safeOrdering = ['precio', '-precio', '-fecha_subida', 'nombre', '-nombre'];
+const orderingParam = safeOrdering.includes(ordering) ? ordering : undefined;
       // Búsqueda paginada normal desde backend (👈 aquí ya enviamos 'linea')
    const effectiveLine = line === 'todo' ? '' : line; // por si en algún sitio llega 'todo'
    const params = buildParams({
      search: committedSearch || undefined,
      categoria: category || undefined,
      oferta: onOffer || undefined,
-     ordering,
+     
      page: targetPage,
+     ordering: orderingParam,
     page_size: pageSize || PAGE_SIZE,
     linea: effectiveLine || undefined, // 👈 omite cuando es “Todos”
   });

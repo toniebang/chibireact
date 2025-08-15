@@ -146,7 +146,7 @@ class ProductosViewSet(viewsets.ModelViewSet):
     filterset_fields = ['id', 'nombre', 'precio', 'stock', 'oferta', 'disponible', 'categoria', 'linea']
     search_fields = ['^nombre', '^descripcion', '^lista_caracteristicas'] # Búsqueda por nombre y descripción. '^' para "starts-with"
     ordering_fields = ['nombre', 'precio', 'stock', 'fecha_subida'] # Permite ordenar por estos campos
-    
+    ordering = ['-fecha_subida']
 class PackViewSet(viewsets.ModelViewSet):
     queryset = Pack.objects.all()
     serializer_class = PackSerializer

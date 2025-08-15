@@ -13,7 +13,7 @@ export default function ProductProvider({ children }) {
 
   // Defaults para la home
   const DEFAULT_PAGE_SIZE = 16;
-  const DEFAULT_ORDERING = '-fecha_subida';
+  const DEFAULT_ORDERING = undefined; // hotfix: sin ordering hasta que el backend esté arreglado
 
 const fetchProducts = useCallback(
     async (params = {}) => {
