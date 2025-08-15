@@ -256,36 +256,30 @@ const ShopPage = () => {
 
       <div className="max-w-7xl mx-auto font-montserrat px-4 md:px-6">
         <FilterBarModern
-          categories={categories}
-          searchTerm={searchTerm}
-          setSearchTerm={handleSearchChange}
-          onSearchSubmit={handleSearchSubmit}
-          suggestions={suggestions}
-          showSuggestions={showSuggestions}
-          loadingSuggestions={loadingSuggestions}
-          onSelectSuggestion={handleSelectSuggestion}
-          hideSuggestions={() => setShowSuggestions(false)}
-          category={category}
-          setCategory={(v) => {
-            setCategory(v);
-            setPage(1);
-            setSelectedId(null);
-          }}
-          onOffer={onOffer}
-          setOnOffer={(v) => {
-            setOnOffer(v);
-            setPage(1);
-            setSelectedId(null);
-          }}
-          sortKey={sortKey}
-          setSortKey={(v) => {
-            setSortKey(v);
-            setPage(1);
-            setSelectedId(null);
-          }}
-          loading={loading}
-          onClearFilters={handleClearFilters}
-        />
+   categories={categories}
+ hasActiveSearch={Boolean(searchTerm.trim())}
+   category={category}
+   setCategory={(v) => {
+     setCategory(v);
+     setPage(1);
+     setSelectedId(null);
+   }}
+   onOffer={onOffer}
+   setOnOffer={(v) => {
+     setOnOffer(v);
+     setPage(1);
+     setSelectedId(null);
+   }}
+   sortKey={sortKey}
+   setSortKey={(v) => {
+     setSortKey(v);
+     setPage(1);
+     setSelectedId(null);
+   }}
+   loading={loading}
+   onClearFilters={handleClearFilters}
+/>
+
 
         {(committedSearch || line) && !selectedId && (
           <div className="mt-4 text-sm text-gray-600">

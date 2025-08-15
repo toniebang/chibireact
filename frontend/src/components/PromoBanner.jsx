@@ -14,7 +14,7 @@ const PromoBanner = () => {
       viewport={{ once: true, amount: 0.3 }}
     >
       {/* Imagen de fondo */}
-      <div className="relative h-64 md:h-80 rounded-2xl overflow-hidden">
+      <div className="relative h-64 md:h-80 rounded-none overflow-hidden">
         <img
           src={heroImg}
           alt="Fondo tienda Chibi"
