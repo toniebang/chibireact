@@ -36,22 +36,22 @@ const ChibiSkinSection = () => {
       variants={containerVariants}
     >
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="md:flex md:items-stretch md:justify-between">
+        <div className="md:flex md:items-stretch md:justify-between gap-4">
           <div className="md:w-1/2 mb-6 md:mb-0">
             <motion.h2 
-              className="text-5xl font-light text-gray-900 mb-4"
+              className="text-5xl font-light text-gray-900 mb-8"
               variants={itemVariants} 
             >
               Descubre <span className="text-chibi-green font-medium">Chibi Skin</span>: Tu Piel Radiante Comienza Aquí
             </motion.h2>
             <motion.p 
-              className="text-md mb-5 px-4"
+              className="text-md mb-8 px-4"
               variants={itemVariants}
             >
               En Chibi Skin, creemos que una piel sana es el reflejo de un bienestar integral. Nos enfocamos en ingredientes naturales y rutinas conscientes para nutrir y revitalizar tu piel desde adentro hacia afuera.
             </motion.p>
             <motion.ul 
-              className="list-none space-y-3 mb-6"
+              className="list-none space-y-6 mb-8 ml-4"
               variants={containerVariants} 
             >
               {/* Primer ítem: El Poder de la Moringa */}
@@ -85,7 +85,7 @@ const ChibiSkinSection = () => {
             <motion.a
               href="/chibi-skin" 
               className="inline-flex items-center bg-chibi-green hover:bg-black text-white py-3 px-6 
-                         hover:bg-chibi-green-dark transition-colors duration-300 text-base shadow-md"
+                         hover:bg-chibi-green-dark rounded-full transition-colors duration-300 text-base shadow-md"
               variants={itemVariants}
             >
               Ver Más Sobre Chibi Skin

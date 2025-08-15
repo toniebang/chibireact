@@ -26,7 +26,7 @@ const Hero = () => {
             <button
               type="button"
               onClick={() => setOpenJoin(true)}
-              className="inline-block bg-chibi-green text-white font-bold py-2 px-4 text-sm hover:bg-black transition duration-300 rounded-none"
+              className="inline-block bg-chibi-green text-white font-bold py-3 px-4 text-sm hover:bg-black transition duration-300 rounded-full"
             >
               ÚNETE A CHIBI FITNESS
             </button>
@@ -34,7 +34,7 @@ const Hero = () => {
             {/* CTA secundaria: explorar productos */}
             <Link
               to="/tienda"
-              className="inline-block text-white font-bold py-2 px-4 text-sm border border-white hover:bg-black transition duration-300 rounded-none"
+              className="inline-block text-white font-bold py-3 px-4 text-sm border border-white hover:bg-black transition duration-300 rounded-full"
             >
               EXPLORAR PRODUCTOS
             </Link>

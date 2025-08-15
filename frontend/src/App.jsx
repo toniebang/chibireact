@@ -14,7 +14,7 @@ import ChibiSkinSection from './components/ChibiSkinSection';
 import ScrollToTopButton from './components/ScrollToTopButton';
 import CustomerFeedback from './components/CustomerFeedback';
 import { useProducts } from './context/ProductContext'; // 👈 usa el contexto
-
+import PromoBanner from './components/PromoBanner';
 function App() {
   const { products, loading, error } = useProducts(); // 👈 toma los datos reales
 
@@ -36,6 +36,8 @@ function App() {
         isHome={true}
         gridColumns="grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
       />
+
+      <PromoBanner />
 
       <DailyTrainingSection />
       <ChibiSkinSection />

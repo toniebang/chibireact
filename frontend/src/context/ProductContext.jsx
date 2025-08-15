@@ -15,7 +15,7 @@ export default function ProductProvider({ children }) {
   const DEFAULT_PAGE_SIZE = 16;
   const DEFAULT_ORDERING = '-fecha_subida';
 
-  const fetchProducts = useCallback(
+const fetchProducts = useCallback(
     async (params = {}) => {
       setLoading(true);
       setError(null);
@@ -24,8 +24,13 @@ export default function ProductProvider({ children }) {
           page: 1,
           page_size: DEFAULT_PAGE_SIZE,
           ordering: DEFAULT_ORDERING,
-          ...params, // permite override (e.g. page_size: 4 para una sección puntual)
+          ...params, // { search, categoria, oferta, ordering, page, page_size, linea, ... }
         };
+
+       // Si "linea" === 'todo', no lo envíes (equivale a mostrar todo)
+       if (finalParams.linea === 'todo') {
+         delete finalParams.linea;
+       }
 
         const res = await authAxios.get('/productos/', { params: finalParams });
         const data = res.data || {};
@@ -33,7 +38,6 @@ export default function ProductProvider({ children }) {
 
         setProducts(list);
         setCount(data.count ?? list.length);
-        // console.log('[ProductContext] fetched:', { len: list.length, count: data.count, finalParams });
       } catch (err) {
         console.error('[ProductContext] error:', err);
         setError('No se pudieron cargar los productos.');

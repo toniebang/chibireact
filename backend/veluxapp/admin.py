@@ -66,10 +66,11 @@ class CorreosAdmin(admin.ModelAdmin):
 
 class ProductosAdmin(admin.ModelAdmin):
     # En models.py: Productos tiene 'id', 'disponible', 'stock', 'prioridad', 'nombre', 'categoria', 'descripcion', 'lista_caracteristicas', 'imagen1', 'imagen2', 'imagen3', 'precio', 'oferta', 'precio_rebaja', 'fecha_subida'
-    list_display=( 'nombre', 'precio', 'oferta', 'precio_rebaja','disponible', 'fecha_subida', 'stock') # Corregido: usa 'fecha_subida'
-    search_fields = ('nombre',)
-    list_filter = ('fecha_subida',) # Corregido: usa 'fecha_subida'
+    list_display=( 'id', 'nombre', 'linea', 'precio', 'oferta', 'disponible', 'stock', 'fecha_subida') # Corregido: usa 'fecha_subida'
+    search_fields = ('nombre', 'descripcion', 'lista_caracteristicas')
+    list_filter = ('linea', 'oferta', 'disponible', 'stock', 'fecha_subida', 'categoria') # Corregido: usa 'fecha_subida'
     list_per_page=12
+    ordering = ('-fecha_subida',)
 
 class ColaboradoresAdmin(admin.ModelAdmin):
     list_display=( 'nombre',)

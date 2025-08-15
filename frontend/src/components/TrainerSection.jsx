@@ -22,7 +22,7 @@ const TrainerSection = () => {
           </p>
           <button
             onClick={() => setOpen(true)}
-            className="bg-chibi-green text-white px-6 py-3 cursor-pointer shadow hover:bg-black transition-colors duration-300 rounded-none"
+            className="bg-chibi-green text-white px-6 py-3 cursor-pointer shadow hover:bg-black transition-colors duration-300 rounded-full"
           >
             Reserva una sesión ahora
           </button>

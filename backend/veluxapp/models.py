@@ -51,6 +51,11 @@ class Categoria_Productos(models.Model):
 
 # ------------------- Productos --------------------------
 class Productos(models.Model):
+    LINEAS_CHOICES = [
+        ('skin', 'Chibi Skin'),
+        ('tea', 'Chibi Tea'),
+        ('todo', 'Todos'),
+    ]
     id = models.AutoField('ID',primary_key=True)
     disponible = models.BooleanField('Publicar', default=True, help_text='Marca esta casilla si deseas que este producto aparezca en la tienda.')
     stock = models.BooleanField('En stock', default=True, help_text='El producto está en stock actualmente?') # Se mantiene como BooleanField
@@ -66,26 +71,14 @@ class Productos(models.Model):
     oferta = models.BooleanField('En oferta', default=False)
     precio_rebaja = models.IntegerField('Precio de oferta (XAF)', default=0) # Se mantiene como IntegerField
     fecha_subida = models.DateField('Fecha publicacion', auto_now_add=True)
-
+    linea = models.CharField('Linea', max_length=10, choices=LINEAS_CHOICES, default='todo', help_text='Selecciona la línea a la que pertenece este producto')
     def __str__(self):
         return self.nombre
 
     class Meta:
         verbose_name_plural = 'Productos'
         verbose_name = 'Producto'
-    # def save(self, *args, **kwargs):
-    # # Cambia todas las líneas 'logger.info' por 'print()'
-    #     print(f"!!! MODEL_DEBUG: save() method called for {self.__class__.__name__} (ID: {self.pk})")
-    #     # if self.imagen1:
-    #     #     # print(f"!!! MODEL_DEBUG: Image field is present. File name: {self.imagen1.name}")
-    #     #     # print(f"!!! MODEL_DEBUG: File size: {self.imagen1.size} bytes")
-    #     # # ESTA ES LA LÍNEA MÁS IMPORTANTE
-    #     #     # print(f"!!! MODEL_DEBUG: Image storage backend: {self.imagen1.storage.__class__.__name__}")
-    #     # else:
-    #     #     # print("!!! MODEL_DEBUG: No file found in the image field.")
 
-    #     # super().save(*args, **kwargs)
-    #     # print(f"!!! MODEL_DEBUG: {self.__class__.__name__} instance (ID: {self.pk}) saved.")
 # ------------------- Packs --------------------------
 class Pack(models.Model):
     OPCIONES_PACK = [

@@ -38,7 +38,7 @@ export const CartProvider = ({ children }) => {
                 // Y si la URL de la petición es relativa a la baseURL de authAxios
                 if (!user && sessionKey && config.url.includes('/cart')) {
                     config.headers['X-Session-Key'] = sessionKey;
-                    console.log(`Interceptor Cart: Añadiendo X-Session-Key: ${sessionKey} a ${config.url}`);
+                    // console.log(`Interceptor Cart: Añadiendo X-Session-Key: ${sessionKey} a ${config.url}`);
                 }
                 return config;
             },
@@ -48,7 +48,7 @@ export const CartProvider = ({ children }) => {
         return () => {
             // Asegúrate de remover el interceptor cuando el componente se desmonte
             authAxios.interceptors.request.eject(sessionKeyInterceptor);
-            console.log("Interceptor de X-Session-Key eyectado.");
+            // console.log("Interceptor de X-Session-Key eyectado.");
         };
     }, [authAxios, user, sessionKey]); // Dependencias: authAxios (estable), user (para saber si autenticado), sessionKey (si cambia)
 
@@ -65,10 +65,10 @@ export const CartProvider = ({ children }) => {
             if (newSessionKey && newSessionKey !== sessionKey) {
                 setSessionKey(newSessionKey);
                 localStorage.setItem('cartSessionKey', newSessionKey);
-                console.log("Nueva session_key de carrito recibida (GET):", newSessionKey);
+                // console.log("Nueva session_key de carrito recibida (GET):", newSessionKey);
             }
             setCart(response.data);
-            addNotification("Carrito cargado.", "success");
+            // addNotification("Carrito cargado.", "success");
             return response.data;
         } catch (err) {
             console.error("Error al cargar el carrito:", err);
@@ -79,18 +79,18 @@ export const CartProvider = ({ children }) => {
             const errorMessage = err.response?.data?.detail
                                    ? err.response.data.detail
                                    : "No se pudo cargar el carrito.";
-            addNotification(errorMessage, "error");
+            // addNotification(errorMessage, "error");
             
             if (err.response?.status === 404 && !user) { // No usar axios.isAxiosError si no se importa axios
-                console.log("Carrito no encontrado para la session_key existente (invitado). Limpiando session_key local.");
+                // console.log("Carrito no encontrado para la session_key existente (invitado). Limpiando session_key local.");
                 localStorage.removeItem('cartSessionKey');
                 setSessionKey(null);
-                addNotification("Se restableció la sesión del carrito (invitado).", "info");
+                // addNotification("Se restableció la sesión del carrito (invitado).", "info");
             } else if (!user && sessionKey) {
-                 console.log("Error al cargar carrito para invitado con session_key existente. Limpiando session_key local.");
+                //  console.log("Error al cargar carrito para invitado con session_key existente. Limpiando session_key local.");
                  localStorage.removeItem('cartSessionKey');
                  setSessionKey(null);
-                 addNotification("Se restableció la sesión del carrito.", "info");
+                //  addNotification("Se restableció la sesión del carrito.", "info");
             }
             setCart(null);
             return null;
@@ -114,7 +114,7 @@ export const CartProvider = ({ children }) => {
         } catch (err) {
             // ... manejo de errores, usa err.response directamente sin axios.isAxiosError si no importas axios ...
             const errorMessage = err.response?.data?.detail ? err.response.data.detail : "No se pudo añadir el producto al carrito.";
-            addNotification(errorMessage, "error");
+            // addNotification(errorMessage, "error");
             return false;
         } finally { setLoading(false); }
     }, [authAxios, sessionKey, addNotification]); // Mantén todas las dependencias
@@ -148,23 +148,39 @@ export const CartProvider = ({ children }) => {
         } finally { setLoading(false); }
     }, [authAxios, sessionKey, addNotification]);
 
-    const clearCart = useCallback(async () => {
-        setLoading(true); setError(null);
-        try {
-            if (cart && cart.items && cart.items.length > 0) {
-                const response = await authAxios.delete(`/cart/clear/`);
-                setCart(response.data || { items: [], total_items: 0, total_price: 0 });
-                addNotification("Carrito vaciado.", "info");
-                return true;
-            }
-            addNotification("El carrito ya está vacío.", "info");
-            return true;
-        } catch (err) {
-            const errorMessage = err.response?.data?.detail ? err.response.data.detail : "Error al vaciar el carrito.";
-            addNotification(errorMessage, "error");
-            return false;
-        } finally { setLoading(false); }
-    }, [authAxios, addNotification, cart, sessionKey]);
+// CartContext.jsx
+const clearCart = useCallback(async () => {
+  setLoading(true); setError(null);
+  try {
+    // Muchos backends devuelven 204 sin cuerpo:
+    const res = await authAxios.delete(`/cart/clear/`).catch(async (err) => {
+      // Si tu backend no tiene /cart/clear/, intenta fallback borrando item a item:
+      if (err.response?.status === 404 && cart?.items?.length) {
+        // Fallback: eliminar items uno por uno
+        for (const it of cart.items) {
+          const pid = it.product_id ?? it.product?.id ?? it.id;
+          try { await authAxios.delete(`/cart/`, { data: { product_id: pid } }); } catch {/* noop */}
+        }
+        return { data: { items: [], total_items: 0, total_price: 0 }, status: 200 };
+      }
+      throw err;
+    });
+
+    // Si llega 204, no hay data. Normalizamos un carrito vacío.
+    const emptyCart = { items: [], total_items: 0, total_price: 0 };
+    const newCart = res?.data && typeof res.data === 'object' ? res.data : emptyCart;
+    setCart(newCart);
+    addNotification("Carrito vaciado.", "info");
+    return true;
+  } catch (err) {
+    const msg = err.response?.data?.detail || "No se pudo vaciar el carrito.";
+    addNotification(msg, "error");
+    return false;
+  } finally {
+    setLoading(false);
+  }
+}, [authAxios, addNotification, cart]);
+
 
     useEffect(() => {
         console.log("useEffect: Iniciando fetchCart. Usuario:", user ? user.username : "Invitado", "SessionKey:", sessionKey);
@@ -173,7 +189,7 @@ export const CartProvider = ({ children }) => {
 
     useEffect(() => {
         if (user && sessionKey) { 
-            console.log("Usuario autenticado. Limpiando session_key local del carrito después de posible fusión.");
+            // console.log("Usuario autenticado. Limpiando session_key local del carrito después de posible fusión.");
             localStorage.removeItem('cartSessionKey');
             setSessionKey(null);
         }

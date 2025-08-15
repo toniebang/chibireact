@@ -44,7 +44,7 @@ const Footer = () => {
                   <Link 
                     to="/sobre-chibi" 
                     className="inline-block bg-chibi-green text-white font-medium py-1.5 px-3 text-xs {/* Tamaño de texto y padding reducidos */}
-                               hover:bg-black transition duration-300 mt-3" 
+                               hover:bg-black transition duration-300 mt-3 rounded-full" 
                   >
                     <span>ACERCA DE NOSOTROS<FaCaretRight className="inline-block ml-1" /></span> {/* Margen del icono reducido */}
                   </Link>

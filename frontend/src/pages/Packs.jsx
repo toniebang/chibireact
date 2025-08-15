@@ -20,7 +20,7 @@ const Packs = () => {
                 </p>
                 <Link
                     to="/tienda"
-                    className="px-6 py-3 bg-chibi-green text-white font-medium rounded-none hover:bg-black transition-colors"
+                    className="px-6 py-3 bg-chibi-green text-white font-medium rounded-full hover:bg-black transition-colors"
                 >
                     Ir a la tienda
                 </Link>

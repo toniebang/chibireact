@@ -42,7 +42,7 @@ const ProductList = ({ products = [], isHome = false, gridColumns = "grid-cols-2
             <Link
               to="/tienda"
               className="inline-flex items-center bg-chibi-green text-white py-3 px-6 
-                         hover:bg-chibi-green-dark transition-colors duration-300 text-base shadow-md"
+                         hover:bg-chibi-green-dark transition-colors duration-300 text-base rounded-full shadow-md"
             >
               Ver Todos los Productos
               <FaArrowRight className="ml-2 text-lg" />

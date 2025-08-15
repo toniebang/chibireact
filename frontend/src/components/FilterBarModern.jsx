@@ -115,7 +115,7 @@ const FilterBarModern = ({
             className="px-3 py-2 text-sm border border-gray-300 rounded-none bg-white"
             title="Ordenar por"
           >
-            <option value="relevance">Relevancia</option>
+            <option value="relevance">Ordenar por</option>
             <option value="price_asc">Precio: menor a mayor</option>
             <option value="price_desc">Precio: mayor a menor</option>
             <option value="date_desc">Novedades</option>

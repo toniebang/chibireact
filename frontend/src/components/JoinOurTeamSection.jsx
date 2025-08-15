@@ -114,7 +114,7 @@ const JoinOurTeamSection = () => {
           href="/contacto" // Enlace al contacto
           className="inline-flex items-center bg-chibi-green text-white py-2 px-6
                      hover:bg-black transition-colors duration-300 text-base shadow-lg
-                     transform hover:scale-105"
+                     transform hover:scale-105 rounded-full"
           variants={buttonVariants} // Animación para el botón
         >
           Nuestro Contacto

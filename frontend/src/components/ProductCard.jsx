@@ -137,7 +137,7 @@ const toggleFav = (e) => {
         {isInCart ? (
           <button
             disabled
-            className="mt-3 w-full inline-flex items-center justify-center gap-2 py-2 px-3 rounded-none bg-black text-white cursor-not-allowed"
+            className="mt-3  w-full inline-flex items-center justify-center gap-2 py-2 px-3 rounded-full bg-black text-white cursor-not-allowed"
           >
             <BsCartCheck className="text-lg" />
             En carrito
@@ -145,7 +145,7 @@ const toggleFav = (e) => {
         ) : (
           <button
             onClick={handleAdd}
-            className="mt-3 w-full inline-flex items-center justify-center gap-2 py-2 px-3 rounded-none bg-black text-white hover:bg-gray-800"
+            className="mt-3 w-full inline-flex items-center justify-center gap-2 py-2 px-3 rounded-full bg-black text-white hover:bg-gray-800"
           >
             <FaPlus className="text-xs" />
             Añadir
