@@ -1,5 +1,6 @@
 # veluxapp/serializers.py
 
+from urllib import request
 from rest_framework import serializers
 from django.conf import settings
 from django.contrib.auth import get_user_model
@@ -129,25 +130,26 @@ class ProductosSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         representation = super().to_representation(instance)
         request = self.context.get('request')
-        
-        if request:
-            if instance.imagen1:
-                representation['imagen1'] = request.build_absolute_uri(instance.imagen1.url)
-            else:
-                representation['imagen1'] = None
 
-            if instance.imagen2:
-                representation['imagen2'] = request.build_absolute_uri(instance.imagen2.url)
-            else:
-                representation['imagen2'] = None
-            
-            if instance.imagen3:
-                representation['imagen3'] = request.build_absolute_uri(instance.imagen3.url)
-            else:
-                representation['imagen3'] = None
-        
+        def safe(instance_image):
+            if not instance_image:
+                return None
+            try:
+                url = instance_image.url
+            except Exception:
+                name = getattr(instance_image, 'name', None)
+                if name and str(name).startswith(('http://','https://')):
+                    url = name
+                else:
+                    return None
+            if request and not str(url).startswith(('http://','https://')):
+                return request.build_absolute_uri(url)
+            return url
+
+        representation['imagen1'] = safe(instance.imagen1)
+        representation['imagen2'] = safe(instance.imagen2)
+        representation['imagen3'] = safe(instance.imagen3)
         return representation
-    
     
 class ReviewsSerializer(serializers.ModelSerializer):
     # UserSerializer está definido antes
