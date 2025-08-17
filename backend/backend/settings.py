@@ -250,3 +250,16 @@ print(f"DEFAULT_FILE_STORAGE: {DEFAULT_FILE_STORAGE}")
 print(f"STATIC_URL: {STATIC_URL}")
 print(f"DO_SPACES_KEY (first 4): {config('DO_SPACES_KEY', default='NOPE')[:4]}")
 print("====================")
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {
+        "console": {"class": "logging.StreamHandler"},
+    },
+    "loggers": {
+        "django": {"handlers": ["console"], "level": "DEBUG"},
+        "django.db.backends": {"handlers": ["console"], "level": "DEBUG"},
+        "django.request": {"handlers": ["console"], "level": "DEBUG"},
+        "rest_framework": {"handlers": ["console"], "level": "DEBUG"},
+    },
+}
