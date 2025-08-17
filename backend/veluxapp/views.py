@@ -144,7 +144,7 @@ class ProductosViewSet(viewsets.ModelViewSet):
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
     # Permite filtrar por id, nombre, precio, stock, oferta, disponible, y categorías
     filterset_fields = ['id', 'nombre', 'precio', 'stock', 'oferta', 'disponible', 'categoria', 'linea']
-    search_fields = ['^nombre', '^descripcion', '^lista_caracteristicas'] # Búsqueda por nombre y descripción. '^' para "starts-with"
+    search_fields = ['^nombre', '^descripcion', 'lista_caracteristicas'] # Búsqueda por nombre y descripción. '^' para "starts-with"
     ordering_fields = ['nombre', 'precio', 'stock', 'fecha_subida'] # Permite ordenar por estos campos
     ordering = ['-fecha_subida']
 class PackViewSet(viewsets.ModelViewSet):
