@@ -9,6 +9,10 @@ from django.db import transaction
 from rest_framework import filters
 from django_filters.rest_framework import DjangoFilterBackend
 from .permissions import IsAdminUserOrReadOnly
+from .pagination import StandardResultsSetPagination
+
+
+
 
 from .models import (
     Categoria_Productos,
@@ -139,7 +143,7 @@ class ProductosViewSet(viewsets.ModelViewSet):
     serializer_class = ProductosSerializer
         # Solo los superadministradores pueden crear, actualizar o borrar categorías
     permission_classes = [IsAdminUserOrReadOnly]
-
+    pagination_class = StandardResultsSetPagination
  # --- Configuraciones de Filtrado para Productos ---
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
     # Permite filtrar por id, nombre, precio, stock, oferta, disponible, y categorías
