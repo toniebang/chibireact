@@ -5,6 +5,7 @@ from rest_framework import serializers
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth import authenticate
+from django.utils.text import slugify
 
 from .models import (
     Categoria_Productos,
@@ -64,6 +65,45 @@ class UserSerializer(serializers.ModelSerializer):
         
         instance.save()
         return instance
+    
+    
+    
+class RegisterSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+    password = serializers.CharField(write_only=True, min_length=8)
+    password_confirm = serializers.CharField(write_only=True)
+    username = serializers.CharField(required=False, allow_blank=True)
+    first_name = serializers.CharField(required=False, allow_blank=True)
+    last_name = serializers.CharField(required=False, allow_blank=True)
+
+    def validate(self, attrs):
+        email = attrs["email"].lower().strip()
+        if User.objects.filter(email=email).exists():
+            raise serializers.ValidationError({"email": "Este correo ya está registrado."})
+        if attrs["password"] != attrs["password_confirm"]:
+            raise serializers.ValidationError({"password_confirm": "Las contraseñas no coinciden."})
+        return attrs
+
+    def create(self, validated):
+        email = validated["email"].lower().strip()
+        base_username = validated.get("username") or email.split("@")[0]
+        username = base_username
+        i = 1
+        while User.objects.filter(username=username).exists():
+            username = f"{base_username}_{i}"
+            i += 1
+
+        user = User.objects.create_user(
+            username=username,
+            email=email,
+            password=validated["password"],
+            first_name=validated.get("first_name", ""),
+            last_name=validated.get("last_name", ""),
+        )
+        return user
+
+
+
 
 class CategoriaProductosSerializer(serializers.ModelSerializer):
     class Meta:

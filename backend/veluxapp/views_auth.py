@@ -5,7 +5,7 @@ import os
 from decouple import config 
 from django.conf import settings
 from django.contrib.auth import get_user_model
-
+from django.views.decorators.csrf import csrf_exempt
 from rest_framework import generics, status
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -13,31 +13,31 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from google.oauth2 import id_token
 from google.auth.transport import requests as google_requests
 from rest_framework_simplejwt.tokens import RefreshToken
-
-from .serializers import UserSerializer, GoogleAuthSerializer
+from django.utils.decorators import method_decorator
+from .serializers import UserSerializer, GoogleAuthSerializer, RegisterSerializer
 
 User = get_user_model()
 
 
 # --- Vistas de Autenticación Existentes ---
-
+@method_decorator(csrf_exempt, name='dispatch')
 class RegisterView(generics.CreateAPIView):
-    queryset = User.objects.all()
     permission_classes = (AllowAny,)
-    serializer_class = UserSerializer
+    authentication_classes = []
+    serializer_class = RegisterSerializer
 
     def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        user = serializer.save()
-
+        s = self.get_serializer(data=request.data)
+        s.is_valid(raise_exception=True)
+        user = s.save()
         refresh = RefreshToken.for_user(user)
         return Response({
-            "user": serializer.data,
+            "user": UserSerializer(user).data,
             "refresh": str(refresh),
             "access": str(refresh.access_token),
         }, status=status.HTTP_201_CREATED)
-
+        
+        
 class UserProfileView(generics.RetrieveUpdateAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer

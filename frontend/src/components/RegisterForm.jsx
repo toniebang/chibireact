@@ -22,7 +22,7 @@ const RegisterForm = ({ onSwitchToLogin }) => {
     const messages = [];
 
     if (localErrorObj && localErrorObj.message) {
-      messages.push(localErrorError.message);
+      messages.push(localErrorObj.message);
     } 
     
     if (authErrorObj && authErrorObj.message && messages.length === 0) {

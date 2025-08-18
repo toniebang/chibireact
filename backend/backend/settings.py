@@ -24,8 +24,7 @@ SECRET_KEY = config('DJANGO_SECRET_KEY', default='a-very-insecure-fallback-key-f
 DEBUG = config('DEBUG', default=False, cast=bool)
 ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='127.0.0.1', cast=Csv())
 
-# === USER MODEL ===
-AUTH_USER_MODEL = 'veluxapp.CustomUser'
+
 
 # === GOOGLE OAUTH ===
 GOOGLE_CLIENT_ID = config('GOOGLE_CLIENT_ID')
@@ -168,6 +167,10 @@ AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
 ]
 
+# === USER MODEL ===
+AUTH_USER_MODEL = 'veluxapp.CustomUser'
+
+
 # === FORCE SCRIPT NAME ===
 FORCE_SCRIPT_NAME = None
 
@@ -250,16 +253,3 @@ print(f"DEFAULT_FILE_STORAGE: {DEFAULT_FILE_STORAGE}")
 print(f"STATIC_URL: {STATIC_URL}")
 print(f"DO_SPACES_KEY (first 4): {config('DO_SPACES_KEY', default='NOPE')[:4]}")
 print("====================")
-LOGGING = {
-    "version": 1,
-    "disable_existing_loggers": False,
-    "handlers": {
-        "console": {"class": "logging.StreamHandler"},
-    },
-    "loggers": {
-        "django": {"handlers": ["console"], "level": "DEBUG"},
-        "django.db.backends": {"handlers": ["console"], "level": "DEBUG"},
-        "django.request": {"handlers": ["console"], "level": "DEBUG"},
-        "rest_framework": {"handlers": ["console"], "level": "DEBUG"},
-    },
-}
