@@ -47,7 +47,7 @@ const TrainerSection = () => {
       <ContactBookingModal
         isOpen={open}
         onClose={() => setOpen(false)}
-        phone="+240555766714"
+        phone="+240555308250"
         prefilledText="Hola Chibi, quiero reservar una sesión con Héctor. ¿Podemos coordinar?"
       />
     </section>

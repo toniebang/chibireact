@@ -14,7 +14,7 @@ import {
   IoPricetagOutline,
 } from 'react-icons/io5';
 
-const WHATSAPP_PHONE = '240555766714'; // actualiza si hace falta
+const WHATSAPP_PHONE = '240555308250'; // actualiza si hace falta
 
 const formatPrice = (v) => {
   const num = Number(v);

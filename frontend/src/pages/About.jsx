@@ -10,7 +10,6 @@ const About = () => {
     return (
         <div className='font-montserrat'>
             <Header />
-            <Banner page_title='ACERCA DE NOSOTROS' />
          <AboutSection />
             <OurTeam />
             <ContactInfo />

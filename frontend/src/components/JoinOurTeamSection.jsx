@@ -113,12 +113,12 @@ const JoinOurTeamSection = () => {
         <motion.a
           href="/contacto" // Enlace al contacto
           className="inline-flex items-center bg-chibi-green text-white py-2 px-6
-                     hover:bg-black transition-colors duration-300 text-base shadow-lg
+                     hover:bg-white hover:text-black transition-colors duration-300 text-base shadow-lg
                      transform hover:scale-105 rounded-full"
           variants={buttonVariants} // Animación para el botón
         >
           Nuestro Contacto
-          <FaArrowRight className="ml-2 text-lg" />
+          {/* <FaArrowRight className="ml-2 text-lg" /> */}
         </motion.a>
       </div>
     </motion.section>

@@ -6,7 +6,7 @@ import { Phone, MessageCircle } from "lucide-react"; // o react-icons si prefier
 const ContactBookingModal = ({
   isOpen,
   onClose,
-  phone = "+240555766714",           // ← tu número (sin espacios)
+  phone = "+240555308250",           // ← tu número (sin espacios)
   prefilledText = "Hola Chibi, quiero reservar una sesión con Héctor.",
 }) => {
   const waLink = useMemo(() => {

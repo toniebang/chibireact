@@ -7,7 +7,7 @@ import { FaWhatsapp, FaPhoneAlt, FaUserPlus } from 'react-icons/fa';
 const JoinModal = ({
   onClose,
   whatsappUrl = 'https://whatsapp.com/channel/0029VaDbgNUFXUujxd01Hk0a',
-  phone = '+240 555 7667 14',
+  phone = '+240 555 3082 50',
 }) => {
   return (
     <Modal onClose={onClose}>

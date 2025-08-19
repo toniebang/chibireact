@@ -69,7 +69,7 @@ const ContactInfo = () => {
                   </div>
                   <div className="text-box text-gray-700 text-lg">
                     <p>Malabo</p>
-                    <p>Detrás de Antiguo Ayuntamiento</p>
+                    <p>Calle Kenya, detrás del antiguo Ayuntamiento. Al lado de Hotel Annobon</p>
                   </div>
                 </motion.li>
                 <motion.li variants={itemVariants} className="flex items-start">
@@ -77,7 +77,7 @@ const ContactInfo = () => {
                     <FaPhone />
                   </div>
                   <div className="text-box text-gray-700 text-lg">
-                    <p>Teléfono: +240 212-212-2376</p>
+                    <p>Teléfono: +240 555 308 250</p>
                   </div>
                 </motion.li>
               </ul>
