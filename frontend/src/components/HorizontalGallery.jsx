@@ -1,14 +1,18 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa'; // FaTimes ya no es necesario
-
+import noir from '../assets/noir.jpg'; // Importa la imagen si es necesario  
+import img from '../assets/chibishop2.jpg'; // Importa la imagen si es necesario
+import marisa from '../assets/marisa-piel.jpeg';
+import training from '../assets/training.jpg';
+import pic from '../assets/pic.jpg'; // Importa la imagen si es necesario
+import look from '../assets/look.jpg'; // Importa la imagen si es necesario
 // Datos de ejemplo para la galería
 const galleryItems = [
-  { id: 1, src: 'https://plus.unsplash.com/premium_photo-1661401995801-4d86ba65d034?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8Zml0bmVzcyUyMG5lZ3JvfGVufDB8fDB8fHww', alt: 'Sesión de entrenamiento' },
-  { id: 2, src: 'https://www.tiendaculturista.com/fotos/hortaleza3.jpg', alt: 'Nuestra tienda' },
-  { id: 3, src: 'https://photos.peopleimages.com/picture/202305/2748153-hands-high-five-and-collaboration-of-people-in-gym-for-fitness-team-building-and-solidarity.-teamwork-group-of-friends-and-celebration-for-exercise-targets-goals-or-support-motivation-or-success-fit_400_400.jpg', alt: 'Nuestro equipo' },
-  { id: 4, src: 'https://cdn.images.express.co.uk/img/dynamic/126/590x/1757445_1.jpg', alt: 'Transformación' },
-  { id: 5, src: 'https://i.shgcdn.com/8315ff1a-82dc-4032-95b8-3f6d8ac1e815/-/format/auto/-/preview/3000x3000/-/quality/lighter/', alt: 'Antes y después' },
-  { id: 6, src: 'https://media.istockphoto.com/id/1047643096/photo/personal-trainer-helping-mature-woman-at-gym.jpg?s=612x612&w=0&k=20&c=GPz6iwk5R65UHXD-Az-ToPH-S-phrh01wc0W57tMOvw=', alt: 'Asesoramiento Personalizado' },
+  { id: 1, src: img, alt: 'Nuestra tienda' }, // Asegúrate de que la ruta sea correcta
+  { id: 2, src: training, alt: 'Entrenamientos' },
+  { id: 3, src: noir, alt: 'Nuestros Productos' },
+  { id: 4, src: marisa, alt: 'Transformación' },
+  { id: 5, src: look, alt: 'Feel Good' },
 ];
 
 const HorizontalGallery = () => {

@@ -20,7 +20,7 @@ const Footer = () => {
   const contactInfo = {
     ubicacion: 'Calle Kenya, detrás del antiguo Ayuntamiento. Al lado de Hotel Annobon',
     tlf: '+240 555 308 250',
-    correo: 'info@chibifitness.com',
+    correo: 'chibifeelgood@hotmail.com',
   };
 
   return (
@@ -72,9 +72,7 @@ const Footer = () => {
                   <ul className="quick-links w-1/2 space-y-2 text-sm">
                     <li><Link to="/packs" className="hover:text-chibi-green transition-colors duration-200">Dietas</Link></li>
                     <li><Link to="/packs" className="hover:text-chibi-green transition-colors duration-200">Asesoramiento</Link></li>
-                    <li><Link to="/tienda/categoria/te" className="hover:text-chibi-green transition-colors duration-200">Tés de Chibi</Link></li>
                     <li><Link to="/packs" className="hover:text-chibi-green transition-colors duration-200">Entrenamiento</Link></li>
-                    <li><Link to="/tienda/categoria/suplementos" className="hover:text-chibi-green transition-colors duration-200">Suplementos</Link></li>
                   </ul>
                 </div>
               </div>

@@ -103,7 +103,7 @@ const ChibiSkinSection = () => {
             />
             {/* Image Overlay Button - Circular and Centered */}
             <a
-              href="/tienda/chibi-skin" 
+              href="/chibi-skin" 
               className="absolute inset-0 flex items-center justify-center 
                          bg-opacity-40 opacity-70 group-hover:opacity-100 transition-opacity duration-300" 
             >

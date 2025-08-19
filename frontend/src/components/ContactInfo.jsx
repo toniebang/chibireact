@@ -91,7 +91,7 @@ const ContactInfo = () => {
                     <FaEnvelope />
                   </div>
                   <div className="text-box text-gray-700 text-lg">
-                    <p>noticias@chibifeelgood.com</p>
+                    <p>chibifeelgood@hotmail.com</p>
                   </div>
                 </motion.li>
                 <motion.li variants={itemVariants} className="flex items-start">

@@ -3,7 +3,7 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link, useNavigate } from 'react-router-dom';
 
-import offerProducts1 from '../assets/offer-products-1.jpg';
+import offerProducts1 from '../assets/trainer.jpg';
 import offerProducts22 from '../assets/offer-products-2.jpg';
 import offerProducts3 from '../assets/offer-products-3.jpg';
 import offerProducts4 from '../assets/offer-products-4.jpg';
@@ -12,11 +12,11 @@ import tile from '../assets/bg-2.png';
 const services = [
   {
     id: 'entrenamiento',
-    title: 'Entrenamiento al aire libre',
+    title: 'Entrenamiento con monitor',
     image: offerProducts1,
-    alt: 'Entrenamiento al aire libre',
+    alt: 'Entrenamiento con monitor',
     desc:
-      'Sesiones dinámicas en parques y espacios abiertos: fuerza funcional, HIIT y movilidad. Planes por niveles con seguimiento semanal.',
+      'Sesiones dinámicas en gimnasio: fuerza funcional, HIIT y movilidad. Planes por niveles con seguimiento semanal.',
     bullets: [
       'Grupos reducidos o 1-a-1',
       'Material incluido (bandas, cuerdas, kettlebells)',
@@ -42,9 +42,9 @@ const services = [
   },
   {
     id: 'tes',
-    title: 'Tés 100% naturales',
+    title: 'Tés naturales',
     image: offerProducts3,
-    alt: 'Tés 100% naturales',
+    alt: 'Tés naturales',
     desc:
       'Blend de tés funcionales Chibi: energía, digestión, descanso y depuración. Ingredientes naturales seleccionados.',
     bullets: [

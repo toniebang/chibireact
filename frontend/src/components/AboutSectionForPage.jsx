@@ -1,5 +1,5 @@
 import React from 'react';
-import planImg from '../assets/plan-img-2.png'; // Imagen dentro del img-holder
+import planImg from '../assets/offer-products-1.jpg'; // Imagen dentro del img-holder
 import sectionBg from '../assets/perfect-plan-bg.png'; // ¡La imagen de fondo de la sección
 const AboutSection = () => {
   return (
