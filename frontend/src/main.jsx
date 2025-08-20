@@ -9,6 +9,8 @@ import { AuthProvider } from './context/AuthContext';
 import { NotificationProvider } from './context/NotificationContext';
 import { CartProvider } from './context/CartContext.jsx';
 import { FavoritesProvider } from './context/FavoritesContext';
+// import ChangePasswordPage from './pages/ChangePasswordPage.jsx';
+
 
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import NotificationToast from './components/NotificationToast';
@@ -45,6 +47,7 @@ const router = createBrowserRouter([
       { path: '/chibi-skin', element: <ChibiSkinPage /> },
       { path: '/perfil/', element: <ProfilePage /> },
       { path: '/auth', element: <AuthPage /> },
+      //  { path: '/account/password', element: <ChangePasswordPage /> },
       {
         path: '/login/',
         loader: () => { window.location.replace('/auth'); return null; }

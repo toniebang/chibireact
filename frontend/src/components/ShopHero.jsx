@@ -37,10 +37,10 @@ const ShopHero = ({
       {/* Contenido centrado */}
       <div className="relative z-10 w-full px-4 text-center">
         <h1 className="text-3xl md:text-5xl font-bold text-white drop-shadow">
-          Encuentra tu producto
+          CHIBI Shop
         </h1>
         <p className="mt-3 text-white/90 text-sm md:text-base">
-          Busca por nombre o palabra clave
+          Cremas, jabones, productos, accesorios, tés y más.
         </p>
 
         {/* Contenedor animado del buscador */}
@@ -66,7 +66,7 @@ const ShopHero = ({
                   setFocused(false);
                 }, 150);
               }}
-              placeholder="Ej. arroz, shampoo, crema..."
+              placeholder="  Buscar..."
               className={[
                 "w-full bg-white text-gray-800",
                 "pl-4 pr-12 py-3 md:py-3.5 rounded-full",

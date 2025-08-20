@@ -74,3 +74,20 @@ html {
 .animate-shake {
   animation: shake 0.82s cubic-bezier(.36,.07,.19,.97) both;
 }
+
+
+/* Ocultar scrollbar (Chrome/Safari/Opera) */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Ocultar scrollbar (Firefox/IE/Edge) */
+.no-scrollbar {
+  -ms-overflow-style: none; /* IE y Edge Legacy */
+  scrollbar-width: none;    /* Firefox */
+}
+
+/* (Opcional) scroll suave con inercia en iOS */
+.touch-scroll {
+  -webkit-overflow-scrolling: touch;
+}

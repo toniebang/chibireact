@@ -11,6 +11,7 @@ import { useAuth } from '../context/AuthContext';
 import ShopHero from '../components/ShopHero';
 import CategoryIcons from '../components/CategoryIcons';
 import heroImg from '../assets/shopherobg.jpg';
+import heroImg2 from '../assets/shopherobg5.jpg';
 
 const PAGE_SIZE = 16;
 
@@ -243,7 +244,7 @@ const orderingParam = safeOrdering.includes(ordering) ? ordering : undefined;
       <Header />
 
       <ShopHero
-        backgroundImage={heroImg}
+        backgroundImage={heroImg2}
         searchTerm={searchTerm}
         setSearchTerm={handleSearchChange}
         onSearchSubmit={handleSearchSubmit}
