@@ -65,7 +65,7 @@ const FavoritesPage = () => {
     <>
       <Header />
 
-      <main className="max-w-7xl mx-auto px-4 md:px-6 mt-24">
+      <main className="max-w-7xl font-montserrat mx-auto px-4 md:px-6 mt-24">
         {/* Encabezado */}
         <div className="flex items-center justify-between mb-6">
           <h1 className="text-2xl md:text-3xl font-medium text-gray-900">

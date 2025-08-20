@@ -5,14 +5,18 @@ import img from '../assets/chibishop2.jpg'; // Importa la imagen si es necesario
 import marisa from '../assets/marisa-piel.jpeg';
 import training from '../assets/training.jpg';
 import pic from '../assets/pic.jpg'; // Importa la imagen si es necesario
-import look from '../assets/look.jpg'; // Importa la imagen si es necesario
+import look from '../assets/photo.jpg'; // Importa la imagen si es necesario
+import photo2 from '../assets/photo2.jpg'; // Importa la imagen si es necesario
+import photo3 from '../assets/aestetic.jpg'; // Importa la imagen si es necesario
 // Datos de ejemplo para la galería
 const galleryItems = [
   { id: 1, src: img, alt: 'Nuestra tienda' }, // Asegúrate de que la ruta sea correcta
   { id: 2, src: training, alt: 'Entrenamientos' },
-  { id: 3, src: noir, alt: 'Nuestros Productos' },
+  { id: 3, src: noir, alt: 'Productos' },
   { id: 4, src: marisa, alt: 'Transformación' },
-  { id: 5, src: look, alt: 'Feel Good' },
+  { id: 5, src: look, alt: 'Night session' },
+  { id: 6, src: photo2, alt: '' },
+  { id: 7, src: photo3, alt: '' },
 ];
 
 const HorizontalGallery = () => {

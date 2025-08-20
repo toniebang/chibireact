@@ -23,25 +23,40 @@ const AboutSection = () => {
           </div>
 
           {/* Columna del Contenido de Texto */}
-          <div className="w-full md:w-1/2 fitness-video-area"> 
-            <div className="perfect-plan-right right-text"> 
-              <h2 className="text-xl md:text-xl lg:text-xl font-semibold leading-tight mb-4 text-black">
-                SOMOS EL TEAM CHIBI
-              </h2>
-              <span className="block text-l md:text-l  mb-4 text-chibi-green"> 
-                En Chibi te acompañamos de la mano hasta que puedas lograr tu objetivo.
-              </span>
-              <p className="text-sm opacity-80 md:text-m leading-relaxed mb-6 text-gray-700 font-light">
-                Diseñamos un plan alimenticio que se ajuste a tus necesidades, tenemos una amplia gama de tés para acompañar a cualquiera que sea su objetivo y le
-                ofrecemos opciones de entrenamiento para un resultado más óptimo.
-              </p>
-              <div className="border-b border-gray-700 w-24 mx-auto md:mx-0 mb-4"></div> 
-              
-              <h4 className="text-3xl md:text-3xl font-bold text-black opacity-15 mt-6">
-                COMPROMETIDOS CON TU EXITO
-              </h4>
-            </div>
-          </div>
+        <div className="w-full md:w-1/2 fitness-video-area">
+  <div className="perfect-plan-right right-text">
+    <h2 className="text-xl md:text-2xl lg:text-3xl font-semibold leading-tight mb-4 text-black">
+      SOMOS EL TEAM CHIBI
+    </h2>
+
+    <span className="block text-l md:text-l mb-4 text-chibi-green">
+      Bienvenido a Chibi: una forma cercana y sencilla de cuidarte.
+    </span>
+
+    <p className="text-sm opacity-80 md:text-m leading-relaxed mb-3 text-gray-700 font-light">
+      Nacimos con una idea clara: hacer fácil lo saludable. Somos un equipo de personas que cree en
+      los cambios reales, en los hábitos que se disfrutan y en el acompañamiento de verdad. En Chibi,
+      cada paso se adapta a tu ritmo: te escuchamos, te guiamos y celebramos tus logros contigo.
+    </p>
+
+    <p className="text-sm opacity-80 md:text-m leading-relaxed mb-3 text-gray-700 font-light">
+      Creamos un universo que te cuida por dentro y por fuera: bienestar, movimiento y cuidado
+      personal, con esa energía verde que nos identifica. No buscamos perfección, buscamos
+      constancia. Porque cuando te sientes bien, todo fluye mejor.
+    </p>
+
+    <p className="text-sm opacity-80 md:text-m leading-relaxed mb-6 text-gray-700 font-light">
+      Este es nuestro compromiso: hacerlo simple, hacerlo real, hacerlo contigo.
+    </p>
+
+    <div className="border-b border-gray-700 w-24 mx-auto md:mx-0 mb-4"></div>
+
+    <h4 className="text-3xl md:text-3xl font-bold text-black opacity-15 mt-6">
+      COMPROMETIDOS CON TU ÉXITO
+    </h4>
+  </div>
+</div>
+
         </div>
       </div>
     </section>

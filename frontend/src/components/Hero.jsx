@@ -23,7 +23,7 @@ const Hero = () => {
           </h1>
 
           {/* Nota: md:text-m no existe en Tailwind → md:text-lg */}
-          <p className="text-base md:text-lg lg:text-2xl max-w-2xl mx-auto mb-8">
+          <p className="text-base md:text-lg lg:text-xl max-w-2xl mx-auto mb-8">
             Entrenamientos personalizados, planes nutricionales, productos de cuidado y la motivación que necesitas para alcanzar tus metas.
           </p>
 
