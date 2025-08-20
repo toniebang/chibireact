@@ -111,7 +111,7 @@ const JoinOurTeamSection = () => {
 
         {/* Botón de Llamada a la Acción */}
         <motion.a
-          href="/contacto" // Enlace al contacto
+          href="/sobre-chibi/" // Enlace al contacto
           className="inline-flex items-center bg-chibi-green text-white py-2 px-6
                      hover:bg-white hover:text-black transition-colors duration-300 text-base shadow-lg
                      transform hover:scale-105 rounded-full"
