@@ -3,6 +3,12 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../context/AuthContext';
 import CategoryModal from './CategoryModal';
 
+const LINEA_OPTIONS = [ // NEW
+  { value: 'skin', label: 'Chibi Skin' },
+  { value: 'tea',  label: 'Chibi Tea'  },
+  { value: 'todo', label: 'Todos'      },
+];
+
 const CreateProductForm = ({
   onClose,
   productToEdit = null,
@@ -26,6 +32,7 @@ const CreateProductForm = ({
     imagen1: null,
     imagen2: null,
     imagen3: null,
+    linea: 'todo', // NEW
   });
 
   // Previews en vivo
@@ -72,6 +79,7 @@ const CreateProductForm = ({
         imagen1: null,
         imagen2: null,
         imagen3: null,
+        linea: productToEdit.linea || 'todo', // NEW
       });
       setMessage('');
       setError('');
@@ -132,6 +140,23 @@ const CreateProductForm = ({
     setLoading(true);
     setMessage('');
     setError('');
+
+    // NEW: validaciones rápidas
+    if (formData.oferta) {
+      const p = Number(formData.precio) || 0;
+      const r = Number(formData.precio_rebaja) || 0;
+      if (r <= 0 || r >= p) {
+        setLoading(false);
+        setError('El precio de oferta debe ser mayor que 0 y menor que el precio.');
+        return;
+      }
+    }
+    // Asegurar que línea es válida
+    if (!['skin', 'tea', 'todo'].includes(formData.linea)) {
+      setLoading(false);
+      setError('Selecciona una línea válida.');
+      return;
+    }
 
     const data = new FormData();
     for (const key in formData) {
@@ -197,36 +222,36 @@ const CreateProductForm = ({
           <p className="text-sm font-medium text-gray-700 mb-2">Imágenes del producto</p>
           <div className="grid grid-cols-3 gap-3">
             {['imagen1', 'imagen2', 'imagen3'].map((key, idx) => (
-  <div key={key} className="flex flex-col items-start gap-2">
-    <div className="w-full aspect-square border border-gray-300 overflow-hidden">
-      {previews[key] ? (
-        <img src={previews[key]} alt={`Preview ${key}`} className="object-cover w-full h-full" />
-      ) : (
-        <div className="w-full h-full flex items-center justify-center text-xs text-gray-400">
-          Sin imagen
-        </div>
-      )}
-    </div>
-    <label className="block text-xs text-gray-600">{`Imagen ${idx + 1}`}</label>
+              <div key={key} className="flex flex-col items-start gap-2">
+                <div className="w-full aspect-square border border-gray-300 overflow-hidden">
+                  {previews[key] ? (
+                    <img src={previews[key]} alt={`Preview ${key}`} className="object-cover w-full h-full" />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center text-xs text-gray-400">
+                      Sin imagen
+                    </div>
+                  )}
+                </div>
+                <label className="block text-xs text-gray-600">{`Imagen ${idx + 1}`}</label>
 
-    {/* 👇 Botón custom */}
-    <label
-      htmlFor={`${key}-input`}
-      className="inline-block bg-gray-100 text-gray-800 text-sm px-3 py-2 rounded-none cursor-pointer hover:bg-gray-200"
-    >
-      Elegir imagen
-    </label>
-    <input
-      id={`${key}-input`}
-      type="file"
-      name={key}
-      accept="image/*"
-      onChange={handleChange}
-      className="hidden"
-      {...(!productToEdit && key === 'imagen1' ? { required: true } : {})}
-    />
-  </div>
-))}
+                {/* 👇 Botón custom */}
+                <label
+                  htmlFor={`${key}-input`}
+                  className="inline-block bg-gray-100 text-gray-800 text-sm px-3 py-2 rounded-none cursor-pointer hover:bg-gray-200"
+                >
+                  Elegir imagen
+                </label>
+                <input
+                  id={`${key}-input`}
+                  type="file"
+                  name={key}
+                  accept="image/*"
+                  onChange={handleChange}
+                  className="hidden"
+                  {...(!productToEdit && key === 'imagen1' ? { required: true } : {})}
+                />
+              </div>
+            ))}
           </div>
         </div>
 
@@ -243,6 +268,7 @@ const CreateProductForm = ({
               className="mt-1 block w-full border border-gray-300 rounded-none shadow-sm p-2.5 focus:ring-chibi-green focus:border-chibi-green"
             />
           </div>
+
           <div>
             <label className="block text-sm font-medium text-gray-700">Precio (XAF)</label>
             <input
@@ -279,6 +305,56 @@ const CreateProductForm = ({
               />
             </div>
           )}
+
+          {/* NEW: Línea de producto */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Línea de producto</label>
+            <select
+              name="linea"
+              value={formData.linea}
+              onChange={handleChange}
+              className="mt-1 block w-full border border-gray-300 rounded-none shadow-sm p-2.5 bg-white focus:ring-chibi-green focus:border-chibi-green"
+              required
+            >
+              {LINEA_OPTIONS.map(opt => (
+                <option key={opt.value} value={opt.value}>{opt.label}</option>
+              ))}
+            </select>
+          </div>
+
+          {/* NEW: Publicar (disponible) */}
+          <div className="flex items-center justify-between">
+            <span className="text-sm text-gray-700">Publicar</span>
+            <label className="inline-flex items-center cursor-pointer select-none">
+              <input
+                type="checkbox"
+                name="disponible"
+                checked={formData.disponible}
+                onChange={handleChange}
+                className="sr-only peer"
+              />
+              <div className="w-10 h-5 bg-gray-200 peer-checked:bg-chibi-green relative rounded-full transition-colors
+                              after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:w-4 after:h-4 after:bg-white
+                              after:rounded-full after:transition-transform peer-checked:after:translate-x-5" />
+            </label>
+          </div>
+
+          {/* NEW: En stock */}
+          <div className="flex items-center justify-between">
+            <span className="text-sm text-gray-700">En stock</span>
+            <label className="inline-flex items-center cursor-pointer select-none">
+              <input
+                type="checkbox"
+                name="stock"
+                checked={formData.stock}
+                onChange={handleChange}
+                className="sr-only peer"
+              />
+              <div className="w-10 h-5 bg-gray-200 peer-checked:bg-chibi-green relative rounded-full transition-colors
+                              after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:w-4 after:h-4 after:bg-white
+                              after:rounded-full after:transition-transform peer-checked:after:translate-x-5" />
+            </label>
+          </div>
         </div>
 
         {/* Categorías */}
