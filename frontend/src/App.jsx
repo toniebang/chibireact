@@ -1,5 +1,6 @@
 // src/App.jsx
 import React from 'react';
+import { Link } from 'react-router-dom';
 import Header from './components/Header';
 import Hero from './components/Hero';
 import AboutSection from './components/AboutSection';
@@ -27,7 +28,7 @@ function App() {
 
       {/* Home: muestra 4 destacados (ProductList ya corta a 4 cuando isHome=true) */}
       <div className='max-w-7xl mx-auto px-4 text-xl font-light sm:px-6 lg:px-8'>
-        <p>NUESTROS PRODUCTOS DESTACADOS</p>
+        <p>PRODUCTOS RECIÉN SUBIDOS EN <Link to="/tienda" className=' text-chibi-green hover:text-chibi-green-dark'>CHIBISHOP</Link></p>
       </div>
       <ProductList
         products={products}

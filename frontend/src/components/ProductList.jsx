@@ -6,7 +6,7 @@ import { FaArrowRight } from 'react-icons/fa';
 import ProductSkeleton from './ProductSkeleton';
 
 const ProductList = ({ products = [], isHome = false, gridColumns = "grid-cols-2 md:grid-cols-3 lg:grid-cols-4", loading = false, error = '' }) => {
-  const sectionTitle = isHome ? "NUESTROS PRODUCTOS DESTACADOS" : "TODOS NUESTROS PRODUCTOS";
+  const sectionTitle = isHome ? "PRODUCTOS RECIÉN SUBIDOS" : "TODOS NUESTROS PRODUCTOS";
   const displayProducts = isHome ? products.slice(0, 4) : products; // Home limita a 4; Tienda muestra todos los que vengan
 
   if (error) {
