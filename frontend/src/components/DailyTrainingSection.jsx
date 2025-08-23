@@ -35,7 +35,7 @@ const DailyTrainingSection = () => { // Considera renombrar este componente a al
                 VISITA NUESTRA TIENDA FÍSICA EN MALABO
               </h1>
               <p className="text-m text-white mb-6">
-                Descubre toda la variedad de productos de Chibi Shop en persona. Nos puedes encontrar fácilmente <span className="font-bold">Calle Kenya, detrás del antiguo Ayuntamiento. Al lado de Hotel Annobon</span>
+                Descubre toda la variedad de productos de Chibi Shop en persona. Nos puedes encontrar fácilmente en <span className="font-bold">Calle Kenya, detrás del antiguo Ayuntamiento. Al lado de Hotel Annobon</span>
               </p>
               <ul className="space-y-3 text-sm text-white">
                 <li className="flex items-center justify-center md:justify-start">
