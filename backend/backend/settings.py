@@ -182,6 +182,8 @@ CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:5173",
     "http://192.168.0.110:5173",
     "https://chibi-app-l5q6z.ondigitalocean.app",
+    "https://chibifeelgood.com",
+    "https://www.chibifeelgood.com",
 ]
 CORS_ALLOW_CREDENTIALS = True
 CORS_EXPOSE_HEADERS = ['X-Session-Key']
