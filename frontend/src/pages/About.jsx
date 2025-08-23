@@ -12,7 +12,7 @@ const About = () => {
             <Header />
          <AboutSection />
             <OurTeam />
-            <ContactInfo />
+            <ContactInfo id="contact" />
             <Footer />
         </div>
     );

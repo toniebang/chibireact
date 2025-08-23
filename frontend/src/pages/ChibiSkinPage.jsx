@@ -13,6 +13,7 @@ import chibiskin3 from "../assets/chibiskin3.jpg";
 import chibiskin4 from "../assets/chibiskin4.webp";
 
 const PAGE_SIZE = 16;
+const LINEA = 'skin'; // 👈 ahora filtramos por línea “skin”
 
 // limpia params
 const buildParams = (obj) =>
@@ -20,13 +21,10 @@ const buildParams = (obj) =>
     Object.entries(obj).filter(([_, v]) => v !== undefined && v !== '' && v !== false && v !== null)
   );
 
-const normalize = (s) => (s || '').toLowerCase().replace(/\s+/g, '');
-
 const ChibiSkinPage = () => {
   const { authAxios } = useAuth();
 
   // Datos
-  const [catId, setCatId] = useState(null);
   const [products, setProducts] = useState([]);
   const [count, setCount] = useState(0);
   const [nextUrl, setNextUrl] = useState(null);
@@ -34,90 +32,25 @@ const ChibiSkinPage = () => {
 
   // UI
   const [page, setPage] = useState(1);
-  const [loadingCat, setLoadingCat] = useState(true);
   const [loadingProds, setLoadingProds] = useState(false);
   const [error, setError] = useState('');
 
-  // --- Buscar la categoría "Chibi Skin" de forma robusta ---
-  useEffect(() => {
-    let alive = true;
-
-    const findChibiSkinCategory = async () => {
-      setLoadingCat(true);
-      setError('');
-
-      try {
-        // 1) Intento por search (si tu backend soporta busqueda)
-        try {
-          const resSearch = await authAxios.get('/categorias/', {
-            params: { search: 'chibi', page_size: 200 }
-          });
-          if (!alive) return;
-          const listSearch = resSearch.data?.results || [];
-          const viaSearch = listSearch.find(
-            (c) =>
-              normalize(c.nombre) === 'chibiskin' ||
-              (c.nombre || '').toLowerCase().includes('chibi skin')
-          );
-          if (viaSearch?.id) {
-            console.log('[ChibiSkin] Categoría encontrada via search:', viaSearch);
-            setCatId(viaSearch.id);
-            return;
-          }
-        } catch (e) {
-          // si falla search, seguimos con fallback
-        }
-
-        // 2) Fallback: traer muchas categorías y buscar por nombre
-        const res = await authAxios.get('/categorias/', { params: { page_size: 200 } });
-        if (!alive) return;
-        const list = res.data?.results || [];
-        const found = list.find(
-          (c) =>
-            normalize(c.nombre) === 'chibiskin' ||
-            (c.nombre || '').toLowerCase().includes('chibi skin')
-        );
-
-        if (found?.id) {
-          console.log('[ChibiSkin] Categoría encontrada via fallback:', found);
-          setCatId(found.id);
-        } else {
-          console.warn('[ChibiSkin] No se encontró la categoría "Chibi Skin". Lista:', list);
-          setCatId(null);
-          setError('No se encontró la categoría "Chibi Skin".');
-        }
-      } catch (e) {
-        if (!alive) return;
-        console.error('[ChibiSkin] Error cargando categorías:', e);
-        setError('No se pudieron cargar las categorías.');
-        setCatId(null);
-      } finally {
-        if (alive) setLoadingCat(false);
-      }
-    };
-
-    findChibiSkinCategory();
-    return () => { alive = false; };
-  }, [authAxios]);
-
-  // --- Cargar productos por esa categoría ---
+  // --- Cargar productos por línea = chibi ---
   const fetchProducts = async (targetPage = 1) => {
-    if (!catId) return;
     setLoadingProds(true);
     setError('');
     try {
       const params = buildParams({
-        categoria: catId,          // <- el backend espera el ID
+        linea: LINEA,            // 👈 clave del cambio
         page: targetPage,
         page_size: PAGE_SIZE,
         ordering: '-fecha_subida',
       });
 
-      console.log('[ChibiSkin] Fetch productos params =>', params);
+      // console.log('[Chibi] Fetch productos params =>', params);
 
       const res = await authAxios.get('/productos/', { params });
       const { results = [], count = 0, next = null, previous = null } = res.data || {};
-      console.log('[ChibiSkin] Productos recibidos =>', results.length);
 
       setProducts(results);
       setCount(count);
@@ -126,7 +59,7 @@ const ChibiSkinPage = () => {
       setPage(targetPage);
       if (targetPage !== page) window.scrollTo({ top: 0, behavior: 'smooth' });
     } catch (e) {
-      console.error('[ChibiSkin] Error cargando productos:', e);
+      console.error('[Chibi] Error cargando productos:', e);
       setError('No se pudieron cargar los productos.');
       setProducts([]);
       setCount(0);
@@ -138,9 +71,9 @@ const ChibiSkinPage = () => {
   };
 
   useEffect(() => {
-    if (catId) fetchProducts(1);
+    fetchProducts(1);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [catId]);
+  }, []);
 
   const totalPages = useMemo(
     () => Math.max(1, Math.ceil((count || 0) / PAGE_SIZE)),
@@ -244,47 +177,39 @@ const ChibiSkinPage = () => {
       <main id="productos" className="max-w-7xl font-montserrat mx-auto px-4 md:px-6 pb-12">
         <h2 className="text-2xl font-light mb-4">Línea Chibi Skin</h2>
 
-        {loadingCat ? (
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6">
-            {Array.from({ length: 8 }).map((_, i) => <ProductSkeleton key={i} />)}
-          </div>
-        ) : error ? (
+        {error ? (
           <div className="text-red-600 py-8">{error}</div>
+        ) : loadingProds ? (
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6">
+            {Array.from({ length: PAGE_SIZE }).map((_, i) => <ProductSkeleton key={i} />)}
+          </div>
+        ) : products.length === 0 ? (
+          <div className="text-gray-600 py-12">No hay productos en esta línea todavía.</div>
         ) : (
           <>
-            {loadingProds ? (
-              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6">
-                {Array.from({ length: PAGE_SIZE }).map((_, i) => <ProductSkeleton key={i} />)}
-              </div>
-            ) : products.length === 0 ? (
-              <div className="text-gray-600 py-12">No hay productos en esta categoría todavía.</div>
-            ) : (
-              <ProductList
-                products={products}
-                loading={false}
-                error=""
-                isHome={false}
-                gridColumns="grid-cols-2 sm:grid-cols-3 lg:grid-cols-4"
-              />
-            )}
+            <ProductList
+              products={products}
+              loading={false}
+              error=""
+              isHome={false}
+              gridColumns="grid-cols-2 sm:grid-cols-3 lg:grid-cols-4"
+            />
 
-            {products.length > 0 && (
-              <div className="mt-8 flex items-center justify-between">
-                <PaginationClassic
-                  page={page}
-                  totalPages={Math.max(1, Math.ceil((count || 0) / PAGE_SIZE))}
-                  hasPrev={Boolean(prevUrl)}
-                  hasNext={Boolean(nextUrl)}
-                  onPageChange={goToPage}
-                />
-                <div className="text-sm text-gray-600 whitespace-nowrap">
-                  Página <span className="font-medium text-gray-800">{page}</span> de{' '}
-                  <span className="font-medium text-gray-800">
-                    {Math.max(1, Math.ceil((count || 0) / PAGE_SIZE))}
-                  </span>
-                </div>
+            <div className="mt-8 flex items-center justify-between">
+              <PaginationClassic
+                page={page}
+                totalPages={Math.max(1, Math.ceil((count || 0) / PAGE_SIZE))}
+                hasPrev={Boolean(prevUrl)}
+                hasNext={Boolean(nextUrl)}
+                onPageChange={goToPage}
+              />
+              <div className="text-sm text-gray-600 whitespace-nowrap">
+                Página <span className="font-medium text-gray-800">{page}</span> de{' '}
+                <span className="font-medium text-gray-800">
+                  {Math.max(1, Math.ceil((count || 0) / PAGE_SIZE))}
+                </span>
               </div>
-            )}
+            </div>
           </>
         )}
 

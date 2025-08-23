@@ -1,5 +1,5 @@
 // src/components/Footer.jsx
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
   FaMapMarkerAlt,
@@ -13,9 +13,11 @@ import {
 } from 'react-icons/fa';
 
 import footerLogo from '../assets/logochibi_blanco.png';
+import TermsModal from './TermsModal'; // ⬅️ import del modal
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
+  const [showTerms, setShowTerms] = useState(false); // ⬅️ estado del modal
 
   const contactInfo = {
     ubicacion: 'Calle Kenya, detrás del antiguo Ayuntamiento. Al lado de Hotel Annobon',
@@ -150,44 +152,61 @@ const Footer = () => {
               </p>
             </div>
 
-            <div className="social-links flex items-center space-x-4">
-              <a
-                href="https://github.com/toniebang"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-gray-400 hover:text-chibi-green transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-white/50 rounded"
-                aria-label="GitHub"
-                title="GitHub"
+            {/* Botón: Términos y Condiciones */}
+            <div className="flex items-center gap-4">
+              <button
+                type="button"
+                onClick={() => setShowTerms(true)}
+                aria-haspopup="dialog"
+                aria-expanded={showTerms}
+                className="text-gray-400 hover:text-chibi-green transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-white/50 rounded text-xs"
+                title="Ver Términos y Condiciones"
               >
-                <FaGithub className="text-lg" />
-              </a>
+                Términos y Condiciones
+              </button>
 
-              {/* Email (usa el ícono de Google Plus como pediste, enlazando a Gmail compose) */}
-              <a
-                href="https://mail.google.com/mail/?view=cm&to=antonioebang97@gmail.com&su=Desde la web Chibi&body=Hola%20Tony!"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-gray-400 hover:text-chibi-green transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-white/50 rounded"
-                aria-label="Enviar email"
-                title="Email"
-              >
-                <FaGooglePlusG className="text-lg" />
-              </a>
+              <div className="social-links flex items-center space-x-4">
+                <a
+                  href="https://github.com/toniebang"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-gray-400 hover:text-chibi-green transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-white/50 rounded"
+                  aria-label="GitHub"
+                  title="GitHub"
+                >
+                  <FaGithub className="text-lg" />
+                </a>
 
-              <a
-                href="https://www.linkedin.com/in/antonio-ebang-tom%C3%A9-1498a1269"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-gray-400 hover:text-chibi-green transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-white/50 rounded"
-                aria-label="LinkedIn"
-                title="LinkedIn"
-              >
-                <FaLinkedinIn className="text-lg" />
-              </a>
+                {/* Email */}
+                <a
+                  href="https://mail.google.com/mail/?view=cm&to=antonioebang97@gmail.com&su=Desde la web Chibi&body=Hola%20Tony!"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-gray-400 hover:text-chibi-green transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-white/50 rounded"
+                  aria-label="Enviar email"
+                  title="Email"
+                >
+                  <FaGooglePlusG className="text-lg" />
+                </a>
+
+                <a
+                  href="https://www.linkedin.com/in/antonio-ebang-tom%C3%A9-1498a1269"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-gray-400 hover:text-chibi-green transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-white/50 rounded"
+                  aria-label="LinkedIn"
+                  title="LinkedIn"
+                >
+                  <FaLinkedinIn className="text-lg" />
+                </a>
+              </div>
             </div>
           </div>
         </div>
       </section>
+
+      {/* Render del modal */}
+      {showTerms && <TermsModal onClose={() => setShowTerms(false)} />}
     </>
   );
 };

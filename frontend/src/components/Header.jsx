@@ -68,11 +68,12 @@ const Header = () => {
     return () => document.body.classList.remove('overflow-hidden');
   }, [isSidebarOpen]);
 
-  const handleLogout = () => {
-    logout();
-    setIsSidebarOpen(false);
-  };
-
+const handleLogout = () => {
+  const ok = window.confirm('¿Seguro que quieres cerrar sesión?');
+  if (!ok) return;
+  logout();
+  setIsSidebarOpen(false);
+}
   const getProfileImageUrl = () => user?.profile_picture || DEFAULT_AVATAR_URL;
 
   const isActive = (path) =>

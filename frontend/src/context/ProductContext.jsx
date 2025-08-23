@@ -34,6 +34,7 @@ const fetchProducts = useCallback(
 
         const res = await authAxios.get('/productos/', { params: finalParams });
         const data = res.data || {};
+        console.log('[ProductContext] fetched data:', data);
         const list = Array.isArray(data) ? data : data.results || [];
 
         setProducts(list);

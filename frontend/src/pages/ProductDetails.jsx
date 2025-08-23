@@ -33,6 +33,16 @@ const ProductDetails = () => {
     return items.some((it) => it.product_id === Number(id));
   }, [cart, id]);
 
+  // NEW: etiqueta amigable para la línea
+  const lineaLabel = useMemo(() => {
+    const raw = product?.linea ? String(product.linea).toLowerCase().trim() : '';
+    if (!raw) return null;
+    if (['skin', 'chibiskin', 'chibi skin'].includes(raw)) return 'Chibi Skin';
+    if (['tea', 'chibitea', 'chibi tea'].includes(raw)) return 'Chibi Tea';
+    // fallback: capitaliza
+    return raw.charAt(0).toUpperCase() + raw.slice(1);
+  }, [product]);
+
   // Carga producto
   useEffect(() => {
     let alive = true;
@@ -55,22 +65,24 @@ const ProductDetails = () => {
     return () => { alive = false; };
   }, [authAxios, id]);
 
-  // Carga relacionados (por primera categoría)
+  // Carga relacionados (por línea; fallback a categoría)
   useEffect(() => {
-    if (!product?.categoria?.length) {
-      setRelated([]);
-      return;
-    }
-    const firstCat = product.categoria[0]?.id;
-    if (!firstCat) return;
-
     let alive = true;
     (async () => {
+      if (!product) return;
       setLoadingRelated(true);
       try {
-        const res = await authAxios.get('/productos/', {
-          params: { categoria: firstCat, page_size: 8 },
-        });
+        let params = null;
+        if (product.linea) {
+          params = { linea: product.linea, page_size: 8 };
+        } else if (product?.categoria?.[0]?.id) {
+          params = { categoria: product.categoria[0].id, page_size: 8 };
+        } else {
+          setRelated([]);
+          return;
+        }
+
+        const res = await authAxios.get('/productos/', { params });
         if (!alive) return;
         const list = (res.data?.results || []).filter((p) => p.id !== product.id);
         setRelated(list);
@@ -88,21 +100,17 @@ const ProductDetails = () => {
   const handleAdd = async () => {
     if (!product?.stock) return;
     await addToCart(product.id, 1);
-    // El botón actualizará su estado con isInCart
   };
 
   const handleBuyNow = async () => {
     if (!product?.stock) return;
     await addToCart(product.id, 1);
-    navigate('/carrito/'); // ir directo al carrito
+    navigate('/carrito/');
   };
 
   const chips = useMemo(() => {
     const raw = product?.lista_caracteristicas || '';
-    return raw
-      .split(',')
-      .map(s => s.trim())
-      .filter(Boolean);
+    return raw.split(',').map(s => s.trim()).filter(Boolean);
   }, [product]);
 
   const priceBlock = useMemo(() => {
@@ -196,16 +204,10 @@ const ProductDetails = () => {
                     <button
                       key={i}
                       onClick={() => setMainImg(img)}
-                      className={`border ${
-                        img === mainImg ? "border-black" : "border-gray-200"
-                      } p-0 overflow-hidden w-full aspect-square`}
+                      className={`border ${img === mainImg ? "border-black" : "border-gray-200"} p-0 overflow-hidden w-full aspect-square`}
                       title={`Imagen ${i + 1}`}
                     >
-                      <img
-                        src={img}
-                        alt={`Vista ${i + 1}`}
-                        className="w-full h-full object-cover"
-                      />
+                      <img src={img} alt={`Vista ${i + 1}`} className="w-full h-full object-cover" />
                     </button>
                   ))}
               </div>
@@ -228,8 +230,6 @@ const ProductDetails = () => {
                 </p>
               )}
 
-            
-
               {/* Estado stock */}
               <div className="mt-2 text-sm">
                 {product.stock ? (
@@ -239,44 +239,40 @@ const ProductDetails = () => {
                 )}
               </div>
 
-{/* Botones */}
-<div className="mt-5 flex flex-col sm:flex-row gap-3">
-  {isInCart ? (
-    <button
-      type="button"
-      aria-label="En el carrito"
-      className="flex items-center justify-center gap-2 px-5 py-3 text-white bg-black rounded-none cursor-default"
-      disabled
-    >
-      <BsCartCheck />
-      En el carrito
-    </button>
-  ) : (
-    <button
-      onClick={handleAdd}
-      disabled={!product.stock}
-      aria-label="Añadir al carrito"
-      className="flex items-center justify-center gap-2 px-5 py-3 text-black bg-white hover:bg-gray-200 border-2 border-black cursor-pointer rounded-none disabled:opacity-60"
-    >
-      <FaShoppingCart />
-      Añadir al carrito
-    </button>
-  )}
+              {/* Botones */}
+              <div className="mt-5 flex flex-col sm:flex-row gap-3">
+                {isInCart ? (
+                  <button
+                    type="button"
+                    aria-label="En el carrito"
+                    className="flex items-center justify-center gap-2 px-5 py-3 text-white bg-black rounded-none cursor-default"
+                    disabled
+                  >
+                    <BsCartCheck />
+                    En el carrito
+                  </button>
+                ) : (
+                  <button
+                    onClick={handleAdd}
+                    disabled={!product.stock}
+                    aria-label="Añadir al carrito"
+                    className="flex items-center justify-center gap-2 px-5 py-3 text-black bg-white hover:bg-gray-200 border-2 border-black cursor-pointer rounded-none disabled:opacity-60"
+                  >
+                    <FaShoppingCart />
+                    Añadir al carrito
+                  </button>
+                )}
 
-  <button
-    onClick={handleBuyNow}
-    disabled={!product.stock}
-    aria-label="Pedir ahora"
-    className="flex items-center justify-center gap-2 px-5 py-3 text-white bg-black hover:bg-chibi-green rounded-none k disabled:opacity-60 cursor-pointer"
-  >
-    <FaBolt />
-    Pedir ahora
-  </button>
-</div>
-
-
-              {/* Descripción */}
-             
+                <button
+                  onClick={handleBuyNow}
+                  disabled={!product.stock}
+                  aria-label="Pedir ahora"
+                  className="flex items-center justify-center gap-2 px-5 py-3 text-white bg-black hover:bg-chibi-green rounded-none disabled:opacity-60 cursor-pointer"
+                >
+                  <FaBolt />
+                  Pedir ahora
+                </button>
+              </div>
 
               {/* Características (chips) */}
               {chips.length > 0 && (
@@ -299,14 +295,20 @@ const ProductDetails = () => {
 
               {/* Meta */}
               <div className="mt-6 text-xs text-gray-500">
+                {/* NEW: línea de producto */}
+                {lineaLabel && (
+                  <div className="mb-1">
+                    Línea de producto: <span className="text-gray-700 font-medium">{lineaLabel}</span>
+                  </div>
+                )}
                 {product.fecha_subida && (
                   <div>
-                    Subido:{" "}
-                    {new Date(product.fecha_subida).toLocaleDateString("es-ES")}
+                    Subido: {new Date(product.fecha_subida).toLocaleDateString("es-ES")}
                   </div>
                 )}
               </div>
-                {/* Descripción general */}
+
+              {/* Descripción general */}
               <p className="mt-3 text-sm text-gray-600 leading-relaxed">
                 Nuestros productos son cuidadosamente seleccionados y mantenidos
                 para ofrecerte la mejor calidad y frescura. Cada artículo es
@@ -314,10 +316,9 @@ const ProductDetails = () => {
                 experiencia única de compra.
               </p>
             </div>
-
           </div>
         ) : null}
-    
+
         {/* Relacionados */}
         <section className="mt-16">
           <h2 className="text-xl font-light mb-6">Productos Relacionados</h2>

@@ -29,7 +29,7 @@ const teamMembers = [
   {
     id: 3,
     nombre: 'Antonio Ebang',
-    departamento: 'Desarrollador web',
+    departamento: 'Informático',
     foto: teamMember3,
     email: 'antonioebang97@gmail.com',
     telefono: '+240555766714',

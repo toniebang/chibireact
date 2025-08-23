@@ -110,7 +110,7 @@ export const AuthProvider = ({ children }) => {
       console.error("fetchUserProfile: Error al obtener perfil de usuario:", err.response?.data || err.message || err);
       // --- FIN DEBUG LOGS ---
       const displayMessage = 'Tu sesión ha expirado o es inválida. Por favor, inicia sesión de nuevo.';
-      addNotification(displayMessage, 'error');
+      // addNotification(displayMessage, 'error');
       setError({ message: displayMessage });
       logout(false, true); // Logout local si falla la validación del token
       return null;
@@ -130,7 +130,7 @@ export const AuthProvider = ({ children }) => {
       const newRefreshToken = response.data.refresh;
 
       // --- DEBUG LOGS ---
-      console.log("Login: Tokens obtenidos. Access:", newAccessToken ? newAccessToken.substring(0, 10) + '...' : 'null', "Refresh:", newRefreshToken ? newRefreshToken.substring(0, 10) + '...' : 'null');
+      // console.log("Login: Tokens obtenidos. Access:", newAccessToken ? newAccessToken.substring(0, 10) + '...' : 'null', "Refresh:", newRefreshToken ? newRefreshToken.substring(0, 10) + '...' : 'null');
       // --- FIN DEBUG LOGS ---
 
       setAccessToken(newAccessToken);

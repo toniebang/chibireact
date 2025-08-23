@@ -1,7 +1,7 @@
 import React, { useState } from 'react'; 
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import logo from '../assets/logochibi_negro.png';
+import logo from '../assets/logochibi_negro.png'; 
 import TermsModal from './TermsModal'; 
 import GoogleSignInButton from './GoogleOAuthProvider';
 import { FiEye, FiEyeOff } from 'react-icons/fi';
