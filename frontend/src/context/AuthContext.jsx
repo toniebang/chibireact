@@ -1,16 +1,15 @@
 // src/context/AuthContext.jsx
 import React, { createContext, useState, useContext, useEffect, useCallback } from 'react';
-import axios from 'axios'; // ¡Importa Axios aquí!
+import axios from 'axios';
 import { useNotifications } from './NotificationContext';
 
-// Obtén la URL base de la API aquí, solo una vez por este contexto
+// URL base de la API (asegúrate de tener VITE_API_BASE_URL en tu entorno)
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
-// Crea la instancia de Axios que será utilizada en todo el AuthContext
-// y se compartirá con otros contextos que la necesiten (como CartContext)
+// Instancia compartida de Axios
 const authAxios = axios.create({
   baseURL: API_BASE_URL,
-  timeout: 20000,
+  timeout: 20000, // timeout base (no-multipart)
   headers: {
     'Content-Type': 'application/json',
   },
@@ -26,10 +25,10 @@ const AuthContext = createContext({
   login: async () => false,
   register: async () => ({ success: false }),
   logout: async () => {},
-  authAxios: authAxios, // <--- EXPORTA LA INSTANCIA CONFIGURADA AQUÍ
+  authAxios,
 });
 
-// Helper function para formatear errores del backend
+// Helper: formatear errores del backend para mostrarlos
 const formatBackendErrorForDisplay = (backendError) => {
   if (!backendError) return 'Error desconocido del servidor.';
   if (typeof backendError === 'string') return backendError;
@@ -57,292 +56,219 @@ export const AuthProvider = ({ children }) => {
 
   const { addNotification } = useNotifications();
 
-  // Función de Logout
-  const logout = useCallback(async (sendToServer = true, keepError = false) => {
-    // --- DEBUG LOGS ---
-    console.log("Logout iniciado. sendToServer:", sendToServer, "keepError:", keepError);
-    // --- FIN DEBUG LOGS ---
-    setLoading(true);
-    if (!keepError) {
-      setError(null);
-    }
-    try {
-      if (sendToServer && refreshToken) {
-        console.log('Intentando logout en el servidor. Refresh token:', refreshToken ? refreshToken.substring(0, 10) + '...' : 'N/A');
-        await authAxios.post('/logout/', { refresh_token: refreshToken });
-        addNotification('Has cerrado sesión correctamente.', 'info');
-      }
-    } catch (err) {
-      // --- DEBUG LOGS ---
-      console.error("Error al hacer logout en el servidor:", err.response?.data || err.message || err);
-      // --- FIN DEBUG LOGS ---
-      const displayMessage = 'Hubo un problema al cerrar sesión en el servidor, pero tu sesión local ha sido terminada.';
-      addNotification(displayMessage, 'error');
-      setError({ message: displayMessage });
-    } finally {
-      setUser(null);
-      setAccessToken(null);
-      setRefreshToken(null);
-      localStorage.removeItem('accessToken');
-      localStorage.removeItem('refreshToken');
-      setLoading(false);
-      // --- DEBUG LOGS ---
-      console.log("Logout finalizado. Estado de usuario y tokens limpiados.");
-      // --- FIN DEBUG LOGS ---
-    }
-  }, [refreshToken, addNotification]);
-
-  const fetchUserProfile = useCallback(async (token) => {
-    // --- DEBUG LOGS ---
-    console.log("fetchUserProfile: Intentando obtener perfil con token:", token ? token.substring(0, 10) + '...' : 'No token');
-    // --- FIN DEBUG LOGS ---
-    try {
-      const response = await authAxios.get('/me/', {
-        headers: { Authorization: `Bearer ${token}` }, // Envía el token explícitamente para esta llamada inicial
-      });
-      // --- DEBUG LOGS ---
-      console.log("fetchUserProfile: Perfil de usuario obtenido exitosamente:", response.data);
-      // --- FIN DEBUG LOGS ---
-      setUser(response.data);
-      return response.data;
-    } catch (err) {
-      // --- DEBUG LOGS ---
-      console.error("fetchUserProfile: Error al obtener perfil de usuario:", err.response?.data || err.message || err);
-      // --- FIN DEBUG LOGS ---
-      const displayMessage = 'Tu sesión ha expirado o es inválida. Por favor, inicia sesión de nuevo.';
-      // addNotification(displayMessage, 'error');
-      setError({ message: displayMessage });
-      logout(false, true); // Logout local si falla la validación del token
-      return null;
-    }
-  }, [addNotification, logout]);
-
-  const login = useCallback(async (identifier, password) => {
-    // --- DEBUG LOGS ---
-    console.log("Login: Iniciando intento de login para:", identifier);
-    // --- FIN DEBUG LOGS ---
-    setLoading(true);
-    setError(null);
-    try {
-      // Usa authAxios para la llamada de login
-      const response = await authAxios.post('/token/', { identifier, password });
-      const newAccessToken = response.data.access;
-      const newRefreshToken = response.data.refresh;
-
-      // --- DEBUG LOGS ---
-      // console.log("Login: Tokens obtenidos. Access:", newAccessToken ? newAccessToken.substring(0, 10) + '...' : 'null', "Refresh:", newRefreshToken ? newRefreshToken.substring(0, 10) + '...' : 'null');
-      // --- FIN DEBUG LOGS ---
-
-      setAccessToken(newAccessToken);
-      setRefreshToken(newRefreshToken);
-      localStorage.setItem('accessToken', newAccessToken);
-      localStorage.setItem('refreshToken', newRefreshToken);
-
-      // --- DEBUG LOGS ---
-      console.log("Login: Llamando a fetchUserProfile con el nuevo token.");
-      // --- FIN DEBUG LOGS ---
-      await fetchUserProfile(newAccessToken); // <--- Llama a fetchUserProfile aquí
-      addNotification('¡Inicio de sesión exitoso! Bienvenido.', 'success');
-      // --- DEBUG LOGS ---
-      console.log("Login: Proceso de login completado exitosamente.");
-      // --- FIN DEBUG LOGS ---
-      return true;
-    } catch (err) {
-      // --- DEBUG LOGS ---
-      console.error("Login: Error en el login:", err.response?.data || err.message || err);
-      // --- FIN DEBUG LOGS ---
-      let derivedToastAndFormMessage = 'Error de red o desconocido durante el login.';
-
-      if (axios.isAxiosError(err) && err.response) {
-        derivedToastAndFormMessage = formatBackendErrorForDisplay(err.response.data);
-        if (
-            derivedToastAndFormMessage.includes('No se encontraron credenciales válidas.') ||
-            derivedToastAndFormMessage.includes('No active account found with the given credentials') ||
-            derivedToastAndFormMessage.includes('no activa encontrada con las credenciales dadas') ||
-            derivedToastAndFormMessage.includes('Credenciales inválidas.')
-        ) {
-            derivedToastAndFormMessage = 'Usuario o contraseña incorrectos. Por favor, verifica tus datos.';
+  // Logout
+  const logout = useCallback(
+    async (sendToServer = true, keepError = false) => {
+      setLoading(true);
+      if (!keepError) setError(null);
+      try {
+        if (sendToServer && refreshToken) {
+          await authAxios.post('/logout/', { refresh_token: refreshToken });
+          addNotification('Has cerrado sesión correctamente.', 'info');
         }
+      } catch (err) {
+        const displayMessage =
+          'Hubo un problema al cerrar sesión en el servidor, pero tu sesión local ha sido terminada.';
+        addNotification(displayMessage, 'error');
+        setError({ message: displayMessage });
+      } finally {
+        setUser(null);
+        setAccessToken(null);
+        setRefreshToken(null);
+        localStorage.removeItem('accessToken');
+        localStorage.removeItem('refreshToken');
+        setLoading(false);
       }
-
-      setError({ message: derivedToastAndFormMessage });
-      addNotification(derivedToastAndFormMessage, 'error');
-      logout(false, true); // Asegura el logout local si falla el login
-      // --- DEBUG LOGS ---
-      console.log("Login: Proceso de login fallido.");
-      // --- FIN DEBUG LOGS ---
-      return false;
-    } finally {
-      setLoading(false);
-    }
-  }, [fetchUserProfile, addNotification, logout]);
-
-  const register = useCallback(async (username, email, password, password_confirm) => {
-    // --- DEBUG LOGS ---
-    console.log("Register: Iniciando intento de registro para:", email);
-    // --- FIN DEBUG LOGS ---
-    setLoading(true);
-    setError(null);
-    try {
-      // Usa authAxios para la llamada de registro
-      const response = await authAxios.post('/register/', { username, email, password, password_confirm });
-      // --- DEBUG LOGS ---
-      console.log("Register: Registro exitoso. Data:", response.data);
-      // --- FIN DEBUG LOGS ---
-      addNotification('¡Registro exitoso! Iniciando sesión automáticamente...', 'success');
-      await login(email, password);
-      // --- DEBUG LOGS ---
-      console.log("Register: Proceso de registro completado.");
-      // --- FIN DEBUG LOGS ---
-      return { success: true, message: response.data?.message || 'Registro exitoso.' };
-    } catch (err) {
-      // --- DEBUG LOGS ---
-      console.error("Register: Error en el registro:", err.response?.data || err.message || err);
-      // --- FIN DEBUG LOGS ---
-      let derivedToastAndFormMessage = 'Error de red o desconocido durante el registro.';
-
-      if (axios.isAxiosError(err) && err.response) {
-        derivedToastAndFormMessage = formatBackendErrorForDisplay(err.response.data);
-      }
-
-      setError({ message: derivedToastAndFormMessage });
-      addNotification(derivedToastAndFormMessage, 'error');
-      // --- DEBUG LOGS ---
-      console.log("Register: Proceso de registro fallido.");
-      // --- FIN DEBUG LOGS ---
-      return { success: false, error: derivedToastAndFormMessage };
-    } finally {
-      setLoading(false);
-    }
-  }, [login, addNotification]);
-
-  // Interceptor de Axios para añadir el token de acceso y manejar el refresco
-  // Este es el CORAZÓN de la lógica de autenticación y DEBE estar aquí.
-  useEffect(() => {
-  const requestInterceptor = authAxios.interceptors.request.use(
-    (config) => {
-      const isAuthEndpoint =
-        config.url.includes('/token/') || config.url.includes('/register/');
-
-      // Añadir Authorization si aplica
-      if (accessToken && !config.headers.Authorization && !isAuthEndpoint) {
-        config.headers.Authorization = `Bearer ${accessToken}`;
-      }
-
-      // ⬇️ AUMENTAR TIMEOUT para subidas multipart (evitar ECONNABORTED a los 10s)
-      const contentType = String(
-        config.headers?.['Content-Type'] || config.headers?.['content-type'] || ''
-      ).toLowerCase();
-
-      const isMultipart =
-        (typeof FormData !== 'undefined' && config.data instanceof FormData) ||
-        contentType.includes('multipart/form-data');
-
-      if (isMultipart) {
-        // Sube el timeout a 120s SOLO para uploads
-        config.timeout = Math.max(config.timeout || 0, 120000);
-      }
-
-      return config;
     },
-    (error) => Promise.reject(error)
+    [refreshToken, addNotification]
   );
 
-  // 👇 Mantén aquí tu responseInterceptor existente, tal cual lo tienes
+  // Perfil del usuario
+  const fetchUserProfile = useCallback(
+    async (token) => {
+      try {
+        const response = await authAxios.get('/me/', {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setUser(response.data);
+        return response.data;
+      } catch (err) {
+        const displayMessage = 'Tu sesión ha expirado o es inválida. Por favor, inicia sesión de nuevo.';
+        // addNotification(displayMessage, 'error'); // opcional
+        setError({ message: displayMessage });
+        logout(false, true); // logout local
+        return null;
+      }
+    },
+    [logout]
+  );
 
-  return () => {
-    authAxios.interceptors.request.eject(requestInterceptor);
-    // y también eject del responseInterceptor si lo defines aquí
-  };
-}, [accessToken, refreshToken, logout, addNotification]);
+  // Login
+  const login = useCallback(
+    async (identifier, password) => {
+      setLoading(true);
+      setError(null);
+      try {
+        const response = await authAxios.post('/token/', { identifier, password });
+        const newAccessToken = response.data.access;
+        const newRefreshToken = response.data.refresh;
 
-    const responseInterceptor = authAxios.interceptors.response.use(
-      (response) => {
-        // --- DEBUG LOGS ---
-        console.log(`Interceptor Response: Éxito para ${response.config.url.substring(0, Math.min(response.config.url.length, 50))}... Status: ${response.status}`);
-        // --- FIN DEBUG LOGS ---
-        return response;
+        setAccessToken(newAccessToken);
+        setRefreshToken(newRefreshToken);
+        localStorage.setItem('accessToken', newAccessToken);
+        localStorage.setItem('refreshToken', newRefreshToken);
+
+        await fetchUserProfile(newAccessToken);
+        addNotification('¡Inicio de sesión exitoso! Bienvenido.', 'success');
+        return true;
+      } catch (err) {
+        let derivedMessage = 'Error de red o desconocido durante el login.';
+        if (axios.isAxiosError(err) && err.response) {
+          derivedMessage = formatBackendErrorForDisplay(err.response.data);
+          if (
+            derivedMessage.includes('No se encontraron credenciales válidas.') ||
+            derivedMessage.includes('No active account found with the given credentials') ||
+            derivedMessage.includes('no activa encontrada con las credenciales dadas') ||
+            derivedMessage.includes('Credenciales inválidas.')
+          ) {
+            derivedMessage = 'Usuario o contraseña incorrectos. Por favor, verifica tus datos.';
+          }
+        }
+        setError({ message: derivedMessage });
+        addNotification(derivedMessage, 'error');
+        logout(false, true); // asegurar logout local si falla
+        return false;
+      } finally {
+        setLoading(false);
+      }
+    },
+    [fetchUserProfile, addNotification, logout]
+  );
+
+  // Registro
+  const register = useCallback(
+    async (username, email, password, password_confirm) => {
+      setLoading(true);
+      setError(null);
+      try {
+        const response = await authAxios.post('/register/', {
+          username,
+          email,
+          password,
+          password_confirm,
+        });
+        addNotification('¡Registro exitoso! Iniciando sesión automáticamente...', 'success');
+        await login(email, password);
+        return { success: true, message: response.data?.message || 'Registro exitoso.' };
+      } catch (err) {
+        let derivedMessage = 'Error de red o desconocido durante el registro.';
+        if (axios.isAxiosError(err) && err.response) {
+          derivedMessage = formatBackendErrorForDisplay(err.response.data);
+        }
+        setError({ message: derivedMessage });
+        addNotification(derivedMessage, 'error');
+        return { success: false, error: derivedMessage };
+      } finally {
+        setLoading(false);
+      }
+    },
+    [login, addNotification]
+  );
+
+  // Interceptores de Axios (Authorization + refresh + timeout para multipart)
+  useEffect(() => {
+    // REQUEST
+    const requestInterceptor = authAxios.interceptors.request.use(
+      (config) => {
+        const urlStr = String(config?.url || '');
+        const isAuthEndpoint = urlStr.includes('/token/') || urlStr.includes('/register/');
+        config.headers = config.headers || {};
+
+        // Añadir token si corresponde
+        if (accessToken && !config.headers.Authorization && !isAuthEndpoint) {
+          config.headers.Authorization = `Bearer ${accessToken}`;
+        }
+
+        // Timeout alto solo para multipart (uploads)
+        const headerCT = String(
+          config.headers['Content-Type'] || config.headers['content-type'] || ''
+        ).toLowerCase();
+        const isMultipart =
+          (typeof FormData !== 'undefined' && config.data instanceof FormData) ||
+          headerCT.includes('multipart/form-data');
+
+        if (isMultipart) {
+          config.timeout = Math.max(config.timeout || 0, 120000); // 120s
+        }
+
+        return config;
       },
+      (error) => Promise.reject(error)
+    );
+
+    // RESPONSE
+    const responseInterceptor = authAxios.interceptors.response.use(
+      (response) => response,
       async (error) => {
-        // --- DEBUG LOGS ---
-        console.error(`Interceptor Response: Error para ${error.config.url.substring(0, Math.min(error.config.url.length, 50))}... Status: ${error.response?.status}. Error data:`, error.response?.data || error.message || error);
-        // --- FIN DEBUG LOGS ---
-        const originalRequest = error.config;
-        // Solo intenta refrescar si el error es 401, no se ha reintentado, y tenemos un refresh token
-        if (error.response?.status === 401 && !originalRequest._retry && refreshToken) {
+        const originalRequest = error?.config || {};
+
+        // 401 + refresh disponible -> refrescar una vez
+        if (error?.response?.status === 401 && !originalRequest._retry && refreshToken) {
           originalRequest._retry = true;
-          // --- DEBUG LOGS ---
-          console.log("Interceptor Response: 401 detectado, intentando refrescar token...");
-          // --- FIN DEBUG LOGS ---
           try {
-            // Importante: Usa axios.post directo o una instancia SIN interceptores de auth
-            // para evitar un bucle infinito al refrescar el token.
-            const refreshResponse = await axios.post(`${API_BASE_URL}/token/refresh/`, { refresh: refreshToken });
+            const refreshResponse = await axios.post(`${API_BASE_URL}/token/refresh/`, {
+              refresh: refreshToken,
+            });
             const newAccessToken = refreshResponse.data.access;
-            // --- DEBUG LOGS ---
-            console.log("Interceptor Response: Token refrescado exitosamente. Nuevo Access Token:", newAccessToken ? newAccessToken.substring(0, 10) + '...' : 'null');
-            // --- FIN DEBUG LOGS ---
+
             setAccessToken(newAccessToken);
             localStorage.setItem('accessToken', newAccessToken);
+
+            originalRequest.headers = originalRequest.headers || {};
             originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
-            // Reintentar la solicitud original con el nuevo token
-            return authAxios(originalRequest);
+
+            return authAxios(originalRequest); // reintento
           } catch (refreshError) {
-            // --- DEBUG LOGS ---
-            console.error("Interceptor Response: No se pudo refrescar el token:", refreshError.response?.data || refreshError.message || refreshError);
-            // --- FIN DEBUG LOGS ---
-            const displayMessage = 'Tu sesión ha expirada o no es válida. Por favor, inicia sesión de nuevo.'; // Mensaje actualizado
-            // addNotification(displayMessage, 'error');
+            const displayMessage =
+              'Tu sesión ha expirada o no es válida. Por favor, inicia sesión de nuevo.';
+            // addNotification(displayMessage, 'error'); // opcional
             setError({ message: displayMessage });
-            logout(false, true); // Forzar logout localmente
+            logout(false, true);
             return Promise.reject(refreshError);
           }
         }
-        // Si el error no es 401 o ya se reintentó, o no hay refresh token, simplemente rechazar
-        if (error.response?.status === 401 && !refreshToken) {
-            // Si es 401 y no hay refresh token, es un logout definitivo
-            // --- DEBUG LOGS ---
-            console.warn("Interceptor Response: 401 recibido sin refresh token, forzando logout.");
-            // --- FIN DEBUG LOGS ---
-            const displayMessage = 'Tu sesión ha expirado. Por favor, inicia sesión de nuevo.';
-            // addNotification(displayMessage, 'error');
-            setError({ message: displayMessage });
-            logout(false, true); // Forzar logout localmente
+
+        // 401 sin refresh -> logout local
+        if (error?.response?.status === 401 && !refreshToken) {
+          const displayMessage = 'Tu sesión ha expirado. Por favor, inicia sesión de nuevo.';
+          // addNotification(displayMessage, 'error'); // opcional
+          setError({ message: displayMessage });
+          logout(false, true);
         }
+
         return Promise.reject(error);
       }
     );
 
+    // Cleanup
     return () => {
       authAxios.interceptors.request.eject(requestInterceptor);
       authAxios.interceptors.response.eject(responseInterceptor);
     };
-  }, [accessToken, refreshToken, logout, addNotification]); // Dependencias para el useEffect de interceptores
+  }, [accessToken, refreshToken, logout]);
 
-  // Efecto para cargar el perfil del usuario al cargar la página si hay un token existente
+  // Cargar perfil si ya hay token guardado
   useEffect(() => {
     const checkAuthStatus = async () => {
-      // --- DEBUG LOGS ---
-      console.log("useEffect [accessToken, fetchUserProfile, user, loading]: Verificando estado de autenticación. Token existente:", !!accessToken, "Usuario cargado:", !!user, "Cargando:", loading);
-      // --- FIN DEBUG LOGS ---
       if (accessToken) {
-        // Solo si no tenemos un usuario ya establecido O estamos en un estado de "loading" inicial
-        // y necesitamos confirmar la validez del token.
-        if (!user && loading) { // Solo llama si no hay usuario Y estamos en estado de carga inicial.
-            // Esto previene llamadas duplicadas si el perfil ya se cargó durante el login.
-            console.log("useEffect: accessToken existe y no hay usuario, intentando cargar perfil.");
-            await fetchUserProfile(accessToken);
-        } else if (user) {
-            console.log("useEffect: Usuario ya cargado por `login` o `checkAuthStatus` previo.");
+        if (!user && loading) {
+          await fetchUserProfile(accessToken);
         }
       }
       setLoading(false);
-      // --- DEBUG LOGS ---
-      console.log("useEffect: checkAuthStatus finalizado. Loading:", false);
-      // --- FIN DEBUG LOGS ---
     };
     checkAuthStatus();
-  }, [accessToken, fetchUserProfile, user, loading]); // Added user and loading to dependencies
+  }, [accessToken, fetchUserProfile, user, loading]);
 
   const contextValue = {
     user,
@@ -355,14 +281,10 @@ export const AuthProvider = ({ children }) => {
     login,
     register,
     logout,
-    authAxios, // <--- Asegúrate de exportar esta instancia configurada
+    authAxios,
   };
 
-  return (
-    <AuthContext.Provider value={contextValue}>
-      {children}
-    </AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>;
 };
 
 export const useAuth = () => {
