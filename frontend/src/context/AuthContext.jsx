@@ -10,7 +10,7 @@ const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 // y se compartirá con otros contextos que la necesiten (como CartContext)
 const authAxios = axios.create({
   baseURL: API_BASE_URL,
-  timeout: 10000,
+  timeout: 20000,
   headers: {
     'Content-Type': 'application/json',
   },
@@ -219,29 +219,42 @@ export const AuthProvider = ({ children }) => {
   // Interceptor de Axios para añadir el token de acceso y manejar el refresco
   // Este es el CORAZÓN de la lógica de autenticación y DEBE estar aquí.
   useEffect(() => {
-    const requestInterceptor = authAxios.interceptors.request.use(
-      (config) => {
-        const isAuthEndpoint = config.url.includes('/token/') || config.url.includes('/register/');
-        // Aquí, `accessToken` es el estado actual del componente.
-        // Aseguramos que el header no se duplique y que no se envíe a endpoints de autenticación.
-        if (accessToken && !config.headers.Authorization && !isAuthEndpoint) {
-          config.headers.Authorization = `Bearer ${accessToken}`;
-          // --- DEBUG LOGS ---
-          console.log(`Interceptor Request: Añadiendo token a ${config.url.substring(0, Math.min(config.url.length, 50))}...`);
-          // --- FIN DEBUG LOGS ---
-        } else if (isAuthEndpoint) {
-          // --- DEBUG LOGS ---
-          console.log(`Interceptor Request: Saltando token para endpoint de autenticación: ${config.url.substring(0, Math.min(config.url.length, 50))}...`);
-          // --- FIN DEBUG LOGS ---
-        } else if (!accessToken && !isAuthEndpoint) {
-          // --- DEBUG LOGS ---
-          console.log(`Interceptor Request: No hay token para añadir a ${config.url.substring(0, Math.min(config.url.length, 50))}... (No Auth Endpoint)`);
-          // --- FIN DEBUG LOGS ---
-        }
-        return config;
-      },
-      (error) => Promise.reject(error)
-    );
+  const requestInterceptor = authAxios.interceptors.request.use(
+    (config) => {
+      const isAuthEndpoint =
+        config.url.includes('/token/') || config.url.includes('/register/');
+
+      // Añadir Authorization si aplica
+      if (accessToken && !config.headers.Authorization && !isAuthEndpoint) {
+        config.headers.Authorization = `Bearer ${accessToken}`;
+      }
+
+      // ⬇️ AUMENTAR TIMEOUT para subidas multipart (evitar ECONNABORTED a los 10s)
+      const contentType = String(
+        config.headers?.['Content-Type'] || config.headers?.['content-type'] || ''
+      ).toLowerCase();
+
+      const isMultipart =
+        (typeof FormData !== 'undefined' && config.data instanceof FormData) ||
+        contentType.includes('multipart/form-data');
+
+      if (isMultipart) {
+        // Sube el timeout a 120s SOLO para uploads
+        config.timeout = Math.max(config.timeout || 0, 120000);
+      }
+
+      return config;
+    },
+    (error) => Promise.reject(error)
+  );
+
+  // 👇 Mantén aquí tu responseInterceptor existente, tal cual lo tienes
+
+  return () => {
+    authAxios.interceptors.request.eject(requestInterceptor);
+    // y también eject del responseInterceptor si lo defines aquí
+  };
+}, [accessToken, refreshToken, logout, addNotification]);
 
     const responseInterceptor = authAxios.interceptors.response.use(
       (response) => {
@@ -279,7 +292,7 @@ export const AuthProvider = ({ children }) => {
             console.error("Interceptor Response: No se pudo refrescar el token:", refreshError.response?.data || refreshError.message || refreshError);
             // --- FIN DEBUG LOGS ---
             const displayMessage = 'Tu sesión ha expirada o no es válida. Por favor, inicia sesión de nuevo.'; // Mensaje actualizado
-            addNotification(displayMessage, 'error');
+            // addNotification(displayMessage, 'error');
             setError({ message: displayMessage });
             logout(false, true); // Forzar logout localmente
             return Promise.reject(refreshError);
@@ -292,7 +305,7 @@ export const AuthProvider = ({ children }) => {
             console.warn("Interceptor Response: 401 recibido sin refresh token, forzando logout.");
             // --- FIN DEBUG LOGS ---
             const displayMessage = 'Tu sesión ha expirado. Por favor, inicia sesión de nuevo.';
-            addNotification(displayMessage, 'error');
+            // addNotification(displayMessage, 'error');
             setError({ message: displayMessage });
             logout(false, true); // Forzar logout localmente
         }
