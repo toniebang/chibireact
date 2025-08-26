@@ -390,7 +390,7 @@ const CreateProductForm = ({
             name="descripcion"
             value={formData.descripcion}
             onChange={handleChange}
-            placeholder="Ej: crema hidratante, uso diario, piel seca (separa por comas)"
+            placeholder="Ej: Gel limpiador suave con aloe y niacinamida. Remueve impurezas sin resecar y calma rojeces. Apto para piel sensible."
             className="w-full border border-gray-300 rounded-none px-3 py-2 text-sm focus:ring-2 focus:ring-chibi-green focus:outline-none"
             rows={4}
           />
