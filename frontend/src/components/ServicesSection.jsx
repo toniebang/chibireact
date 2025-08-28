@@ -1,13 +1,12 @@
 // src/components/ServicesSection.jsx
 import React, { useEffect, useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 import offerProducts1 from '../assets/trainer.jpg';
 import offerProducts22 from '../assets/offer-products-2.jpg';
 import offerProducts3 from '../assets/offer-products-3.jpg';
 import offerProducts4 from '../assets/offer-products-4.jpg';
-import tile from '../assets/bg-2.png';
 
 const services = [
   {
@@ -90,14 +89,9 @@ const headingL = {
   hidden: { opacity: 0, x: -24 },
   visible: { opacity: 1, x: 0, transition: { duration: 0.5, ease: 'easeOut' } },
 };
-const headingR = {
-  hidden: { opacity: 0, x: 24 },
-  visible: { opacity: 1, x: 0, transition: { duration: 0.5, ease: 'easeOut' } },
-};
 
 // Modal accesible + animado
 const Modal = ({ open, onClose, title, image, alt, desc, bullets, ctaTo, ctaText }) => {
-  // Bloquea scroll de body cuando open
   useEffect(() => {
     if (!open) return;
     const prev = document.body.style.overflow;
@@ -107,7 +101,6 @@ const Modal = ({ open, onClose, title, image, alt, desc, bullets, ctaTo, ctaText
     };
   }, [open]);
 
-  // ESC para cerrar
   const handleKey = useCallback(
     (e) => {
       if (e.key === 'Escape') onClose();
@@ -232,21 +225,23 @@ const ServicesSection = () => {
       aria-label="Servicios de Chibi"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header moderno */}
-        <div className="flex items-center justify-between gap-6 mb-8">
-          <motion.div variants={headingL} className="flex items-center gap-3">
-            <span className="inline-block px-2.5 py-1 text-[11px] tracking-widest bg-black text-white">CHIBI</span>
-            <h2 className="text-2xl md:text-3xl font-semibold text-gray-900">Nuestros servicios</h2>
-          </motion.div>
+        {/* Header limpio (sin descripción, sin degradado, sin imagen a la derecha) */}
+        <motion.div variants={headingL} className="mb-10 text-center md:text-left space-y-2">
+          <div className="inline-flex items-center gap-2">
+            <span className="inline-block px-2.5 py-1 text-[11px] tracking-widest bg-black text-white">
+              CHIBI
+            </span>
+            <span className="text-[11px] uppercase tracking-widest text-gray-500">
+              Servicios
+            </span>
+          </div>
 
-          <motion.img
-            src={tile}
-            alt=""
-            aria-hidden="true"
-            className="h-10 opacity-70 hidden sm:block"
-            variants={headingR}
-          />
-        </div>
+          <h2 className="text-3xl md:text-4xl text-gray-900">
+            Nuestros servicios
+          </h2>
+
+          <span className="block h-[3px] w-16 bg-chibi-green rounded-full mx-auto md:mx-0 mt-2" />
+        </motion.div>
 
         {/* Grid 2 cols mobile / 4 desktop */}
         <motion.div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
@@ -282,7 +277,9 @@ const ServicesSection = () => {
                   <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/10 to-transparent pointer-events-none" />
                   <div className="absolute inset-x-0 bottom-0 p-3 sm:p-4 flex items-end">
                     <div className="backdrop-blur-[2px] bg-white/5 px-3 py-2 rounded-md border border-white/10">
-                      <h3 className="text-sm sm:text-base font-semibold text-white leading-tight">{s.title}</h3>
+                      <h3 className="text-sm sm:text-base font-semibold text-white leading-tight">
+                        {s.title}
+                      </h3>
                     </div>
                   </div>
 
