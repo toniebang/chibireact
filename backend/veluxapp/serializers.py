@@ -156,7 +156,11 @@ class ElementoPedidoSerializer(serializers.ModelSerializer):
 # --- Serializadores con dependencias (usan los serializadores base definidos arriba) ---
 
 class ProductosSerializer(serializers.ModelSerializer):
-    categoria = CategoriaProductosSerializer(many=True, read_only=True)
+    # ⬇️ AHORA escribible con IDs (lista de enteros)
+    categoria = serializers.PrimaryKeyRelatedField(
+        many=True,
+        queryset=Categoria_Productos.objects.all()
+    )
     is_new = serializers.SerializerMethodField()
 
     class Meta:
@@ -168,29 +172,41 @@ class ProductosSerializer(serializers.ModelSerializer):
         return obj.fecha_subida >= new_threshold.date()
 
     def to_representation(self, instance):
-        representation = super().to_representation(instance)
+        """
+        Enviamos imágenes como URLs absolutas y categorías ANIDADAS (bonito para el front),
+        aunque en escritura aceptamos IDs.
+        """
+        rep = super().to_representation(instance)
         request = self.context.get('request')
 
-        def safe(instance_image):
-            if not instance_image:
+        def safe(img_field):
+            if not img_field:
                 return None
             try:
-                url = instance_image.url
+                url = img_field.url
             except Exception:
-                name = getattr(instance_image, 'name', None)
-                if name and str(name).startswith(('http://','https://')):
+                name = getattr(img_field, 'name', None)
+                if name and str(name).startswith(('http://', 'https://')):
                     url = name
                 else:
                     return None
-            if request and not str(url).startswith(('http://','https://')):
+            if request and not str(url).startswith(('http://', 'https://')):
                 return request.build_absolute_uri(url)
             return url
 
-        representation['imagen1'] = safe(instance.imagen1)
-        representation['imagen2'] = safe(instance.imagen2)
-        representation['imagen3'] = safe(instance.imagen3)
-        return representation
-    
+        rep['imagen1'] = safe(instance.imagen1)
+        rep['imagen2'] = safe(instance.imagen2)
+        rep['imagen3'] = safe(instance.imagen3)
+
+        # ⬇️ Devolver la categoría anidada (no IDs) para no romper el front
+        rep['categoria'] = CategoriaProductosSerializer(
+            instance.categoria.all(),
+            many=True,
+            context=self.context
+        ).data
+
+        return rep
+
 class ReviewsSerializer(serializers.ModelSerializer):
     # UserSerializer está definido antes
     usuario = UserSerializer(read_only=True)

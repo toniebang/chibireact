@@ -127,7 +127,7 @@ const CreateProductForm = ({
     }
 
     if (name === 'categoria') {
-      const selected = Array.from(options).filter(o => o.selected).map(o => o.value);
+      const selected = Array.from(options).filter(o => o.selected).map(o => Number(o.value));
       setFormData(prev => ({ ...prev, categoria: selected }));
       return;
     }
