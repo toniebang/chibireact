@@ -1,9 +1,9 @@
 // src/components/ProductsManagementList.jsx
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import Modal from './Modal';
 import CreateProductForm from './CreateProductForm';
 import { useAuth } from '../context/AuthContext';
-import { FaTrash, FaEdit } from 'react-icons/fa';
+import { FaTrash, FaEdit, FaSort, FaSortUp, FaSortDown } from 'react-icons/fa';
 
 const PRODUCTS_PER_PAGE = 10;
 
@@ -24,6 +24,24 @@ const ProductsManagementList = () => {
 
   // paginación local
   const [currentPage, setCurrentPage] = useState(1);
+
+  // ---- ORDENACIÓN ----
+  // sortField: 'name' | 'price' | 'date' | null
+  const [sortField, setSortField] = useState(null);
+  // sortDir: 'asc' | 'desc'
+  const [sortDir, setSortDir] = useState('asc');
+
+  const toggleSort = (field) => {
+    setCurrentPage(1);
+    if (sortField !== field) {
+      setSortField(field);
+      // Primer clic: nombre asc, precio asc, fecha desc (nuevo→viejo)
+      if (field === 'date') setSortDir('desc');
+      else setSortDir('asc');
+    } else {
+      setSortDir((d) => (d === 'asc' ? 'desc' : 'asc'));
+    }
+  };
 
   const fetchProducts = async () => {
     if (!isAuthenticated || !user?.is_superuser) return;
@@ -50,8 +68,41 @@ const ProductsManagementList = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isAuthenticated, user]);
 
-  const totalPages = Math.max(1, Math.ceil((products.length || 0) / PRODUCTS_PER_PAGE));
-  const paginatedProducts = products.slice(
+  // Optimización: precomputar timestamp y precio normalizado una sola vez
+  const productsWithComputed = useMemo(() => {
+    return (products || []).map((p) => ({
+      ...p,
+      _ts: p?.fecha_subida ? Date.parse(p.fecha_subida) || 0 : 0,
+      _price: Number(p?.precio) || 0,
+    }));
+  }, [products]);
+
+  // Aplica ordenación local
+  const sortedProducts = useMemo(() => {
+    if (!sortField) return productsWithComputed;
+    const arr = [...productsWithComputed];
+    arr.sort((a, b) => {
+      if (sortField === 'name') {
+        const an = (a?.nombre ?? '').toString();
+        const bn = (b?.nombre ?? '').toString();
+        const cmp = an.localeCompare(bn, 'es', { sensitivity: 'base' });
+        return sortDir === 'asc' ? cmp : -cmp; // asc: A→Z, desc: Z→A
+      }
+      if (sortField === 'price') {
+        const cmp = a._price - b._price; // asc: menor→mayor
+        return sortDir === 'asc' ? cmp : -cmp; // desc: mayor→menor
+      }
+      if (sortField === 'date') {
+        const cmp = a._ts - b._ts; // asc: viejo→nuevo
+        return sortDir === 'asc' ? cmp : -cmp; // desc: nuevo→viejo
+      }
+      return 0;
+    });
+    return arr;
+  }, [productsWithComputed, sortField, sortDir]);
+
+  const totalPages = Math.max(1, Math.ceil((sortedProducts.length || 0) / PRODUCTS_PER_PAGE));
+  const paginatedProducts = sortedProducts.slice(
     (currentPage - 1) * PRODUCTS_PER_PAGE,
     currentPage * PRODUCTS_PER_PAGE
   );
@@ -81,6 +132,23 @@ const ProductsManagementList = () => {
       console.error('Error eliminando producto:', err);
       alert('No se pudo eliminar el producto.');
     }
+  };
+
+  const SortIcon = ({ field }) => {
+    if (sortField !== field) return <FaSort className="inline-block opacity-60" />;
+    return sortDir === 'asc' ? (
+      <FaSortUp className="inline-block" />
+    ) : (
+      <FaSortDown className="inline-block" />
+    );
+  };
+
+  const thActive = (field) =>
+    sortField === field ? 'text-chibi-green' : 'text-gray-800';
+
+  const ariaSort = (field) => {
+    if (sortField !== field) return 'none';
+    return sortDir === 'asc' ? 'ascending' : 'descending';
   };
 
   if (!isAuthenticated || !user?.is_superuser) {
@@ -114,10 +182,37 @@ const ProductsManagementList = () => {
             <table className="min-w-[720px] w-full border border-gray-200 text-left text-sm">
               <thead className="bg-gray-100">
                 <tr>
-                  <th className="p-2 border border-gray-300">Nombre</th>
-                  <th className="p-2 border border-gray-300">Precio (XAF)</th>
+                  <th className="p-2 border border-gray-300" aria-sort={ariaSort('name')}>
+                    <button
+                      type="button"
+                      onClick={() => toggleSort('name')}
+                      className={`inline-flex items-center gap-1 hover:underline ${thActive('name')}`}
+                      title="Ordenar por Nombre (clic para alternar A→Z / Z→A)"
+                    >
+                      Nombre <SortIcon field="name" />
+                    </button>
+                  </th>
+                  <th className="p-2 border border-gray-300" aria-sort={ariaSort('price')}>
+                    <button
+                      type="button"
+                      onClick={() => toggleSort('price')}
+                      className={`inline-flex items-center gap-1 hover:underline ${thActive('price')}`}
+                      title="Ordenar por Precio (clic para alternar menor→mayor / mayor→menor)"
+                    >
+                      Precio (XAF) <SortIcon field="price" />
+                    </button>
+                  </th>
                   <th className="p-2 border border-gray-300">Precio Rebaja</th>
-                  <th className="p-2 border border-gray-300">Fecha de Subida</th>
+                  <th className="p-2 border border-gray-300" aria-sort={ariaSort('date')}>
+                    <button
+                      type="button"
+                      onClick={() => toggleSort('date')}
+                      className={`inline-flex items-center gap-1 hover:underline ${thActive('date')}`}
+                      title="Ordenar por Fecha de Subida (clic para alternar nuevo→viejo / viejo→nuevo)"
+                    >
+                      Fecha de Subida <SortIcon field="date" />
+                    </button>
+                  </th>
                   <th className="p-2 border border-gray-300">Línea</th>
                   <th className="p-2 border border-gray-300">Publicado</th>
                   <th className="p-2 border border-gray-300">Imágenes</th>
