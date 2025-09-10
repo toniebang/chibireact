@@ -10,7 +10,7 @@ import { useAuth } from '../context/AuthContext';
 
 import ShopHero from '../components/ShopHero';
 import CategoryIcons from '../components/CategoryIcons';
-import heroImg from '../assets/shopherobg.jpg';
+
 import heroImg2 from '../assets/shopherobg5.jpg';
 
 const PAGE_SIZE = 16;
@@ -260,36 +260,35 @@ const orderingParam = safeOrdering.includes(ordering) ? ordering : undefined;
 
       <div className="max-w-7xl mx-auto font-montserrat px-4 md:px-6">
         <FilterBarModern
-   categories={categories}
- hasActiveSearch={Boolean(searchTerm.trim())}
-   category={category}
-   setCategory={(v) => {
-     setCategory(v);
-     setPage(1);
-     setSelectedId(null);
-   }}
-   onOffer={onOffer}
-   setOnOffer={(v) => {
-     setOnOffer(v);
-     setPage(1);
-     setSelectedId(null);
-   }}
-   sortKey={sortKey}
-   setSortKey={(v) => {
-     setSortKey(v);
-     setPage(1);
-     setSelectedId(null);
-   }}
-   loading={loading}
-   onClearFilters={handleClearFilters}
-/>
-
+          categories={categories}
+          hasActiveSearch={Boolean(searchTerm.trim())}
+          category={category}
+          setCategory={(v) => {
+            setCategory(v);
+            setPage(1);
+            setSelectedId(null);
+          }}
+          onOffer={onOffer}
+          setOnOffer={(v) => {
+            setOnOffer(v);
+            setPage(1);
+            setSelectedId(null);
+          }}
+          sortKey={sortKey}
+          setSortKey={(v) => {
+            setSortKey(v);
+            setPage(1);
+            setSelectedId(null);
+          }}
+          loading={loading}
+          onClearFilters={handleClearFilters}
+        />
 
         {(committedSearch || line) && !selectedId && (
           <div className="mt-4 text-sm text-gray-600">
             {loading
-              ? 'Cargando…'
-              : `${count} producto${count === 1 ? '' : 's'} encontrados`}
+              ? "Cargando…"
+              : `${count} producto${count === 1 ? "" : "s"} encontrados`}
           </div>
         )}
 
@@ -300,6 +299,8 @@ const orderingParam = safeOrdering.includes(ordering) ? ordering : undefined;
             gridColumns="grid-cols-2 sm:grid-cols-3 lg:grid-cols-4"
             loading={loading}
             error={error}
+            activeLine={line} // ← Aquí pasamos tu estado actual
+            onClearFilter={() => selectLine("todo")} // ← Limpiar filtro
           />
         </div>
 
@@ -313,7 +314,7 @@ const orderingParam = safeOrdering.includes(ordering) ? ordering : undefined;
               onPageChange={goToPage}
             />
             <div className="text-sm text-gray-600 whitespace-nowrap flex-shrink-0">
-              Página <span className="font-medium text-gray-800">{page}</span>{' '}
+              Página <span className="font-medium text-gray-800">{page}</span>{" "}
               de <span className="font-medium text-gray-800">{totalPages}</span>
             </div>
           </div>
