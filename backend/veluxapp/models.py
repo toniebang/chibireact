@@ -54,7 +54,7 @@ class Productos(models.Model):
     LINEAS_CHOICES = [
         ('skin', 'Chibi Skin'),
         ('tea', 'Chibi Tea'),
-        ('todo', 'Todos'),
+        ('todo', 'Otros'),
     ]
     id = models.AutoField('ID',primary_key=True)
     disponible = models.BooleanField('Publicar', default=True, help_text='Marca esta casilla si deseas que este producto aparezca en la tienda.')
