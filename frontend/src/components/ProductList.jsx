@@ -8,7 +8,7 @@ import ProductSkeleton from './ProductSkeleton';
 const LINE_META = {
   skin: { label: 'Línea Chibi Skin' },
   tea:  { label: 'Línea Chibi Tea'  },
-  todo: { label: 'Todos' }, // usado como "clear filter" -> no mostramos banner
+  todo: { label: 'Todos' }, 
 };
 
 const ProductList = ({
@@ -17,8 +17,8 @@ const ProductList = ({
   gridColumns = "grid-cols-2 md:grid-cols-3 lg:grid-cols-4",
   loading = false,
   error = '',
-  activeLine = null,          // <-- NUEVO (opcional): 'skin' | 'tea' | 'todo' | null
-  onClearFilter,              // <-- opcional: función para limpiar filtro si quieres un botón
+  activeLine = null,          
+  onClearFilter,              
 }) => {
   const sectionTitle = isHome ? "PRODUCTOS RECIÉN SUBIDOS" : "TODOS NUESTROS PRODUCTOS";
   const displayProducts = isHome ? products.slice(0, 4) : products;

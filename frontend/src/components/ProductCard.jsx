@@ -69,7 +69,7 @@ const fav = isFavorite(id);
 const toggleFav = (e) => {
   e.preventDefault();
   toggleFavorite(id);
-  // si quieres notificación, aquí llamas a tu NotificationContext
+ 
 };
 
   return (
@@ -133,11 +133,11 @@ const toggleFav = (e) => {
           )}
         </div>
 
-        {/* Botón dinámico con fondo negro siempre */}
+     
         {isInCart ? (
           <button
             disabled
-            className="mt-3  w-full inline-flex items-center justify-center gap-2 py-2 px-3 rounded-full bg-black text-white cursor-not-allowed"
+            className="mt-3 w-full cursor-pointer inline-flex items-center justify-center gap-2 py-2 px-3 rounded-full border-2 bg-white hover:text-white text-black hover:bg-gray-800 cursor-not-allowed"
           >
             <BsCartCheck className="text-lg" />
             En carrito
@@ -145,7 +145,7 @@ const toggleFav = (e) => {
         ) : (
           <button
             onClick={handleAdd}
-            className="mt-3 w-full inline-flex items-center justify-center gap-2 py-2 px-3 rounded-full bg-black text-white hover:bg-gray-800"
+            className="mt-3 w-full cursor-pointer inline-flex items-center justify-center gap-2 py-2 px-3 rounded-full border-2 bg-white hover:text-white text-black hover:bg-gray-800"
           >
             <FaPlus className="text-xs" />
             Añadir
