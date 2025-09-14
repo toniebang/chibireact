@@ -28,15 +28,15 @@ const ShopPage = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [committedSearch, setCommittedSearch] = useState('');
   const [onOffer, setOnOffer] = useState(false);
-  const [category, setCategory] = useState(''); // sigue disponible si la usas
+  const [category, setCategory] = useState('');
   const [sortKey, setSortKey] = useState('relevance');
   const [page, setPage] = useState(1);
 
-  // 🔹 NUEVO: línea ('' | 'skin' | 'tea' | 'todo')
+  // 🔹 NUEVO: línea
   const [line, setLine] = useState('');
 
   // Data
-  const [categories, setCategories] = useState([]); // si las muestras en FilterBarModern
+  const [categories, setCategories] = useState([]);
   const [products, setProducts] = useState([]);
   const [count, setCount] = useState(0);
   const [pageSize] = useState(PAGE_SIZE);
@@ -49,19 +49,19 @@ const ShopPage = () => {
   const [suggestions, setSuggestions] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [loadingSuggestions, setLoadingSuggestions] = useState(false);
-  const [selectedId, setSelectedId] = useState(null); // vista directa por ID
+  const [selectedId, setSelectedId] = useState(null);
 
   // ordering param
   const ordering = useMemo(() => {
     switch (sortKey) {
-      case 'price_asc':  return 'precio';
+      case 'price_asc': return 'precio';
       case 'price_desc': return '-precio';
-      case 'date_desc':  return '-fecha_subida';
-      default:           return undefined; // relevance
+      case 'date_desc': return '-fecha_subida';
+      default: return undefined;
     }
   }, [sortKey]);
 
-  // Cargar categorías si las usas en FilterBarModern
+  // Cargar categorías
   useEffect(() => {
     let alive = true;
     (async () => {
@@ -74,14 +74,14 @@ const ShopPage = () => {
     return () => { alive = false; };
   }, [authAxios]);
 
-  // Debounce de texto (solo para sugerencias)
+  // Debounce de texto
   const [debouncedSearch, setDebouncedSearch] = useState('');
   useEffect(() => {
     const t = setTimeout(() => setDebouncedSearch(searchTerm.trim()), 250);
     return () => clearTimeout(t);
   }, [searchTerm]);
 
-  // Fetch sugerencias (no hace falta incluir 'linea' aquí, es solo ayuda de búsqueda)
+  // Fetch sugerencias
   useEffect(() => {
     const controller = new AbortController();
     const run = async () => {
@@ -118,17 +118,15 @@ const ShopPage = () => {
     return () => controller.abort();
   }, [authAxios, debouncedSearch]);
 
-  // Fetch productos (por ID exacto o búsqueda/paginación normal)
+  // Fetch productos
   const fetchProducts = async (targetPage = 1, opts = {}) => {
     const forceId = opts.forceId ?? selectedId ?? null;
     setLoading(true);
     setError('');
     try {
       if (forceId) {
-        // Vista directa por ID (incluye 'linea' por si quieres que respete el filtro)
         const res = await authAxios.get(`/productos/${forceId}/`);
         const item = res.data ? [res.data] : [];
-        // Si exiges que también cumpla la línea seleccionada, filtra aquí opcionalmente
         setProducts(item);
         setCount(item.length);
         setNextUrl(null);
@@ -138,19 +136,18 @@ const ShopPage = () => {
       }
 
       const safeOrdering = ['precio', '-precio', '-fecha_subida', 'nombre', '-nombre'];
-const orderingParam = safeOrdering.includes(ordering) ? ordering : undefined;
-      // Búsqueda paginada normal desde backend (👈 aquí ya enviamos 'linea')
-   const effectiveLine = line === 'todo' ? '' : line; // por si en algún sitio llega 'todo'
-   const params = buildParams({
-     search: committedSearch || undefined,
-     categoria: category || undefined,
-     oferta: onOffer || undefined,
-     
-     page: targetPage,
-     ordering: orderingParam,
-    page_size: pageSize || PAGE_SIZE,
-    linea: effectiveLine || undefined, // 👈 omite cuando es “Todos”
-  });
+      const orderingParam = safeOrdering.includes(ordering) ? ordering : undefined;
+
+      const effectiveLine = line === 'todo' ? '' : line;
+      const params = buildParams({
+        search: committedSearch || undefined,
+        categoria: category || undefined,
+        oferta: onOffer || undefined,
+        page: targetPage,
+        ordering: orderingParam,
+        page_size: pageSize || PAGE_SIZE,
+        linea: effectiveLine || undefined,
+      });
 
       const res = await authAxios.get('/productos/', { params });
       const { results = [], count = 0, next = null, previous = null } = res.data || {};
@@ -159,8 +156,6 @@ const orderingParam = safeOrdering.includes(ordering) ? ordering : undefined;
       setNextUrl(next);
       setPrevUrl(previous);
       setPage(targetPage);
-
-      if (targetPage !== page) window.scrollTo({ top: 0, behavior: 'smooth' });
     } catch (err) {
       console.error(err);
       setError('No se pudieron cargar los productos.');
@@ -173,12 +168,17 @@ const orderingParam = safeOrdering.includes(ordering) ? ordering : undefined;
     }
   };
 
-  // Refetch al cambiar filtros/orden/búsqueda comprometida o 'line'
+  // Refetch al cambiar filtros/orden/búsqueda/line
   useEffect(() => {
     if (selectedId) return;
     fetchProducts(1);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [committedSearch, onOffer, category, ordering, line]);
+
+  // 🔹 Scroll al top siempre que cambie page
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [page]);
 
   const totalPages = Math.max(1, Math.ceil((count || 0) / (pageSize || PAGE_SIZE)));
   const goToPage = (p) => {
@@ -223,21 +223,14 @@ const orderingParam = safeOrdering.includes(ordering) ? ordering : undefined;
     fetchProducts(1, { forceId: null });
   };
 
-  // Selección desde los iconos (líneas fijas)
- const selectLine = (lineId) => {
-  // 'Todos' no debe enviar param -> dejamos line en '' para omitirlo
-  const normalized = lineId === 'todo' ? '' : lineId;
-
-  setLine(normalized);
-  setSelectedId(null);
-  setPage(1);
-
-  // Limpia la grilla de forma optimista para evitar que se vean productos “viejos”
-  setProducts([]);
-  setCount(0);
-
-  // 👇 No llames fetchProducts aquí. Deja que el useEffect([line, ...]) dispare el fetch una única vez.
-};
+  const selectLine = (lineId) => {
+    const normalized = lineId === 'todo' ? '' : lineId;
+    setLine(normalized);
+    setSelectedId(null);
+    setPage(1);
+    setProducts([]);
+    setCount(0);
+  };
 
   return (
     <>
@@ -255,7 +248,6 @@ const orderingParam = safeOrdering.includes(ordering) ? ordering : undefined;
         hideSuggestions={() => setShowSuggestions(false)}
       />
 
-      {/* Iconos de líneas fijas */}
       <CategoryIcons selected={line} onSelect={selectLine} />
 
       <div className="max-w-7xl mx-auto font-montserrat px-4 md:px-6">
@@ -299,8 +291,8 @@ const orderingParam = safeOrdering.includes(ordering) ? ordering : undefined;
             gridColumns="grid-cols-2 sm:grid-cols-3 lg:grid-cols-4"
             loading={loading}
             error={error}
-            activeLine={line} // ← Aquí pasamos tu estado actual
-            onClearFilter={() => selectLine("todo")} // ← Limpiar filtro
+            activeLine={line}
+            onClearFilter={() => selectLine("todo")}
           />
         </div>
 
