@@ -20,7 +20,9 @@ from backend.storages_backends import MediaStorage
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # === SECURITY ===
-SECRET_KEY = config('DJANGO_SECRET_KEY', default='a-very-insecure-fallback-key-for-dev')
+# SECRET_KEY debe estar configurado en las variables de entorno
+# Si no existe, la aplicación fallará (comportamiento seguro)
+SECRET_KEY = config('DJANGO_SECRET_KEY')
 DEBUG = config('DEBUG', default=False, cast=bool)
 ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='127.0.0.1', cast=Csv())
 
@@ -113,7 +115,6 @@ if not DEBUG:
             },
         }
     }
-    print("INFO: Usando base de datos de DigitalOcean para producción.")
 else:
     DATABASES = {
         'default': {
@@ -121,7 +122,6 @@ else:
             'NAME': BASE_DIR / 'db.sqlite3',
         }
     }
-    print("INFO: Usando base de datos SQLite para desarrollo.")
 
 # === PASSWORD VALIDATION ===
 AUTH_PASSWORD_VALIDATORS = [
@@ -197,7 +197,6 @@ CORS_ALLOW_METHODS = ['DELETE', 'GET', 'OPTIONS', 'POST', 'PUT', 'PATCH']
 # STATIC & MEDIA FILES
 # =====================
 USE_SPACES = config("USE_SPACES", default=False, cast=bool)
-print(f"!!! DEBUG: USE_SPACES = {USE_SPACES}")
 
 if USE_SPACES:
     DO_SPACES_KEY = config('DO_SPACES_KEY')
@@ -226,15 +225,10 @@ if USE_SPACES:
 
     FILE_UPLOAD_MAX_MEMORY_SIZE = 52428800
     DATA_UPLOAD_MAX_MEMORY_SIZE = 52428800
-
-    print("INFO: Usando DigitalOcean Spaces para archivos media.")
 else:
     DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'
     MEDIA_URL = '/media/'
     MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-
-    
-    print("INFO: Usando almacenamiento local para archivos media.")
     
     
     
@@ -245,13 +239,3 @@ STATICFILES_DIRS = [
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-
-# === DEBUG PRINTS ===
-print("=== CONFIG CHECK ===")
-print(f"DEBUG: {DEBUG}")
-print(f"USE_SPACES: {USE_SPACES}")
-print(f"DEFAULT_FILE_STORAGE: {DEFAULT_FILE_STORAGE}")
-
-print(f"STATIC_URL: {STATIC_URL}")
-print(f"DO_SPACES_KEY (first 4): {config('DO_SPACES_KEY', default='NOPE')[:4]}")
-print("====================")

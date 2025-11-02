@@ -61,10 +61,12 @@ class CartView(APIView):
                                     # Si no está, mueve el ítem del carrito de invitado al del usuario
                                     guest_item.cart = user_cart
                                     guest_item.save()
-                            
+
                             # Eliminar el carrito de invitado después de fusionar sus ítems
                             guest_cart.delete()
-                            print(f"Carrito de invitado {session_key_from_header} fusionado y eliminado.")
+                            import logging
+                            logger = logging.getLogger(__name__)
+                            logger.info(f"Carrito de invitado fusionado y eliminado.")
 
                 except Cart.DoesNotExist:
                     # No hay carrito de invitado con esa session_key, no hay nada que fusionar.
@@ -98,9 +100,8 @@ class CartView(APIView):
                 new_session_key = str(uuid.uuid4())
                 cart = Cart.objects.create(session_key=new_session_key, user=None)
                 # CORRECCIÓN: Al crear un nuevo carrito, esta es la session_key a devolver.
-                self.current_session_key_to_send = new_session_key 
-                print(f"Nuevo carrito de invitado creado con session_key: {new_session_key}")
-            
+                self.current_session_key_to_send = new_session_key
+
             return cart
 
     def get(self, request, *args, **kwargs):
@@ -112,12 +113,11 @@ class CartView(APIView):
         response_data = serializer.data
         
         response = Response(response_data, status=status.HTTP_200_OK)
-        
+
         # CORRECCIÓN: Siempre devuelve la session_key si es un carrito de invitado
         # (current_session_key_to_send solo tiene valor si es invitado)
         if self.current_session_key_to_send:
             response['X-Session-Key'] = self.current_session_key_to_send
-        print(f"DEBUG: Enviando X-Session-Key en la respuesta: {self.current_session_key_to_send}") # <-- Añade esta línea
         return response
 
     def post(self, request, *args, **kwargs):
@@ -160,7 +160,6 @@ class CartView(APIView):
             # CORRECCIÓN: Siempre devuelve la session_key si es un carrito de invitado
             if self.current_session_key_to_send:
                 response['X-Session-Key'] = self.current_session_key_to_send
-            print(f"DEBUG: Enviando X-Session-Key en la respuesta: {self.current_session_key_to_send}") # <-- Añade esta línea
             return response
 
 
@@ -200,7 +199,6 @@ class CartView(APIView):
             # CORRECCIÓN: Siempre devuelve la session_key si es un carrito de invitado
             if self.current_session_key_to_send:
                 response['X-Session-Key'] = self.current_session_key_to_send
-            print(f"DEBUG: Enviando X-Session-Key en la respuesta: {self.current_session_key_to_send}") # <-- Añade esta línea
             return response
 
 
@@ -229,7 +227,6 @@ class CartView(APIView):
             # CORRECCIÓN: Siempre devuelve la session_key si es un carrito de invitado
             if self.current_session_key_to_send:
                 response['X-Session-Key'] = self.current_session_key_to_send
-            print(f"DEBUG: Enviando X-Session-Key en la respuesta: {self.current_session_key_to_send}") # <-- Añade esta línea
             return response
 
 # Si tienes una vista para limpiar todo el carrito, también necesita la cabecera
@@ -270,16 +267,14 @@ class ClearCartView(APIView):
                 cart.session_key = new_session_key
                 cart.save()
                 current_session_key_to_send = new_session_key # Actualiza la clave a enviar
-                print(f"Carrito de invitado {session_key_from_header} limpiado y nueva session_key asignada: {new_session_key}")
             else:
                 cart.save() # Asegurarse de guardar si hubo cambios (ej. si se eliminó la session_key en el carrito de usuario)
 
             cart.refresh_from_db()
             response_serializer = CartSerializer(cart, context={'request': request})
             response = Response(response_serializer.data, status=status.HTTP_200_OK)
-            
+
             # Envía la session_key actual (o la nueva si se generó) para invitados
             if current_session_key_to_send:
                 response['X-Session-Key'] = current_session_key_to_send
-            print(f"DEBUG: Enviando X-Session-Key en la respuesta: {self.current_session_key_to_send}") # <-- Añade esta línea
             return response

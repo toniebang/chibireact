@@ -2,10 +2,9 @@
 
 import os
 # ¡IMPORTANTE CAMBIO AQUÍ! Importa config de 'decouple', NO de 'dj_database_url'
-from decouple import config 
+from decouple import config
 from django.conf import settings
 from django.contrib.auth import get_user_model
-from django.views.decorators.csrf import csrf_exempt
 from rest_framework import generics, status
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -13,14 +12,12 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from google.oauth2 import id_token
 from google.auth.transport import requests as google_requests
 from rest_framework_simplejwt.tokens import RefreshToken
-from django.utils.decorators import method_decorator
 from .serializers import UserSerializer, GoogleAuthSerializer, RegisterSerializer
 
 User = get_user_model()
 
 
 # --- Vistas de Autenticación Existentes ---
-@method_decorator(csrf_exempt, name='dispatch')
 class RegisterView(generics.CreateAPIView):
     permission_classes = (AllowAny,)
     authentication_classes = []
@@ -99,11 +96,10 @@ class GoogleAuthView(APIView):
             last_name = id_info.get('family_name', '')
             profile_picture = id_info.get('picture', '')
             
-            user = None 
+            user = None
 
             try:
                 user = User.objects.get(email=email)
-                print(f"DEBUG: Usuario existente encontrado con email: {email}")
 
                 if not user.first_name and first_name: user.first_name = first_name
                 if not user.last_name and last_name: user.last_name = last_name
@@ -111,20 +107,17 @@ class GoogleAuthView(APIView):
                     user.profile_picture = profile_picture
                 if not user.google_id and google_user_id:
                     user.google_id = google_user_id
-                
+
                 user.save()
-                print(f"DEBUG: Usuario existente actualizado: {user.email}")
 
             except User.DoesNotExist:
-                print(f"DEBUG: Usuario con email {email} no existe. Creando nuevo usuario.")
-                
                 base_username = email.split('@')[0]
                 username = base_username
                 username_suffix = 1
                 while User.objects.filter(username=username).exists():
                     username = f"{base_username}_{username_suffix}"
                     username_suffix += 1
-                
+
                 try:
                     user = User.objects.create_user(
                         username=username,
@@ -137,15 +130,17 @@ class GoogleAuthView(APIView):
                     )
                     user.is_active = True
                     user.save()
-                    print(f"DEBUG: Nuevo usuario creado: {user.email}")
 
                 except Exception as e:
-                    print(f"ERROR: Falló la creación del usuario: {e}")
-                    raise 
+                    import logging
+                    logger = logging.getLogger(__name__)
+                    logger.error(f"Falló la creación del usuario: {e}")
+                    raise
 
-            print(f"DEBUG: Objeto 'user' antes de la generación del token: {user}")
             if user is None:
-                print("CRÍTICO: La variable 'user' es None. Revisar la lógica de creación/recuperación del usuario.")
+                import logging
+                logger = logging.getLogger(__name__)
+                logger.critical("La variable 'user' es None. Revisar la lógica de creación/recuperación del usuario.")
                 return Response(
                     {"error": "No se pudo recuperar o crear el usuario."},
                     status=status.HTTP_500_INTERNAL_SERVER_ERROR
@@ -161,8 +156,12 @@ class GoogleAuthView(APIView):
             }, status=status.HTTP_200_OK)
 
         except ValueError as e:
-            print(f"ERROR: Error de verificación de Google: {e}")
-            return Response({"error": f"Error de autenticación de Google: {str(e)}"}, status=status.HTTP_400_BAD_REQUEST)
+            import logging
+            logger = logging.getLogger(__name__)
+            logger.error(f"Error de verificación de Google: {e}")
+            return Response({"error": "Error de autenticación de Google. Por favor, intenta de nuevo."}, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
-            print(f"ERROR: Error inesperado en GoogleAuthView: {e}")
-            return Response({"error": f"Error inesperado en el servidor: {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            import logging
+            logger = logging.getLogger(__name__)
+            logger.error(f"Error inesperado en GoogleAuthView: {e}")
+            return Response({"error": "Error en el servidor. Por favor, intenta de nuevo más tarde."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

@@ -4,7 +4,7 @@ import boto3
 from rest_framework import viewsets, permissions, status
 from rest_framework.response import Response
 from rest_framework.decorators import action, api_view, permission_classes
-from rest_framework.permissions import AllowAny # <-- Importa esto
+from rest_framework.permissions import AllowAny, IsAdminUser # <-- Importa esto
 from django.db import transaction
 from rest_framework import filters
 from django_filters.rest_framework import DjangoFilterBackend
@@ -51,11 +51,12 @@ DO_SPACES_REGION = os.environ.get('DO_SPACES_REGION')
 # IsAdminUser permite solo a administradores.
 # IsAuthenticated solo a usuarios logueados.
 @api_view(['POST'])
-@permission_classes([AllowAny])
+@permission_classes([IsAdminUser])
 def get_presigned_url(request):
     """
     Endpoint para generar una URL pre-firmada para la subida directa a DigitalOcean Spaces.
     Recibe el nombre del archivo desde el frontend.
+    REQUIERE: Usuario administrador autenticado.
     """
     file_name = request.data.get('file_name')
     if not file_name:
@@ -85,16 +86,22 @@ def get_presigned_url(request):
         )
         return Response({'presigned_url': presigned_url})
     except Exception as e:
-        return Response({'error': str(e)}, status=500)
+        # Log el error completo para debugging interno
+        import logging
+        logger = logging.getLogger(__name__)
+        logger.error(f"Error generando URL pre-firmada: {str(e)}")
+        # Devuelve un mensaje genérico al cliente
+        return Response({'error': 'Error al generar la URL de subida. Por favor, intenta de nuevo.'}, status=500)
 
 
 
 @api_view(['POST'])
-@permission_classes([AllowAny])
+@permission_classes([IsAdminUser])
 def create_product(request):
     """
     Endpoint para recibir los datos del producto, incluyendo las 3 URLs de las imágenes,
     y guardarlos en la base de datos.
+    REQUIERE: Usuario administrador autenticado.
     """
     name = request.data.get('nombre')
     descripcion = request.data.get('descripcion', '')
@@ -124,11 +131,16 @@ def create_product(request):
                 imagen3=imagen3_url
                 # No olvides añadir cualquier otro campo que sea obligatorio
             )
-        
+
         return Response({'message': 'Producto creado con éxito.', 'product_id': product.id}, status=201)
 
     except Exception as e:
-        return Response({'error': str(e)}, status=500)
+        # Log el error completo para debugging interno
+        import logging
+        logger = logging.getLogger(__name__)
+        logger.error(f"Error creando producto: {str(e)}")
+        # Devuelve un mensaje genérico al cliente
+        return Response({'error': 'Error al crear el producto. Por favor, verifica los datos e intenta de nuevo.'}, status=500)
     
     
 class CategoriaProductosViewSet(viewsets.ModelViewSet):

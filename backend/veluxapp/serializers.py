@@ -247,9 +247,6 @@ class CustomTokenObtainPairSerializer(JWTTokenObtainPairSerializer):
         identifier = attrs.get('identifier')
         password = attrs.get('password')
 
-        print(f"DEBUG: Intentando autenticar con identificador: {identifier}") # Debug 1
-        print(f"DEBUG: Contraseña (recortada): {password[:3]}...") # Debug 2
-
         if not identifier or not password:
             raise serializers.ValidationError("Debe proporcionar un identificador (username/email) y una contraseña.")
 
@@ -257,38 +254,33 @@ class CustomTokenObtainPairSerializer(JWTTokenObtainPairSerializer):
         user = None # Inicializa user a None
         try:
             user = authenticate(request=self.context.get('request'), username=identifier, password=password)
-            print(f"DEBUG: Resultado de autenticación por username: {user}") # Debug 3
         except Exception as e:
-            print(f"ERROR: Fallo en authenticate por username: {e}") # Debug 4
-
+            import logging
+            logger = logging.getLogger(__name__)
+            logger.error(f"Fallo en authenticate por username: {e}")
 
         if not user:
-            print(f"DEBUG: Autenticación por username fallida. Intentando por email para {identifier}") # Debug 5
             # Si falla por username, intentar por email
             try:
                 user_by_email = User.objects.get(email=identifier)
-                print(f"DEBUG: Usuario encontrado por email: {user_by_email.username}") # Debug 6
                 user = authenticate(request=self.context.get('request'), username=user_by_email.username, password=password)
-                print(f"DEBUG: Resultado de autenticación por email: {user}") # Debug 7
             except User.DoesNotExist:
-                print(f"DEBUG: Usuario no encontrado por email: {identifier}") # Debug 8
                 pass # El usuario no existe por email
             except Exception as e:
-                print(f"ERROR: Fallo en authenticate por email: {e}") # Debug 9
-
+                import logging
+                logger = logging.getLogger(__name__)
+                logger.error(f"Fallo en authenticate por email: {e}")
 
         if not user or not user.is_active:
-            print(f"DEBUG: Autenticación final fallida o usuario inactivo para {identifier}. user: {user}, is_active: {user.is_active if user else 'N/A'}") # Debug 10
             raise serializers.ValidationError("No se encontraron credenciales válidas.")
 
-        print(f"DEBUG: Autenticación exitosa para el usuario: {user.username}") # Debug 11
         # Autenticación exitosa, genera los tokens
         refresh = self.get_token(user)
         data = {}
         data['refresh'] = str(refresh)
         data['access'] = str(refresh.access_token)
 
-        data['user'] = UserSerializer(user).data 
+        data['user'] = UserSerializer(user).data
 
         return data
 
