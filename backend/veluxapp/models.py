@@ -191,8 +191,8 @@ class Cart(models.Model):
         null=True, # Permite que sea null para usuarios invitados
         blank=True
     )
-    # session_key es crucial para carritos de usuarios no autenticados
-    # Usamos CharField para un UUID generado en el frontend o una clave de sesión de Django
+    
+    
     session_key = models.CharField(max_length=40, null=True, blank=True, unique=True,
                                    help_text='Clave de sesión para usuarios no autenticados (ej. UUID).')
     created_at = models.DateTimeField(auto_now_add=True)
