@@ -7,12 +7,11 @@ const CategoryIcons = ({ selected, onSelect }) => {
   const baseLines = [
     { id: 'skin', nombre: 'Línea Chibi Skin', descripcion: 'Cuidado personal y belleza', icon: IoSparklesOutline },
     { id: 'tea',  nombre: 'Línea Chibi Tea',  descripcion: 'Tés e infusiones especiales', icon: IoLeafOutline },
-    // TEMPORALMENTE COMENTADO: Descomentar después de ejecutar migraciones
-    // { id: 'korean', nombre: 'Productos de Corea', descripcion: 'Productos importados de Corea', icon: IoGlobeOutline },
+    { id: 'korean', nombre: 'Productos de Corea', descripcion: 'Productos importados de Corea', icon: IoGlobeOutline },
   ];
 
   // "Todos" solo visible si se ha elegido algún filtro
-  const showTodos = selected === 'skin' || selected === 'tea'; // || selected === 'korean';
+  const showTodos = selected === 'skin' || selected === 'tea' || selected === 'korean';
   const allItems = showTodos
     ? [...baseLines, { id: 'todo', nombre: 'Todos', descripcion: 'Quitar filtro', icon: IoGridOutline }]
     : baseLines;

@@ -33,7 +33,7 @@ const CreateProductForm = ({
     imagen2: null,
     imagen3: null,
     linea: 'todo', // NEW
-    // es_producto_coreano: false, // TEMPORALMENTE COMENTADO
+    es_producto_coreano: false,
   });
 
   // Previews en vivo
@@ -81,7 +81,7 @@ const CreateProductForm = ({
         imagen2: null,
         imagen3: null,
         linea: productToEdit.linea || 'todo', // NEW
-        // es_producto_coreano: productToEdit.es_producto_coreano ?? false, // TEMPORALMENTE COMENTADO
+        es_producto_coreano: productToEdit.es_producto_coreano ?? false,
       });
       setMessage('');
       setError('');
@@ -358,8 +358,8 @@ const CreateProductForm = ({
             </label>
           </div>
 
-          {/* TEMPORALMENTE COMENTADO: Descomentar después de ejecutar migraciones */}
-          {/* <div className="flex items-center justify-between">
+          {/* Producto de Corea */}
+          <div className="flex items-center justify-between">
             <span className="text-sm text-gray-700">Producto de Corea</span>
             <label className="inline-flex items-center cursor-pointer select-none">
               <input
@@ -373,7 +373,7 @@ const CreateProductForm = ({
                               after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:w-4 after:h-4 after:bg-white
                               after:rounded-full after:transition-transform peer-checked:after:translate-x-5" />
             </label>
-          </div> */}
+          </div>
         </div>
 
         {/* Categorías */}

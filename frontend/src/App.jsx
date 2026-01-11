@@ -41,8 +41,7 @@ function App() {
 
       <PromoBanner />
 
-      {/* TEMPORALMENTE COMENTADO: Descomentar después de ejecutar migraciones */}
-      {/* <KoreanProductsBanner /> */}
+      <KoreanProductsBanner />
 
       <DailyTrainingSection />
       <ChibiSkinSection />

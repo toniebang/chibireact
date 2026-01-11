@@ -2,7 +2,7 @@
 
 // Importa las imágenes
 import teamMember1 from '../assets/karinephoto.jpeg';
-import teamMember2 from '../assets/media/El_mercado_estu00e1_lleno_cuando_la_carne_es_barata..jpg';
+import teamMember2 from '../assets/media/mariphoto.jpeg';
 import teamMember3 from '../assets/media/toniphoto.jpeg';
 
 const teamMembers = [

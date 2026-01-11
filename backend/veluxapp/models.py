@@ -72,8 +72,7 @@ class Productos(models.Model):
     precio_rebaja = models.IntegerField('Precio de oferta (XAF)', default=0) # Se mantiene como IntegerField
     fecha_subida = models.DateField('Fecha publicacion', auto_now_add=True)
     linea = models.CharField('Linea', max_length=10, choices=LINEAS_CHOICES, default='todo', help_text='Selecciona la línea a la que pertenece este producto')
-    # TEMPORALMENTE COMENTADO: Descomentar después de ejecutar migraciones en producción
-    # es_producto_coreano = models.BooleanField('Producto de Corea', default=False, help_text='Marca esta casilla si el producto es de origen coreano')
+    es_producto_coreano = models.BooleanField('Producto de Corea', default=False, help_text='Marca esta casilla si el producto es de origen coreano')
 
     def __str__(self):
         return self.nombre
