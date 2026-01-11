@@ -47,6 +47,10 @@ const Cart = () => {
   const [pending, setPending] = useState({});
   const [clearing, setClearing] = useState(false);
 
+  // Estado para el modal de nombre
+  const [showNameModal, setShowNameModal] = useState(false);
+  const [customerName, setCustomerName] = useState('');
+
   const getUnitPrice = (it) => {
     const p = it.product || it;
     if (!p) return 0;
@@ -127,10 +131,14 @@ const Cart = () => {
   };
 
   // --- WhatsApp (exige login) ---
-  const buildWhatsAppMessage = () => {
+  const buildWhatsAppMessage = (name = '') => {
     const lines = [];
     lines.push('🛒 *Pedido Chibi Market*');
     lines.push('');
+    if (name.trim()) {
+      lines.push(`👤 Cliente: *${name.trim()}*`);
+      lines.push('');
+    }
     items.forEach((it, idx) => {
       const p = it.product || it;
       const qty = safeQty(it);
@@ -142,7 +150,6 @@ const Cart = () => {
     });
     lines.push('');
     lines.push(`Total: *${formatPrice(totals.total)}*`);
-    // 🔕 Quitado el “indícame tu nombre…”
     return lines.join('\n');
   };
 
@@ -150,18 +157,33 @@ const Cart = () => {
     e.preventDefault(); e.stopPropagation();
 
     // 👇 Exigir autenticación con redirección de retorno
-  if (!isAuthenticated) {
-  addNotification('Debes iniciar sesión para poder solicitar tu pedido.', 'warning');
-  const next = encodeURIComponent(location.pathname + location.search);
-  navigate(`/auth?next=${next}`);
-  return;
-}
+    if (!isAuthenticated) {
+      addNotification('Debes iniciar sesión para poder solicitar tu pedido.', 'warning');
+      const next = encodeURIComponent(location.pathname + location.search);
+      navigate(`/auth?next=${next}`);
+      return;
+    }
 
-    const msg = encodeURIComponent(buildWhatsAppMessage());
+    // Abrir modal para pedir nombre
+    setShowNameModal(true);
+  };
+
+  const handleConfirmOrder = () => {
+    if (!customerName.trim()) {
+      alert('Por favor, ingresa tu nombre');
+      return;
+    }
+
+    const msg = encodeURIComponent(buildWhatsAppMessage(customerName));
     const url = `https://wa.me/${WHATSAPP_PHONE}?text=${msg}`;
     window.open(url, '_blank', 'noopener,noreferrer');
+
+    // Cerrar modal y limpiar nombre
+    setShowNameModal(false);
+    setCustomerName('');
   };
-const { addNotification } = useNotifications();
+
+  const { addNotification } = useNotifications();
   const anyPending = loading || clearing || Object.keys(pending).length > 0;
 
   return (
@@ -359,6 +381,56 @@ const { addNotification } = useNotifications();
       </main>
 
       <Footer />
+
+      {/* Modal de nombre */}
+      {showNameModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg max-w-md w-full p-6 shadow-xl">
+            <h2 className="text-xl font-semibold text-gray-900 mb-2">
+              Confirmar pedido
+            </h2>
+            <p className="text-sm text-gray-600 mb-6">
+              Por el momento, los pedidos se realizan vía WhatsApp.
+            </p>
+
+            <input
+              type="text"
+              value={customerName}
+              onChange={(e) => setCustomerName(e.target.value)}
+              placeholder="Ingresa tu nombre"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-chibi-green focus:border-chibi-green outline-none mb-6"
+              autoFocus
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') handleConfirmOrder();
+                if (e.key === 'Escape') {
+                  setShowNameModal(false);
+                  setCustomerName('');
+                }
+              }}
+            />
+
+            <div className="flex gap-3">
+              <button
+                type="button"
+                onClick={() => {
+                  setShowNameModal(false);
+                  setCustomerName('');
+                }}
+                className="flex-1 px-4 py-3 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition-colors font-medium"
+              >
+                Cancelar
+              </button>
+              <button
+                type="button"
+                onClick={handleConfirmOrder}
+                className="flex-1 px-4 py-3 bg-chibi-green text-white rounded-lg hover:bg-green-700 transition-colors font-medium"
+              >
+                Enviar pedido
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

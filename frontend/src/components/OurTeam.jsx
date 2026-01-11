@@ -49,64 +49,60 @@ const OurTeam = () => {
           </h1>
         </div>
 
-        <div className="grid cursor-pointer grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {teamMembers.map((miembro) => (
             <motion.div
               key={miembro.id}
-              className="single-item bg-white shadow-sm relative overflow-hidden group"
+              className="single-item bg-white shadow-lg rounded-lg overflow-hidden flex flex-col"
               variants={cardVariants}
             >
-              <div className="img-holder relative h-80 w-full overflow-hidden">
+              {/* Imagen del miembro */}
+              <div className="img-holder relative h-85 w-full overflow-hidden">
                 <img
                   src={miembro.foto}
                   alt={miembro.nombre}
-                  className="w-full h-full object-cover transform transition-transform duration-300 group-hover:scale-105"
+                  className="w-full h-full object-cover"
                 />
-                <div
-                  className="overlay-content absolute inset-x-0 bottom-0 bg-black bg-opacity-50 text-white p-4
-                             flex flex-col justify-end transform translate-y-full group-hover:translate-y-0
-                             transition-transform duration-300 ease-out"
-                >
-                  <ul className="text-sm mb-4 space-y-2">
-                    <li className="flex items-center">
-                      <FaEnvelope className="mr-2 text-chibi-green" />{miembro.email}
-                    </li>
-                    <li className="flex items-center">
-                      <FaPhoneAlt className="mr-2 text-chibi-green" />{miembro.telefono}
-                    </li>
-                  </ul>
-                  <div className="overlay-buttom">
-                    <div className="trainer-name mb-2">
-                      <div className="name">
-                        <h3 className="text-2xl font-bold leading-tight">{miembro.nombre}</h3>
-                        <span className="text-chibi-green text-lg font-semibold">{miembro.departamento}</span>
-                      </div>
-                    </div>
-                    {/* Esta es la descripción completa que aparece solo en el overlay */}
-                    <p className="text-sm  leading-relaxed mb-4 opacity-90">{miembro.descripcion}</p>
-                    <div className="social-links flex space-x-3 justify-center">
-                      {miembro.linkedin && (
-                        <a
-                          href={miembro.linkedin}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="w-8 h-8 flex items-center justify-center bg-chibi-green hover:bg-black transition-colors duration-200"
-                        >
-                          <FaLinkedinIn className="text-white text-lg" />
-                        </a>
-                      )}
-                    </div>
-                  </div>
-                </div>
               </div>
-              <div className="content p-4 text-center">
-                <div className="trainer-name mb-2">
-                  <h3 className="text-xl font-bold">{miembro.nombre}</h3>
-                  <span className="text-chibi-green text-sm">{miembro.departamento}</span>
+
+              {/* Información del miembro */}
+              <div className="content p-6 flex flex-col flex-grow">
+                {/* Nombre y departamento */}
+                <div className="trainer-name mb-4 text-center">
+                  <h3 className="text-2xl font-bold text-gray-800">{miembro.nombre}</h3>
+                  <span className="text-chibi-green text-lg font-semibold">{miembro.departamento}</span>
                 </div>
-                {/* AÑADIDO: Descripción corta visible a primera vista */}
-                
-               
+
+                {/* Descripción */}
+                <p className="text-sm text-gray-600 leading-relaxed mb-4 text-center">
+                  {miembro.descripcion}
+                </p>
+
+                {/* Contacto */}
+                <ul className="text-sm mb-4 space-y-2 text-gray-700">
+                  <li className="flex items-center">
+                    <FaEnvelope className="mr-2 text-chibi-green flex-shrink-0" />
+                    <span className="break-all">{miembro.email}</span>
+                  </li>
+                  <li className="flex items-center">
+                    <FaPhoneAlt className="mr-2 text-chibi-green flex-shrink-0" />
+                    <span>{miembro.telefono}</span>
+                  </li>
+                </ul>
+
+                {/* Social links */}
+                {miembro.linkedin && (
+                  <div className="social-links flex justify-center mt-auto pt-4">
+                    <a
+                      href={miembro.linkedin}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="w-10 h-10 flex items-center justify-center bg-chibi-green hover:bg-black transition-colors duration-200 rounded-full"
+                    >
+                      <FaLinkedinIn className="text-white text-lg" />
+                    </a>
+                  </div>
+                )}
               </div>
             </motion.div>
           ))}

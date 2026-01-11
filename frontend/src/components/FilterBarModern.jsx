@@ -12,6 +12,8 @@ const FilterBarModern = ({
   setCategory,
   onOffer,
   setOnOffer,
+  koreanOnly,
+  setKoreanOnly,
   sortKey,
   setSortKey,
 
@@ -30,9 +32,10 @@ const FilterBarModern = ({
       hasActiveSearch ||
       (category && String(category) !== '') ||
       onOffer === true ||
+      koreanOnly === true ||
       sortKey !== 'relevance'
     );
-  }, [hasActiveSearch, category, onOffer, sortKey]);
+  }, [hasActiveSearch, category, onOffer, koreanOnly, sortKey]);
 
   // Chips activos
   const chips = useMemo(() => {
@@ -48,6 +51,12 @@ const FilterBarModern = ({
       arr.push({
         label: 'En oferta',
         onRemove: () => setOnOffer(false),
+      });
+    }
+    if (koreanOnly) {
+      arr.push({
+        label: 'Productos de Corea',
+        onRemove: () => setKoreanOnly(false),
       });
     }
     if (sortKey && sortKey !== 'relevance') {
@@ -71,7 +80,7 @@ const FilterBarModern = ({
       });
     }
     return arr;
-  }, [categories, category, onOffer, sortKey, hasActiveSearch, setCategory, setOnOffer, setSortKey, onClearFilters]);
+  }, [categories, category, onOffer, koreanOnly, sortKey, hasActiveSearch, setCategory, setOnOffer, setKoreanOnly, setSortKey, onClearFilters]);
 
   // Cerrar con Escape
   useEffect(() => {
@@ -197,6 +206,20 @@ const FilterBarModern = ({
               ].join(' ')}
             >
               {onOffer ? 'En oferta ✓' : 'En oferta'}
+            </button>
+
+            {/* Productos de Corea */}
+            <button
+              type="button"
+              onClick={() => setKoreanOnly((prev) => !prev)}
+              className={[
+                'px-3 py-2 text-sm rounded-full border transition-colors',
+                koreanOnly
+                  ? 'bg-chibi-green text-white border-chibi-green shadow-sm'
+                  : 'bg-white text-gray-800 border-gray-300 hover:bg-gray-50',
+              ].join(' ')}
+            >
+              {koreanOnly ? 'De Corea ✓' : 'De Corea'}
             </button>
 
             {/* Orden */}

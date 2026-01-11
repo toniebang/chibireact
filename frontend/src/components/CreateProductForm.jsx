@@ -33,6 +33,7 @@ const CreateProductForm = ({
     imagen2: null,
     imagen3: null,
     linea: 'todo', // NEW
+    es_producto_coreano: false,
   });
 
   // Previews en vivo
@@ -80,6 +81,7 @@ const CreateProductForm = ({
         imagen2: null,
         imagen3: null,
         linea: productToEdit.linea || 'todo', // NEW
+        es_producto_coreano: productToEdit.es_producto_coreano ?? false,
       });
       setMessage('');
       setError('');
@@ -347,6 +349,23 @@ const CreateProductForm = ({
                 type="checkbox"
                 name="stock"
                 checked={formData.stock}
+                onChange={handleChange}
+                className="sr-only peer"
+              />
+              <div className="w-10 h-5 bg-gray-200 peer-checked:bg-chibi-green relative rounded-full transition-colors
+                              after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:w-4 after:h-4 after:bg-white
+                              after:rounded-full after:transition-transform peer-checked:after:translate-x-5" />
+            </label>
+          </div>
+
+          {/* NEW: Producto de Corea */}
+          <div className="flex items-center justify-between">
+            <span className="text-sm text-gray-700">Producto de Corea</span>
+            <label className="inline-flex items-center cursor-pointer select-none">
+              <input
+                type="checkbox"
+                name="es_producto_coreano"
+                checked={formData.es_producto_coreano}
                 onChange={handleChange}
                 className="sr-only peer"
               />

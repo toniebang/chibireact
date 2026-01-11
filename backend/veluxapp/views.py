@@ -158,8 +158,8 @@ class ProductosViewSet(viewsets.ModelViewSet):
     pagination_class = StandardResultsSetPagination
  # --- Configuraciones de Filtrado para Productos ---
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
-    # Permite filtrar por id, nombre, precio, stock, oferta, disponible, y categorías
-    filterset_fields = ['id', 'nombre', 'precio', 'stock', 'oferta', 'disponible', 'categoria', 'linea']
+    # Permite filtrar por id, nombre, precio, stock, oferta, disponible, categorías y productos coreanos
+    filterset_fields = ['id', 'nombre', 'precio', 'stock', 'oferta', 'disponible', 'categoria', 'linea', 'es_producto_coreano']
     search_fields = ['nombre', 'descripcion', 'lista_caracteristicas'] # Búsqueda por nombre y descripción.
     ordering_fields = ['nombre', 'precio', 'stock', 'fecha_subida'] # Permite ordenar por estos campos
     ordering = ['-fecha_subida']

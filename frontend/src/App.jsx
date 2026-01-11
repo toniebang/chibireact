@@ -16,6 +16,7 @@ import ScrollToTopButton from './components/ScrollToTopButton';
 import CustomerFeedback from './components/CustomerFeedback';
 import { useProducts } from './context/ProductContext'; // 👈 usa el contexto
 import PromoBanner from './components/PromoBanner';
+import KoreanProductsBanner from './components/KoreanProductsBanner';
 function App() {
   const { products, loading, error } = useProducts(); // 👈 toma los datos reales
 
@@ -39,6 +40,8 @@ function App() {
       />
 
       <PromoBanner />
+
+      <KoreanProductsBanner />
 
       <DailyTrainingSection />
       <ChibiSkinSection />

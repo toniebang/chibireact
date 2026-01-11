@@ -1,15 +1,15 @@
 // src/data/teamMembers.js
 
 // Importa las imágenes
-import teamMember1 from '../assets/media/1755718482224.jpeg';
+import teamMember1 from '../assets/karinephoto.jpeg';
 import teamMember2 from '../assets/media/El_mercado_estu00e1_lleno_cuando_la_carne_es_barata..jpg';
-import teamMember3 from '../assets/media/mmexport1715629266543.jpg';
+import teamMember3 from '../assets/media/toniphoto.jpeg';
 
 const teamMembers = [
   {
     id: 1,
     nombre: 'Modesta Dolores Nchama',
-    departamento: 'Gerente General',
+    departamento: 'DG',
     foto: teamMember1,
     email: 'karinemedja98@gmail.com',
     telefono: '+240 555 308 250',
@@ -29,7 +29,7 @@ const teamMembers = [
   {
     id: 3,
     nombre: 'Antonio Ebang',
-    departamento: 'Informático',
+    departamento: 'Desarrollador',
     foto: teamMember3,
     email: 'antonioebang97@gmail.com',
     telefono: '+240555766714',

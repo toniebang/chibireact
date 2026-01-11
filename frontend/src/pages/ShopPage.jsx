@@ -1,5 +1,6 @@
 // src/pages/ShopPage.jsx
 import React, { useEffect, useMemo, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import ScrollToTopButton from '../components/ScrollToTopButton';
@@ -23,6 +24,7 @@ const buildParams = (obj) =>
 
 const ShopPage = () => {
   const { authAxios } = useAuth();
+  const [searchParams] = useSearchParams();
 
   // UI / filtros
   const [searchTerm, setSearchTerm] = useState('');
@@ -34,6 +36,17 @@ const ShopPage = () => {
 
   // 🔹 NUEVO: línea
   const [line, setLine] = useState('');
+
+  // 🔹 NUEVO: filtro de productos coreanos
+  const [koreanOnly, setKoreanOnly] = useState(false);
+
+  // 🔹 Activar filtro coreano si viene del banner
+  useEffect(() => {
+    const koreanParam = searchParams.get('korean');
+    if (koreanParam === 'true' && line !== 'korean') {
+      setLine('korean');
+    }
+  }, [searchParams, line]);
 
   // Data
   const [categories, setCategories] = useState([]);
@@ -138,7 +151,20 @@ const ShopPage = () => {
       const safeOrdering = ['precio', '-precio', '-fecha_subida', 'nombre', '-nombre'];
       const orderingParam = safeOrdering.includes(ordering) ? ordering : undefined;
 
-      const effectiveLine = line === 'todo' ? '' : line;
+      // Detectar si viene del banner con parámetro korean
+      const koreanParam = searchParams.get('korean');
+      const currentLine = opts.forceLine !== undefined ? opts.forceLine : line;
+
+      // Si line es 'korean', usar el filtro es_producto_coreano en lugar de linea
+      let effectiveLine = '';
+      let isKorean = false;
+
+      if (currentLine === 'korean' || koreanParam === 'true') {
+        isKorean = true;
+      } else if (currentLine !== 'todo' && currentLine !== '') {
+        effectiveLine = currentLine;
+      }
+
       const params = buildParams({
         search: committedSearch || undefined,
         categoria: category || undefined,
@@ -147,6 +173,7 @@ const ShopPage = () => {
         ordering: orderingParam,
         page_size: pageSize || PAGE_SIZE,
         linea: effectiveLine || undefined,
+        es_producto_coreano: (koreanOnly || isKorean) || undefined,
       });
 
       const res = await authAxios.get('/productos/', { params });
@@ -168,12 +195,12 @@ const ShopPage = () => {
     }
   };
 
-  // Refetch al cambiar filtros/orden/búsqueda/line
+  // Refetch al cambiar filtros/orden/búsqueda/line/koreanOnly
   useEffect(() => {
     if (selectedId) return;
     fetchProducts(1);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [committedSearch, onOffer, category, ordering, line]);
+  }, [committedSearch, onOffer, category, ordering, line, koreanOnly, searchParams]);
 
   // 🔹 Scroll al top siempre que cambie page
   useEffect(() => {
@@ -220,10 +247,12 @@ const ShopPage = () => {
     setSuggestions([]);
     setShowSuggestions(false);
     setLine('');
+    setKoreanOnly(false);
     fetchProducts(1, { forceId: null });
   };
 
   const selectLine = (lineId) => {
+    // 'todo' limpia el filtro, 'korean', 'skin', 'tea' son valores válidos
     const normalized = lineId === 'todo' ? '' : lineId;
     setLine(normalized);
     setSelectedId(null);
@@ -248,7 +277,10 @@ const ShopPage = () => {
         hideSuggestions={() => setShowSuggestions(false)}
       />
 
-      <CategoryIcons selected={line} onSelect={selectLine} />
+      <CategoryIcons
+        selected={line}
+        onSelect={selectLine}
+      />
 
       <div className="max-w-7xl mx-auto font-montserrat px-4 md:px-6">
         <FilterBarModern
@@ -263,6 +295,12 @@ const ShopPage = () => {
           onOffer={onOffer}
           setOnOffer={(v) => {
             setOnOffer(v);
+            setPage(1);
+            setSelectedId(null);
+          }}
+          koreanOnly={koreanOnly}
+          setKoreanOnly={(v) => {
+            setKoreanOnly(v);
             setPage(1);
             setSelectedId(null);
           }}
