@@ -165,7 +165,8 @@ class ProductosSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Productos
-        fields = '__all__'
+        # Temporalmente excluir es_producto_coreano hasta que se ejecute la migración en producción
+        exclude = ['es_producto_coreano']
 
     def get_is_new(self, obj):
         new_threshold = timezone.now() - timedelta(days=30)

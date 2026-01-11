@@ -208,8 +208,8 @@ const FilterBarModern = ({
               {onOffer ? 'En oferta ✓' : 'En oferta'}
             </button>
 
-            {/* Productos de Corea */}
-            <button
+            {/* TEMPORALMENTE COMENTADO: Descomentar después de ejecutar migraciones */}
+            {/* <button
               type="button"
               onClick={() => setKoreanOnly((prev) => !prev)}
               className={[
@@ -220,7 +220,7 @@ const FilterBarModern = ({
               ].join(' ')}
             >
               {koreanOnly ? 'De Corea ✓' : 'De Corea'}
-            </button>
+            </button> */}
 
             {/* Orden */}
             <label className="inline-flex items-center gap-2 text-sm text-gray-600">
