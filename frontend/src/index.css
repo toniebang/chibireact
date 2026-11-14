@@ -1,6 +1,5 @@
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Quicksand:wght@300..700&family=Roboto+Mono:ital,wght@0,100..700;1,100..700&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Righteous&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+/* Tipografía: Montserrat se carga con <link> en index.html (más rápido que @import encadenado).
+   Las otras familias (Playfair, Poppins, Quicksand, Roboto, Righteous) no se usaban en ningún componente. */
 @import "tailwindcss";
 @import 'flag-icon-css/css/flag-icons.min.css';
 
@@ -12,6 +11,129 @@
   --font-playfair: "Playfair Display", serif;
   --font-quicksand: "Quicksand", sans-serif;
   --color-chibi-green: #9bb60e ;
+  /* Variante oscura: ya se usaba en clases hover (hover:bg-chibi-green-dark) pero no existía */
+  --color-chibi-green-dark: #7f960b;
+  /* Sistema "Dos mundos": gimnasio en oscuro (ink/panel), tienda y skin en claro (bone) */
+  --color-chibi-ink: #0b0c09;
+  --color-chibi-panel: #14160f;
+  --color-chibi-line: #2c2f24;
+  --color-chibi-mist: #b9bcae;
+  --color-chibi-bone: #f3f2ea;
+  --color-chibi-sand: #e9e7dc;
+  --color-chibi-rule: #cfcdbf;
+  --color-chibi-olive: #536300;
+  --font-display: "Archivo", "Arial Narrow", sans-serif;
+  /* Montserrat como fuente por defecto de todo el sitio (antes algunas páginas caían a la fuente del sistema) */
+  --default-font-family: "Montserrat", ui-sans-serif, system-ui, sans-serif;
+}
+
+@layer base {
+  html {
+    color-scheme: light; /* el sitio no tiene tema oscuro: evita fondos oscuros del navegador */
+  }
+  body {
+    background-color: #fff;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+  /* Foco visible por teclado, con el verde de marca */
+  :where(a, button, input, select, textarea, [tabindex]):focus-visible {
+    outline: 2px solid var(--color-chibi-green);
+    outline-offset: 2px;
+  }
+  ::selection {
+    background-color: var(--color-chibi-green);
+    color: #000;
+  }
+}
+
+/* Piezas compartidas del nuevo diseño */
+@layer components {
+  /* Titulares: Archivo condensada, mayúsculas */
+  .chibi-display {
+    font-family: var(--font-display);
+    font-stretch: 62%;
+    font-variation-settings: "wdth" 62;
+    font-weight: 800;
+    text-transform: uppercase;
+    line-height: 0.9;
+    letter-spacing: -0.005em;
+  }
+  /* Etiqueta pequeña sobre los titulares */
+  .chibi-eyebrow {
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+  }
+  /* Enlaces de la cabecera: subrayado verde que crece desde la izquierda */
+  .chibi-navlink {
+    position: relative;
+  }
+  .chibi-navlink::after {
+    content: "";
+    position: absolute;
+    left: 0.375rem;
+    right: 0.375rem;
+    bottom: -7px;
+    height: 2px;
+    background: var(--color-chibi-green);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 250ms ease-out;
+  }
+  .chibi-navlink:hover::after,
+  .chibi-navlink:focus-visible::after,
+  .chibi-navlink[aria-current="page"]::after {
+    transform: scaleX(1);
+  }
+  /* Botones píldora */
+  .chibi-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.625rem;
+    height: 3.375rem;
+    padding: 0 1.75rem;
+    border-radius: 9999px;
+    border: 1.5px solid transparent;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 200ms, color 200ms, border-color 200ms;
+  }
+  .chibi-btn:focus-visible {
+    outline: 2px solid var(--color-chibi-green);
+    outline-offset: 3px;
+  }
+  .chibi-btn-white { background: #fff; color: var(--color-chibi-ink); }
+  .chibi-btn-white:hover { background: var(--color-chibi-green); }
+  .chibi-btn-ink { background: var(--color-chibi-ink); color: #fff; border-color: var(--color-chibi-ink); }
+  .chibi-btn-ink:hover { background: var(--color-chibi-olive); border-color: var(--color-chibi-olive); }
+  .chibi-btn-ghost-white { background: transparent; color: #fff; border-color: #fff; }
+  .chibi-btn-ghost-white:hover { background: #fff; color: var(--color-chibi-ink); }
+  .chibi-btn-ghost-ink { background: transparent; color: var(--color-chibi-ink); border-color: var(--color-chibi-ink); }
+  .chibi-btn-ghost-ink:hover { background: var(--color-chibi-ink); color: #fff; }
+}
+
+/* Respeta "reducir movimiento" del sistema */
+@media (prefers-reduced-motion: reduce) {
+  .animate-slide-infinite,
+  .animate-shake {
+    animation: none;
+  }
+}
+
+/* Carrusel de testimonios: puntos con el verde de marca (antes azul por defecto de Swiper) */
+.chibi-swiper {
+  --swiper-theme-color: var(--color-chibi-ink);
+  --swiper-pagination-bullet-inactive-color: var(--color-chibi-ink);
+  --swiper-pagination-bullet-inactive-opacity: 0.25;
+  padding-bottom: 2.75rem;
+}
+.chibi-swiper .swiper-slide {
+  height: auto; /* tarjetas de igual altura */
 }
 
 /* Ocultar scrollbar para Webkit (Chrome, Safari) */

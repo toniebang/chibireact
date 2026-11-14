@@ -93,25 +93,25 @@ const FilterBarModern = ({
   }, [open]);
 
   return (
-    <section className="bg-white border border-gray-200/80 shadow-sm rounded-xl">
+    <section className="border-y border-chibi-rule text-chibi-ink">
       {/* Barra superior */}
-      <div className="flex flex-wrap items-center gap-2 p-3 md:p-4">
+      <div className="flex flex-wrap items-center gap-2.5 py-3 md:py-3.5">
         {/* Botón Filtros */}
         <button
           type="button"
           aria-expanded={open}
           aria-controls={panelId}
           onClick={() => setOpen((v) => !v)}
-          className="inline-flex items-center gap-2 px-4 py-2 rounded-full
-                     border border-chibi-green/40 text-chibi-green bg-white
-                     hover:bg-green-50 focus:outline-none focus:ring-2 focus:ring-chibi-green
+          className="inline-flex items-center gap-2.5 h-[46px] px-5 rounded-full cursor-pointer
+                     bg-chibi-ink text-white text-sm font-semibold
+                     hover:bg-chibi-olive focus:outline-none focus-visible:ring-2 focus-visible:ring-chibi-green focus-visible:ring-offset-2
                      transition-colors"
           title="Mostrar/Ocultar filtros"
         >
           <IoFilterOutline className="text-base" />
-          <span className="font-medium">Filtros</span>
+          <span>Filtros</span>
           {isDirty && (
-            <span className="ml-1 text-[11px] leading-none px-2 py-1 rounded-full bg-green-100 text-chibi-green">
+            <span className="text-[11px] leading-none px-2 py-1 rounded-full bg-chibi-green text-chibi-ink">
               {chips.length}
             </span>
           )}
@@ -124,16 +124,15 @@ const FilterBarModern = ({
             {chips.map((c, i) => (
               <span
                 key={`${c.label}-${i}`}
-                className="inline-flex items-center gap-1 px-3 py-1.5 text-[12px]
-                           border border-chibi-green/30 text-chibi-green bg-green-50 rounded-full
-                           shadow-sm"
+                className="inline-flex items-center gap-1 pl-3.5 pr-1 h-9 text-[13px]
+                           border border-chibi-ink text-chibi-ink bg-white rounded-full"
               >
                 {c.label}
                 {c.onRemove && (
                   <button
                     type="button"
                     onClick={c.onRemove}
-                    className="p-1 hover:bg-green-100 rounded-full transition-colors"
+                    className="h-7 w-7 flex items-center justify-center hover:bg-chibi-sand rounded-full transition-colors cursor-pointer"
                     aria-label={`Quitar ${c.label}`}
                   >
                     <IoClose className="text-[14px]" />
@@ -150,8 +149,8 @@ const FilterBarModern = ({
             type="button"
             onClick={onClearFilters}
             disabled={!isDirty || loading}
-            className="inline-flex items-center gap-2 px-3 py-2 text-sm rounded-full
-                       border border-gray-300 bg-gray-50 hover:bg-gray-100
+            className="inline-flex items-center gap-2 h-[46px] px-[18px] text-sm font-medium rounded-full cursor-pointer
+                       border-[1.5px] border-[#8b8d80] text-[#3b3d33] bg-transparent hover:border-chibi-ink hover:text-chibi-ink
                        disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             title={hasActiveSearch ? 'Limpiar filtros y búsqueda' : 'Limpiar filtros'}
           >
@@ -171,17 +170,17 @@ const FilterBarModern = ({
         ].join(' ')}
         aria-hidden={!open}
       >
-        <div className="px-3 md:px-4 pb-4 border-t border-gray-100">
+        <div className="pt-4 pb-5 border-t border-chibi-rule">
           {/* Controles */}
-          <div className="flex flex-wrap items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2.5">
             {/* Categoría */}
-            <label className="inline-flex items-center gap-2 text-sm text-gray-600">
+            <label className="inline-flex items-center gap-2 text-sm text-[#3b3d33]">
               <span className="hidden sm:inline">Categoría</span>
               <select
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
-                className="px-3 py-2 text-sm rounded-lg bg-white
-                           ring-1 ring-gray-300 focus:ring-2 focus:ring-chibi-green outline-none
+                className="h-11 px-4 text-sm rounded-full bg-white text-chibi-ink
+                           ring-1 ring-[#8b8d80] focus:ring-2 focus:ring-chibi-ink outline-none
                            transition-shadow"
                 title="Categoría"
               >
@@ -199,10 +198,10 @@ const FilterBarModern = ({
               type="button"
               onClick={() => setOnOffer((prev) => !prev)}
               className={[
-                'px-3 py-2 text-sm rounded-full border transition-colors',
+                'h-11 px-[18px] text-sm font-medium rounded-full border transition-colors cursor-pointer',
                 onOffer
-                  ? 'bg-chibi-green text-white border-chibi-green shadow-sm'
-                  : 'bg-white text-gray-800 border-gray-300 hover:bg-gray-50',
+                  ? 'bg-chibi-ink text-white border-chibi-ink'
+                  : 'bg-white text-chibi-ink border-[#8b8d80] hover:border-chibi-ink',
               ].join(' ')}
             >
               {onOffer ? 'En oferta ✓' : 'En oferta'}
@@ -213,23 +212,23 @@ const FilterBarModern = ({
               type="button"
               onClick={() => setKoreanOnly((prev) => !prev)}
               className={[
-                'px-3 py-2 text-sm rounded-full border transition-colors',
+                'h-11 px-[18px] text-sm font-medium rounded-full border transition-colors cursor-pointer',
                 koreanOnly
-                  ? 'bg-chibi-green text-white border-chibi-green shadow-sm'
-                  : 'bg-white text-gray-800 border-gray-300 hover:bg-gray-50',
+                  ? 'bg-chibi-ink text-white border-chibi-ink'
+                  : 'bg-white text-chibi-ink border-[#8b8d80] hover:border-chibi-ink',
               ].join(' ')}
             >
               {koreanOnly ? 'De Corea ✓' : 'De Corea'}
             </button>
 
             {/* Orden */}
-            <label className="inline-flex items-center gap-2 text-sm text-gray-600">
+            <label className="inline-flex items-center gap-2 text-sm text-[#3b3d33]">
               <span className="hidden sm:inline">Ordenar</span>
               <select
                 value={sortKey}
                 onChange={(e) => setSortKey(e.target.value)}
-                className="px-3 py-2 text-sm rounded-lg bg-white
-                           ring-1 ring-gray-300 focus:ring-2 focus:ring-chibi-green outline-none
+                className="h-11 px-4 text-sm rounded-full bg-white text-chibi-ink
+                           ring-1 ring-[#8b8d80] focus:ring-2 focus:ring-chibi-ink outline-none
                            transition-shadow"
                 title="Ordenar por"
               >

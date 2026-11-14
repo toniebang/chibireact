@@ -34,10 +34,10 @@ function GallerySwipe({ images = [], product }) {
     return (
       <div className="relative bg-gray-50 border border-gray-200 overflow-hidden">
         {product?.oferta && (
-          <span className="absolute left-3 top-3 bg-chibi-green text-white text-xs px-2 py-1 rounded-none">Oferta</span>
+          <span className="absolute left-3 top-3 bg-chibi-green text-chibi-ink text-xs font-bold uppercase tracking-[0.12em] px-3 py-1.5">Oferta</span>
         )}
         {product?.is_new && (
-          <span className="absolute right-3 top-3 bg-black text-white text-xs px-2 py-1 rounded-none">Nuevo</span>
+          <span className="absolute right-3 top-3 bg-chibi-ink text-white text-xs font-bold uppercase tracking-[0.12em] px-3 py-1.5">Nuevo</span>
         )}
         <div className="w-full aspect-[4/4] flex items-center justify-center text-gray-400">Sin imagen</div>
       </div>
@@ -47,17 +47,17 @@ function GallerySwipe({ images = [], product }) {
   return (
     <div className="relative">
       {product?.oferta && (
-        <span className="absolute left-3 top-3 z-10 bg-chibi-green text-white text-xs px-2 py-1 rounded-none">Oferta</span>
+        <span className="absolute left-3 top-3 z-10 bg-chibi-green text-chibi-ink text-xs font-bold uppercase tracking-[0.12em] px-3 py-1.5">Oferta</span>
       )}
       {product?.is_new && (
-        <span className="absolute right-3 top-3 z-10 bg-black text-white text-xs px-2 py-1 rounded-none">Nuevo</span>
+        <span className="absolute right-3 top-3 z-10 bg-chibi-ink text-white text-xs font-bold uppercase tracking-[0.12em] px-3 py-1.5">Nuevo</span>
       )}
 
       {/* Track swipeable (mobile) */}
       <div
         ref={trackRef}
         onScroll={handleScroll}
-        className="flex overflow-x-auto snap-x snap-mandatory no-scrollbar border border-gray-200 bg-gray-50 relative"
+        className="flex overflow-x-auto snap-x snap-mandatory no-scrollbar bg-white relative"
         style={{ scrollBehavior: 'smooth' }}
         aria-roledescription="carousel"
         aria-label="Galería del producto"
@@ -109,7 +109,7 @@ function GallerySwipe({ images = [], product }) {
               type="button"
               onClick={() => scrollToIdx(i)}
               aria-label={`Ir a imagen ${i + 1}`}
-              className={`h-2.5 rounded-full transition-all ${i === slide ? 'w-6 bg-chibi-green' : 'w-2.5 bg-gray-300'}`}
+              className={`h-2.5 rounded-full transition-all ${i === slide ? 'w-6 bg-chibi-ink' : 'w-2.5 bg-chibi-rule'}`}
             />
           ))}
         </div>
@@ -122,7 +122,7 @@ function GallerySwipe({ images = [], product }) {
             <button
               key={i}
               onClick={() => scrollToIdx(i)}
-              className={`border ${i === slide ? 'border-black' : 'border-gray-200'} p-0 overflow-hidden w-full aspect-square`}
+              className={`bg-white border ${i === slide ? 'border-2 border-chibi-ink' : 'border-[#dddbcf]'} p-0 overflow-hidden w-full aspect-square cursor-pointer`}
               title={`Vista ${i + 1}`}
               type="button"
             >
@@ -261,10 +261,10 @@ const ProductDetails = () => {
     if (product.oferta && product.precio_rebaja > 0) {
       return (
         <div className="flex items-baseline gap-3">
-          <span className="text-3xl font-semibold text-gray-900">
+          <span className="chibi-display leading-none text-[42px] md:text-[52px] text-chibi-ink">
             {formatPrice(product.precio_rebaja)}
           </span>
-          <span className="text-base text-gray-500 line-through">
+          <span className="text-base text-[#5b5d50] line-through">
             {formatPrice(product.precio)}
           </span>
         </div>
@@ -272,7 +272,7 @@ const ProductDetails = () => {
     }
     return (
       <div className="flex items-baseline gap-3">
-        <span className="text-3xl font-semibold text-gray-900">
+        <span className="chibi-display leading-none text-[42px] md:text-[52px] text-chibi-ink">
           {formatPrice(product.precio)}
         </span>
       </div>
@@ -288,29 +288,30 @@ const ProductDetails = () => {
     <>
       <Header />
 
-      <main className="max-w-7xl mx-auto px-4 md:px-6 mt-24 font-montserrat">
+      <main className="bg-chibi-bone text-chibi-ink font-montserrat pt-20 md:pt-28">
+       <div className="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8 pb-12 md:pb-24">
         {/* Breadcrumbs */}
-        <nav className="text-sm text-gray-500 mb-4">
+        <nav aria-label="Ruta" className="text-[13px] text-[#4a4c41] mb-4 md:mb-7 flex flex-wrap items-center min-h-11">
           <Link to="/tienda" className="hover:underline">
             Tienda
           </Link>
           <span className="mx-2">/</span>
           {product?.categoria?.[0] ? (
             <>
-              <span className="text-gray-700">{product.categoria[0].nombre}</span>
+              <span>{product.categoria[0].nombre}</span>
               <span className="mx-2">/</span>
             </>
           ) : null}
-          <span className="text-gray-700">{product?.nombre || '...'}</span>
+          <span className="text-chibi-ink font-semibold">{product?.nombre || '...'}</span>
         </nav>
 
         {/* Contenido principal */}
         {loading ? (
-          <div className="py-16 text-center text-gray-500">Cargando producto…</div>
+          <div className="py-16 text-center text-[#4a4c41]">Cargando producto…</div>
         ) : err ? (
           <div className="py-16 text-center text-red-600">{err}</div>
         ) : product ? (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-[72px] items-start">
             {/* Galería (swipe en mobile) */}
             <div>
               <GallerySwipe images={images} product={product} />
@@ -318,29 +319,31 @@ const ProductDetails = () => {
 
             {/* Info */}
             <div>
-              <h1 className="text-3xl md:text-3xl font-bold text-gray-900">{product.nombre}</h1>
+              {product.categoria?.[0]?.nombre && (
+                <p className="chibi-eyebrow text-chibi-olive mb-4">{product.categoria[0].nombre}</p>
+              )}
+              <h1 className="chibi-display leading-[0.84] text-[clamp(3.25rem,16vw,4rem)] sm:text-7xl lg:text-[clamp(4rem,8vw,7.25rem)] text-chibi-ink break-words">{product.nombre}</h1>
 
               {/* Precio */}
-              <div className="mt-4">{priceBlock}</div>
+              <div className="mt-5">{priceBlock}</div>
 
               {/* Descripción específica */}
               {product.descripcion && (
-                <p className="mt-4 text-gray-700 text-base leading-relaxed">
-                  <span className="font-bold">Descripción:</span>
-                  <br />
-                  {product.descripcion}
-                </p>
+                <div className="mt-6 pt-5 border-t border-chibi-rule">
+                  <h2 className="chibi-eyebrow text-chibi-ink mb-2.5">Descripción</h2>
+                  <p className="text-[15px] leading-7 text-[#3b3d33]">{product.descripcion}</p>
+                </div>
               )}
 
               {/* Chips de categorías (no clicables) */}
               {categoryNames.length > 0 && (
-                <div className="mt-3">
-                  <h3 className="text-sm font-semibold text-gray-900 mb-1">Categorías</h3>
+                <div className="mt-6 pt-5 border-t border-chibi-rule">
+                  <h3 className="chibi-eyebrow text-chibi-ink mb-3">Categorías</h3>
                   <div className="flex flex-wrap gap-2">
                     {categoryNames.map((nm, i) => (
                       <span
                         key={`${nm}-${i}`}
-                        className="text-xs px-2 py-1 border border-gray-300 bg-white rounded-none"
+                        className="text-[13px] px-3.5 py-2 border border-[#8b8d80] text-[#1b1c17]"
                       >
                         {nm}
                       </span>
@@ -350,21 +353,21 @@ const ProductDetails = () => {
               )}
 
               {/* Estado stock */}
-              <div className="mt-2 text-sm">
+              <div className="mt-5 text-[13px] font-semibold">
                 {product.stock ? (
-                  <span className="text-green-700">En stock</span>
+                  <span className="inline-flex items-center gap-2 text-[#1b1c17]"><span className="h-2.5 w-2.5 bg-chibi-green" aria-hidden="true" />En stock</span>
                 ) : (
-                  <span className="text-red-600">Agotado</span>
+                  <span className="inline-flex items-center gap-2 text-red-700"><span className="h-2.5 w-2.5 bg-red-600" aria-hidden="true" />Agotado</span>
                 )}
               </div>
 
               {/* Botones */}
-              <div className="mt-5 flex flex-col sm:flex-row gap-3">
+              <div className="mt-5 flex flex-col-reverse sm:flex-row-reverse sm:justify-end gap-2.5 sm:gap-3">
                 {isInCart ? (
                   <button
                     type="button"
                     aria-label="En el carrito"
-                    className="flex items-center justify-center gap-2 px-5 py-3 text-white bg-black rounded-none cursor-default"
+                    className="chibi-btn bg-chibi-green text-chibi-ink h-14 px-8 cursor-default"
                     disabled
                   >
                     <BsCartCheck />
@@ -375,7 +378,7 @@ const ProductDetails = () => {
                     onClick={handleAdd}
                     disabled={!product.stock}
                     aria-label="Añadir al carrito"
-                    className="flex items-center justify-center gap-2 px-5 py-3 text-black bg-white hover:bg-gray-200 border-2 border-black cursor-pointer rounded-none disabled:opacity-60"
+                    className="chibi-btn chibi-btn-ghost-ink h-14 px-8 disabled:opacity-60 disabled:cursor-not-allowed"
                   >
                     <FaShoppingCart />
                     Añadir al carrito
@@ -386,7 +389,7 @@ const ProductDetails = () => {
                   onClick={handleBuyNow}
                   disabled={!product.stock}
                   aria-label="Pedir ahora"
-                  className="flex items-center justify-center gap-2 px-5 py-3 text-white bg-black hover:bg-chibi-green rounded-none disabled:opacity-60 cursor-pointer"
+                  className="chibi-btn chibi-btn-ink h-14 px-8 disabled:opacity-60 disabled:cursor-not-allowed"
                 >
                   <FaBolt />
                   Pedir ahora
@@ -395,13 +398,13 @@ const ProductDetails = () => {
 
               {/* Especificaciones (chips) */}
               {chips.length > 0 && (
-                <div className="mt-6">
-                  <h3 className="text-base font-semibold text-gray-900">Especificaciones</h3>
-                  <div className="mt-2 flex flex-wrap gap-2">
+                <div className="mt-6 pt-5 border-t border-chibi-rule">
+                  <h3 className="chibi-eyebrow text-chibi-ink">Especificaciones</h3>
+                  <div className="mt-3 flex flex-wrap gap-2">
                     {chips.map((c, i) => (
                       <span
                         key={i}
-                        className="text-xs border border-gray-300 px-2 py-1 rounded-none bg-white"
+                        className="text-[13px] border border-[#8b8d80] px-3.5 py-2 text-[#1b1c17]"
                       >
                         {c}
                       </span>
@@ -411,11 +414,11 @@ const ProductDetails = () => {
               )}
 
               {/* Meta */}
-              <div className="mt-6 text-xs text-gray-500">
+              <div className="mt-6 pt-5 border-t border-chibi-rule text-xs text-[#4a4c41]">
                 {lineaLabel && (
                   <div className="mb-1">
                     Línea de producto:{' '}
-                    <span className="text-gray-700 font-medium">{lineaLabel}</span>
+                    <span className="text-chibi-ink font-semibold">{lineaLabel}</span>
                   </div>
                 )}
                 {product.fecha_subida && (
@@ -426,7 +429,7 @@ const ProductDetails = () => {
               </div>
 
               {/* Descripción general */}
-              <p className="mt-3 text-sm text-gray-600 leading-relaxed">
+              <p className="mt-3 text-[13px] text-[#4a4c41] leading-relaxed">
                 Nuestros productos son cuidadosamente seleccionados y mantenidos
                 para ofrecerte la mejor calidad y frescura. Cada artículo es
                 revisado antes de llegar a tus manos, garantizando una
@@ -436,15 +439,18 @@ const ProductDetails = () => {
           </div>
         ) : null}
 
+       </div>
+
       {/* Similares */}
-<section className="my-16">
-  <h2 className="text-xl font-light mb-6">Productos Similares</h2>
+<section className="bg-chibi-sand py-12 md:py-20" aria-label="Productos similares">
+ <div className="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8">
+  <h2 className="chibi-display text-[2.875rem] sm:text-6xl lg:text-[clamp(3.5rem,5.6vw,5rem)] text-chibi-ink mb-6 md:mb-10">Productos Similares</h2>
   {loadingSimilar ? (
     <div className="text-gray-500">Cargando…</div>
   ) : similar.length === 0 ? (
     <div className="text-gray-500">No hay productos similares.</div>
   ) : (
-    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-5 lg:gap-6">
       {similar.map((p) => (
         <ProductCard key={p.id} product={p} />
       ))}
@@ -452,15 +458,16 @@ const ProductDetails = () => {
   )}
 
   {/* CTA a la tienda */}
-  <div className="mt-8 flex justify-center">
-    <Link
-      to="/tienda"
-      className="inline-flex items-center bg-chibi-green text-white py-3 px-6 rounded-full
-                 hover:bg-chibi-green-dark transition-colors duration-300 shadow-md"
-    >
-      Ver toda la tienda
+  <div className="mt-8 md:mt-12 flex justify-center">
+    <Link to="/tienda" className="chibi-btn chibi-btn-ghost-ink h-14 px-8 w-full sm:w-auto">
+      <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M19 12H5" />
+        <path d="M11 6l-6 6 6 6" />
+      </svg>
+      Volver a la tienda
     </Link>
   </div>
+ </div>
 </section>
 
       </main>

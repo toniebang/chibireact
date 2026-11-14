@@ -3,120 +3,59 @@ import React from "react";
 import { motion } from "framer-motion";
 import koreanBanner from "../assets/korean-products-banner.jpg";
 import { Link } from "react-router-dom";
-import { IoSparklesOutline } from "react-icons/io5";
 
 const KoreanProductsBanner = () => {
   return (
-    <motion.section
-      className="relative w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 my-16"
-      initial={{ opacity: 0, y: 40 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.7, ease: "easeOut" }}
-      viewport={{ once: true, amount: 0.2 }}
-    >
-      {/* Contenedor principal */}
-      <div className="relative h-[400px] md:h-[500px] rounded-2xl overflow-hidden shadow-2xl">
-        {/* Imagen de fondo */}
-        <img
-          src={koreanBanner}
-          alt="Productos coreanos de belleza"
-          className="absolute inset-0 w-full h-full object-cover"
-        />
+    <section className="bg-chibi-bone pb-14 md:pb-28" aria-label="Productos de Corea">
+      <motion.div
+        className="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8"
+        initial={{ opacity: 0, y: 40 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.7, ease: "easeOut" }}
+        viewport={{ once: true, amount: 0.2 }}
+      >
+        <div className="flex flex-col-reverse md:flex-row bg-chibi-ink text-white md:min-h-[480px]">
+          {/* Contenido */}
+          <div className="md:w-1/2 flex flex-col justify-center gap-5 px-6 py-8 md:p-14">
+            <p className="chibi-eyebrow text-chibi-green">Nuevo en Chibi</p>
 
-        {/* Gradient overlay */}
-        <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-transparent" />
+            <h2 className="chibi-display text-[2.75rem] sm:text-6xl lg:text-[clamp(3.5rem,5.6vw,5rem)] text-balance">
+              Productos de Corea <span className="text-chibi-green">Ahora Disponibles</span>
+            </h2>
 
-        {/* Contenido */}
-        <div className="relative z-10 flex flex-col justify-center h-full px-8 md:px-16 max-w-2xl">
-          {/* Badge */}
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.2, duration: 0.5 }}
-            viewport={{ once: true }}
-            className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-md text-white px-4 py-2 rounded-full w-fit mb-4"
-          >
-            <IoSparklesOutline className="text-xl" />
-            <span className="text-sm font-medium">Nuevo en Chibi</span>
-          </motion.div>
+            <p className="text-[15px] md:text-base leading-7 text-[#d5d8ca] max-w-md">
+              Descubre nuestra nueva colección de productos importados directamente de Corea.
+              La mejor calidad en skincare y belleza.
+            </p>
 
-          {/* Título */}
-          <motion.h2
-            initial={{ opacity: 0, x: -20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.3, duration: 0.5 }}
-            viewport={{ once: true }}
-            className="text-3xl md:text-5xl font-bold text-white leading-tight mb-4"
-          >
-            Productos de Corea
-            <br />
-            <span className="text-chibi-green">Ahora Disponibles</span>
-          </motion.h2>
+            <ul className="flex flex-wrap items-center gap-x-6 gap-y-2 text-[13px] text-[#d5d8ca]">
+              <li className="flex items-center gap-2"><span className="h-1.5 w-1.5 bg-chibi-green" aria-hidden="true" />Importados originales</li>
+              <li className="flex items-center gap-2"><span className="h-1.5 w-1.5 bg-chibi-green" aria-hidden="true" />K-Beauty auténtico</li>
+              <li className="flex items-center gap-2"><span className="h-1.5 w-1.5 bg-chibi-green" aria-hidden="true" />Calidad premium</li>
+            </ul>
 
-          {/* Descripción */}
-          <motion.p
-            initial={{ opacity: 0, x: -20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.4, duration: 0.5 }}
-            viewport={{ once: true }}
-            className="text-base md:text-lg text-white/90 mb-6 max-w-xl"
-          >
-            Descubre nuestra nueva colección de productos importados directamente de Corea.
-            La mejor calidad en skincare y belleza.
-          </motion.p>
-
-          {/* Botón */}
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.5, duration: 0.5 }}
-            viewport={{ once: true }}
-          >
-            <Link
-              to="/tienda?korean=true"
-              className="inline-flex items-center gap-2 bg-chibi-green hover:bg-white text-white hover:text-chibi-green font-semibold py-3 px-8 rounded-full shadow-lg transition-all duration-300 transform hover:scale-105"
-            >
-              <span>Explorar Productos Coreanos</span>
-              <svg
-                className="w-5 h-5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M17 8l4 4m0 0l-4 4m4-4H3"
-                />
-              </svg>
-            </Link>
-          </motion.div>
-
-          {/* Stats/Features */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.6, duration: 0.5 }}
-            viewport={{ once: true }}
-            className="flex flex-wrap gap-6 mt-8"
-          >
-            <div className="flex items-center gap-2 text-white">
-              <div className="w-2 h-2 bg-chibi-green rounded-full" />
-              <span className="text-sm">Importados originales</span>
+            <div>
+              <Link to="/tienda?korean=true" className="chibi-btn chibi-btn-white w-full sm:w-auto">
+                <span>Explorar Productos Coreanos</span>
+                <svg aria-hidden="true" className="w-[18px] h-[18px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                </svg>
+              </Link>
             </div>
-            <div className="flex items-center gap-2 text-white">
-              <div className="w-2 h-2 bg-chibi-green rounded-full" />
-              <span className="text-sm">K-Beauty auténtico</span>
-            </div>
-            <div className="flex items-center gap-2 text-white">
-              <div className="w-2 h-2 bg-chibi-green rounded-full" />
-              <span className="text-sm">Calidad premium</span>
-            </div>
-          </motion.div>
+          </div>
+
+          {/* Imagen */}
+          <div className="relative md:w-1/2 h-56 md:h-auto">
+            <img
+              src={koreanBanner}
+              alt="Productos coreanos de belleza"
+              loading="lazy"
+              className="absolute inset-0 w-full h-full object-cover object-[80%_center]"
+            />
+          </div>
         </div>
-      </div>
-    </motion.section>
+      </motion.div>
+    </section>
   );
 };
 

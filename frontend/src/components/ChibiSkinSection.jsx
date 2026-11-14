@@ -1,122 +1,83 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { FaLeaf, FaTint, FaSpa, FaArrowRight, FaShoppingCart } from 'react-icons/fa'; 
-import chibiskin from '../assets/chibiskin.jpeg'; 
+import { FaArrowRight } from 'react-icons/fa';
+import chibiskin from '../assets/chibiskin.jpeg';
+import noir from '../assets/noir.jpg';
+import SectionHeading from './SectionHeading';
+
+const points = [
+  { title: 'El Poder de la Moringa', text: 'Un secreto ancestral para una piel nutrida y protegida.' },
+  { title: 'Hidratación Profunda', text: 'Clave fundamental para mantener la elasticidad y luminosidad de tu piel.' },
+  { title: 'Bienestar Consciente', text: 'Fomentamos rituales de cuidado personal que conectan mente y piel.' },
+];
 
 const ChibiSkinSection = () => {
   const itemVariants = {
-    hidden: { opacity: 0, y: 50 },
-    visible: { 
-      opacity: 1, 
-      y: 0, 
-      transition: { 
-        duration: 0.8, 
-        ease: "easeOut" 
-      } 
-    }
+    hidden: { opacity: 0, y: 40 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease: "easeOut" } },
   };
 
   const containerVariants = {
     hidden: { opacity: 0 },
-    visible: { 
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.15,
-        delayChildren: 0.2
-      }
-    }
+    visible: { opacity: 1, transition: { staggerChildren: 0.12, delayChildren: 0.1 } },
   };
 
   return (
-    <motion.section 
-      className="py-16 bg-white text-gray-800"
+    <motion.section
+      className="bg-chibi-bone text-chibi-ink pb-14 md:py-28"
       initial="hidden"
       whileInView="visible"
-      viewport={{ once: true, amount: 0.3 }}
+      viewport={{ once: true, amount: 0.15 }}
       variants={containerVariants}
+      aria-label="Chibi Skin"
     >
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="md:flex md:items-stretch md:justify-between gap-4">
-          <div className="md:w-1/2 mb-6 md:mb-0">
-            <motion.h2 
-              className="text-5xl font-light text-gray-900 mb-8"
-              variants={itemVariants} 
-            >
-              Descubre <span className="text-chibi-green font-medium">Chibi Skin</span>: Tu Piel Radiante Comienza Aquí
-            </motion.h2>
-            <motion.p 
-              className="text-md mb-8 px-4"
-              variants={itemVariants}
-            >
-              En Chibi Skin, creemos que una piel sana es el reflejo de un bienestar integral. Nos enfocamos en ingredientes naturales y rutinas conscientes para nutrir y revitalizar tu piel desde adentro hacia afuera.
-            </motion.p>
-            <motion.ul 
-              className="list-none space-y-6 mb-8 ml-4"
-              variants={containerVariants} 
-            >
-              {/* Primer ítem: El Poder de la Moringa */}
-              <motion.li className="flex items-start" variants={itemVariants}> {/* Cambiado items-center a items-start */}
-                <FaLeaf className="text-chibi-green mr-3 text-xl flex-shrink-0" />
-                {/* Contenedor que apila el título y la descripción en móvil, y los pone en fila en desktop */}
-                <div className="flex flex-col md:flex-row md:items-center"> 
-                  <span className="font-semibold md:mr-1 mb-1 md:mb-0">El Poder de la Moringa:</span>
-                  <span className="text-sm md:text-base">Un secreto ancestral para una piel nutrida y protegida.</span>
-                </div>
-              </motion.li>
-              {/* Segundo ítem: Hidratación Profunda */}
-              <motion.li className="flex items-start" variants={itemVariants}> {/* Cambiado items-center a items-start */}
-                <FaTint className="text-chibi-green mr-3 text-xl flex-shrink-0" />
-                {/* Contenedor que apila el título y la descripción en móvil, y los pone en fila en desktop */}
-                <div className="flex flex-col md:flex-row md:items-center">
-                  <span className="font-semibold md:mr-1 mb-1 md:mb-0">Hidratación Profunda:</span>
-                  <span className="text-sm md:text-base">Clave fundamental para mantener la elasticidad y luminosidad de tu piel.</span>
-                </div>
-              </motion.li>
-              {/* Tercer ítem: Bienestar Consciente */}
-              <motion.li className="flex items-start" variants={itemVariants}> {/* Cambiado items-center a items-start */}
-                <FaSpa className="text-chibi-green mr-3 text-xl flex-shrink-0" />
-                {/* Contenedor que apila el título y la descripción en móvil, y los pone en fila en desktop */}
-                <div className="flex flex-col md:flex-row md:items-center">
-                  <span className="font-semibold md:mr-1 mb-1 md:mb-0">Bienestar Consciente:</span>
-                  <span className="text-sm md:text-base">Fomentamos rituales de cuidado personal que conectan mente y piel.</span>
-                </div>
-              </motion.li>
-            </motion.ul>
-            <motion.a
-              href="/chibi-skin" 
-              className="inline-flex items-center bg-chibi-green hover:bg-black text-white py-3 px-6 
-                         hover:bg-chibi-green-dark rounded-full transition-colors duration-300 text-base shadow-md"
-              variants={itemVariants}
-            >
+      <div className="max-w-7xl mx-auto md:px-6 lg:px-8 flex flex-col-reverse md:grid md:grid-cols-2 gap-7 md:gap-16 lg:gap-20 md:items-center">
+        {/* Texto */}
+        <div className="px-5 sm:px-6 md:px-0 flex flex-col gap-5 md:gap-6">
+          <motion.div variants={itemVariants}>
+            <SectionHeading eyebrow="Chibi Skin" size="md">
+              Tu piel radiante comienza aquí
+            </SectionHeading>
+          </motion.div>
+
+          <motion.p className="text-[15px] md:text-base leading-7 text-[#3b3d33]" variants={itemVariants}>
+            En Chibi Skin, creemos que una piel sana es el reflejo de un bienestar integral. Nos enfocamos en ingredientes naturales y rutinas conscientes para nutrir y revitalizar tu piel desde adentro hacia afuera.
+          </motion.p>
+
+          <motion.dl className="divide-y divide-chibi-rule border-y border-chibi-rule" variants={containerVariants}>
+            {points.map((p) => (
+              <motion.div key={p.title} className="flex flex-col gap-1 py-4" variants={itemVariants}>
+                <dt className="text-[15px] md:text-base font-semibold">{p.title}</dt>
+                <dd className="text-sm leading-relaxed text-[#4a4c41]">{p.text}</dd>
+              </motion.div>
+            ))}
+          </motion.dl>
+
+          <motion.div variants={itemVariants}>
+            <a href="/chibi-skin" className="chibi-btn chibi-btn-ink w-full sm:w-auto">
               Ver Más Sobre Chibi Skin
-              <FaArrowRight className="ml-2 text-lg" />
-            </motion.a>
-          </div>
-          <motion.div
-            className="md:w-1/2 h-full relative overflow-hidden rounded-lg shadow-lg group"
-            variants={itemVariants}
-          >
-            <img 
-              src={chibiskin} 
-              alt="Imagen de cuidado de la piel" 
-              className="w-full h-full object-cover"
-            />
-            {/* Image Overlay Button - Circular and Centered */}
-            <a
-              href="/chibi-skin" 
-              className="absolute inset-0 flex items-center justify-center 
-                         bg-opacity-40 opacity-70 group-hover:opacity-100 transition-opacity duration-300" 
-            >
-                <div className="bg-white text-black w-20 h-20 rounded-full flex flex-col items-center justify-center p-2 text-center 
-                                 transform scale-90 group-hover:scale-100 transition-transform duration-300
-                                 hover:bg-chibi-green hover:text-white"
-                >
-                    <FaShoppingCart className="text-3xl" /> 
-                    <span className="text-xs font-semibold mt-1 leading-none">Explorar </span> 
-                </div>
+              <FaArrowRight className="text-sm" aria-hidden="true" />
             </a>
           </motion.div>
         </div>
+
+        {/* Imágenes (enlazan a Chibi Skin, como antes) */}
+        <motion.div className="grid grid-cols-5 gap-3 md:gap-4 items-end" variants={itemVariants}>
+          <a href="/chibi-skin" aria-label="Explorar Chibi Skin" className="group col-span-5 md:col-span-3 block overflow-hidden">
+            <img
+              src={chibiskin}
+              alt="Imagen de cuidado de la piel"
+              loading="lazy"
+              className="w-full h-[380px] md:h-[640px] object-cover motion-reduce:transition-none transition-transform duration-700 ease-out group-hover:scale-[1.03]"
+            />
+          </a>
+          <img
+            src={noir}
+            alt="Producto Chibi en la tienda"
+            loading="lazy"
+            className="hidden md:block col-span-2 w-full h-[380px] object-cover"
+          />
+        </motion.div>
       </div>
     </motion.section>
   );

@@ -5,12 +5,14 @@ import Banner from '../components/Banner';
 import AboutSection from '../components/AboutSectionForPage';
 import OurTeam from '../components/OurTeam';
 import ContactInfo from '../components/ContactInfo';
+import BrandBand from '../components/BrandBand';
 
 const About = () => {
     return (
         <div className='font-montserrat'>
             <Header />
          <AboutSection />
+            <BrandBand />
             <OurTeam />
             <ContactInfo id="contact" />
             <Footer />

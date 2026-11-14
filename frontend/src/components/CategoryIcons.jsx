@@ -62,12 +62,12 @@ const handleSelect = (item) => {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 md:px-6">
+    <div className="bg-chibi-bone">
+     <div className="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8">
       <motion.div
         className={`
-          mt-6
-          flex gap-3 overflow-x-auto snap-x snap-mandatory pb-3 -mx-4 px-4
-          sm:grid ${gridColsClass} sm:gap-3 sm:overflow-visible sm:pb-0 sm:mx-0 sm:px-0
+          flex gap-2.5 overflow-x-auto snap-x snap-mandatory pb-4 -mx-5 px-5
+          sm:grid ${gridColsClass} sm:gap-5 sm:overflow-visible sm:pb-5 sm:mx-0 sm:px-0
           no-scrollbar touch-scroll
         `}
         onScroll={handleScroll}
@@ -86,49 +86,27 @@ const handleSelect = (item) => {
               type="button"
               onClick={() => handleSelect(item)}
               className={[
-                "flex items-center gap-4 bg-white border p-4 text-left",
-                "shrink-0 snap-start min-w-[240px] w-[65%] rounded-md",
-                "sm:w-auto sm:min-w-0",
-                isActive ? "border-black shadow-md" : "border-gray-200 hover:border-gray-400",
-                "focus:outline-none focus:ring-2 focus:ring-chibi-green"
+                "flex items-center gap-3 sm:gap-[18px] text-left cursor-pointer",
+                "shrink-0 snap-start h-[52px] px-[18px] sm:h-auto sm:min-h-24 sm:px-6 sm:py-5",
+                "border-t-[3px] border-chibi-ink transition-colors duration-200",
+                isActive ? "bg-chibi-ink text-white" : "bg-white text-chibi-ink hover:bg-chibi-sand",
+                "focus:outline-none focus-visible:ring-2 focus-visible:ring-chibi-green focus-visible:ring-offset-2"
               ].join(' ')}
               role="listitem"
               aria-pressed={isActive}
               variants={itemVariants}
-              whileHover={{ scale: 1.02, transition: { duration: 0.2 } }}
               whileTap={{ scale: 0.98 }}
-              layout
             >
-              <motion.div
-                className={[
-                  "flex items-center justify-center w-16 h-16 rounded-full",
-                  isActive ? "bg-black text-white" : "bg-gray-100 text-chibi-green",
-                ].join(' ')}
+              <span
+                className={`chibi-display leading-none text-2xl sm:text-[44px] ${isActive ? 'text-chibi-green' : 'text-chibi-olive'}`}
                 aria-hidden="true"
-                animate={{
-                  backgroundColor: isActive ? "#000000" : "#f3f4f6",
-                  color: isActive ? "#ffffff" : "#10b981",
-                }}
-                transition={{ duration: 0.3, ease: "easeInOut" }}
               >
-                <Icon className="text-3xl md:text-4xl" />
-              </motion.div>
-              <div className="min-w-0">
-                <motion.div
-                  className="font-medium text-gray-900 truncate"
-                  animate={{ opacity: 1 }}
-                  transition={{ duration: 0.2 }}
-                >
-                  {item.nombre}
-                </motion.div>
-                <motion.div
-                  className="text-sm text-gray-500"
-                  animate={{ opacity: 1 }}
-                  transition={{ duration: 0.2, delay: 0.1 }}
-                >
-                  {item.descripcion}
-                </motion.div>
-              </div>
+                {item.id === 'todo' ? <Icon className="text-xl sm:text-3xl" /> : String(index + 1).padStart(2, '0')}
+              </span>
+              <span className="min-w-0 flex flex-col gap-1">
+                <span className="chibi-display leading-none text-[22px] sm:text-[28px] whitespace-nowrap">{item.nombre}</span>
+                <span className={`hidden sm:block text-[13px] ${isActive ? 'text-chibi-mist' : 'text-[#4a4c41]'}`}>{item.descripcion}</span>
+              </span>
             </motion.button>
           );
         })}
@@ -147,6 +125,7 @@ const handleSelect = (item) => {
           />
         ))}
       </div> */}
+     </div>
     </div>
   );
 };

@@ -28,16 +28,20 @@ const ProductList = ({
 
   if (error) {
     return (
-      <section className="py-10 text-center">
-        <p className="text-xl text-red-500">Error: {error}</p>
-        <p className="text-gray-600 mt-2">Por favor, inténtalo de nuevo más tarde.</p>
+      <section className="py-10" role="alert">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="border border-gray-200 border-l-[3px] border-l-red-500 bg-white px-5 py-4">
+            <p className="text-base font-medium text-red-600">Error: {error}</p>
+            <p className="text-sm text-gray-600 mt-1">Por favor, inténtalo de nuevo más tarde.</p>
+          </div>
+        </div>
       </section>
     );
   }
 
   return (
-    <section className="py-10">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section className="py-8 md:py-10">
+      <div className="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8">
         {/* Banner de filtro activo (solo en tienda) */}
         {!isHome && showFilterBanner && (
           <div
@@ -64,7 +68,7 @@ const ProductList = ({
         )}
 
         {/* Grid */}
-        <div className={`grid ${gridColumns} gap-8`}>
+        <div className={`grid ${gridColumns} gap-3 sm:gap-5 lg:gap-6`}>
           {loading
             ? Array.from({ length: isHome ? 4 : 16 }).map((_, i) => <ProductSkeleton key={i} />)
             : displayProducts.length > 0
@@ -78,14 +82,13 @@ const ProductList = ({
         </div>
 
         {isHome && (
-          <div className="text-left mt-12">
+          <div className="text-left mt-10 md:mt-12">
             <Link
               to="/tienda"
-              className="inline-flex items-center bg-chibi-green text-white py-3 px-6 
-                         hover:bg-chibi-green-dark transition-colors duration-300 text-base rounded-full shadow-md"
+              className="chibi-btn chibi-btn-ink w-full sm:w-auto"
             >
               Ver Todos los Productos
-              <FaArrowRight className="ml-2 text-lg" />
+              <FaArrowRight className="text-sm" aria-hidden="true" />
             </Link>
           </div>
         )}

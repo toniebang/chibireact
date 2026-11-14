@@ -3,15 +3,19 @@ import React from "react";
 
 const ProductSkeleton = () => {
   return (
-    <div className="border border-gray-200 p-3 animate-pulse bg-white">
+    <div className="animate-pulse bg-white" aria-hidden="true">
       {/* Imagen */}
-      <div className="w-full aspect-square bg-gray-200 mb-3" />
-      {/* Título */}
-      <div className="h-4 bg-gray-200 mb-2 w-3/4" />
-      {/* Precio */}
-      <div className="h-4 bg-gray-200 mb-1 w-1/2" />
-      {/* Botón */}
-      <div className="h-8 bg-gray-200 mt-3" />
+      <div className="w-full aspect-[4/5] bg-chibi-sand" />
+      <div className="p-3 sm:p-[18px] border-t border-[#e6e4d8]">
+        {/* Título */}
+        <div className="h-4 bg-chibi-sand mb-3 w-3/4" />
+        <div className="flex items-end justify-between gap-2">
+          {/* Precio */}
+          <div className="h-7 bg-chibi-sand w-1/2" />
+          {/* Botón */}
+          <div className="h-11 w-11 sm:h-12 sm:w-12 rounded-full bg-chibi-sand" />
+        </div>
+      </div>
     </div>
   );
 };

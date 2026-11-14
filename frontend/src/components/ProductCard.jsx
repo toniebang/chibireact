@@ -68,6 +68,7 @@ const fav = isFavorite(id);
 
 const toggleFav = (e) => {
   e.preventDefault();
+  e.stopPropagation();
   toggleFavorite(id);
  
 };
@@ -75,26 +76,30 @@ const toggleFav = (e) => {
   return (
     <Link
       to={`/tienda/${id}`}
-      className="group block border border-gray-200 bg-white hover:shadow-md transition-shadow duration-200"
+      className="group relative flex flex-col bg-white transition-shadow duration-200 hover:shadow-lg"
       title={nombre}
     >
       {/* Imagen */}
       <div className="relative overflow-hidden">
         {oferta && (
-          <span className="absolute left-2 top-2 z-10 bg-chibi-green text-white text-xs px-2 py-1 rounded-none">
+          <span className="absolute left-0 top-2.5 sm:top-4 z-10 bg-chibi-green text-chibi-ink text-[10px] sm:text-xs font-bold uppercase tracking-[0.12em] px-2.5 py-1.5 sm:px-3">
             Oferta
           </span>
         )}
 
         <button
+          type="button"
           onClick={toggleFav}
           aria-label={fav ? 'Quitar de favoritos' : 'Añadir a favoritos'}
-          className="absolute right-2 top-2 z-10 bg-white/90 hover:bg-white p-1.5 rounded-none text-gray-800"
+          aria-pressed={fav}
+          className="absolute right-1 top-1 sm:right-2 sm:top-2 z-10 h-11 w-11 flex items-center justify-center cursor-pointer"
         >
-          {fav ? <IoHeart className="text-red-600" /> : <IoMdHeartEmpty />}
+          <span className="h-9 w-9 sm:h-10 sm:w-10 rounded-full bg-chibi-bone text-chibi-ink text-lg flex items-center justify-center transition-colors duration-200 hover:bg-white">
+            {fav ? <IoHeart className="text-red-600" /> : <IoMdHeartEmpty />}
+          </span>
         </button>
 
-        <div className="aspect-[4/5] bg-gray-50">
+        <div className="aspect-[4/5] bg-white">
           {mainImg ? (
             <>
               <img
@@ -111,7 +116,7 @@ const toggleFav = (e) => {
               />
             </>
           ) : (
-            <div className="w-full h-full flex items-center justify-center text-gray-400 text-sm">
+            <div className="w-full h-full flex items-center justify-center text-gray-500 text-sm bg-chibi-sand">
               Sin imagen
             </div>
           )}
@@ -119,38 +124,43 @@ const toggleFav = (e) => {
       </div>
 
       {/* Info */}
-      <div className="p-3">
-        <h3 className="text-sm text-gray-800 line-clamp-2 min-h-[2.5rem]">{nombre}</h3>
+      <div className="flex flex-1 flex-col gap-2 sm:gap-2.5 p-3 sm:p-[18px] border-t border-[#e6e4d8]">
+        <h3 className="text-[13px] sm:text-[15px] font-medium text-[#1b1c17] line-clamp-2">{nombre}</h3>
 
-        <div className="mt-2 flex items-baseline gap-2">
-          <span className="text-base font-semibold text-gray-900">
-            {displayPrice.current?.toLocaleString('es-ES')} XAF
-          </span>
-          {displayPrice.original && (
-            <span className="text-sm text-gray-500 line-through">
-              {displayPrice.original?.toLocaleString('es-ES')} XAF
+        <div className="mt-auto flex items-end justify-between gap-2">
+          <p className="flex min-w-0 flex-col-reverse gap-1 text-chibi-ink">
+            <span className="chibi-display leading-none text-2xl sm:text-3xl">
+              {displayPrice.current?.toLocaleString('es-ES')} XAF
             </span>
+            {displayPrice.original && (
+              <s className="text-xs sm:text-sm text-[#5b5d50]">
+                {displayPrice.original?.toLocaleString('es-ES')} XAF
+              </s>
+            )}
+          </p>
+
+          {isInCart ? (
+            <button
+              type="button"
+              disabled
+              aria-label={`${nombre}: en el carrito`}
+              title="En carrito"
+              className="h-11 w-11 sm:h-12 sm:w-12 shrink-0 rounded-full bg-chibi-green text-chibi-ink flex items-center justify-center cursor-not-allowed"
+            >
+              <BsCartCheck className="text-xl" />
+            </button>
+          ) : (
+            <button
+              type="button"
+              onClick={handleAdd}
+              aria-label={`Añadir ${nombre} al carrito`}
+              title="Añadir al carrito"
+              className="h-11 w-11 sm:h-12 sm:w-12 shrink-0 rounded-full bg-chibi-ink text-white flex items-center justify-center cursor-pointer transition-colors duration-200 hover:bg-chibi-olive active:scale-95"
+            >
+              <FaPlus className="text-sm" />
+            </button>
           )}
         </div>
-
-     
-        {isInCart ? (
-          <button
-            disabled
-            className="mt-3 w-full cursor-pointer inline-flex items-center justify-center gap-2 py-2 px-3 rounded-full border-1 bg-white hover:text-white text-black hover:bg-gray-800 cursor-not-allowed"
-          >
-            <BsCartCheck className="text-lg" />
-            En carrito
-          </button>
-        ) : (
-          <button
-            onClick={handleAdd}
-            className="mt-3 w-full cursor-pointer inline-flex items-center justify-center gap-2 py-2 px-3 rounded-full border-1 bg-white hover:text-white text-black hover:bg-gray-800"
-          >
-            <FaPlus className="text-xs" />
-            Añadir
-          </button>
-        )}
       </div>
     </Link>
   );

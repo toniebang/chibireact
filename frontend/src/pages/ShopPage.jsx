@@ -6,13 +6,13 @@ import Footer from '../components/Footer';
 import ScrollToTopButton from '../components/ScrollToTopButton';
 import ProductList from '../components/ProductList';
 import FilterBarModern from '../components/FilterBarModern';
-import PaginationClassic from '../components/PaginationClassic';
+import PaginationBar from '../components/PaginationBar';
 import { useAuth } from '../context/AuthContext';
 
 import ShopHero from '../components/ShopHero';
 import CategoryIcons from '../components/CategoryIcons';
 
-import heroImg2 from '../assets/shopherobg5.jpg';
+import heroImg2 from '../assets/chibishop.jpg';
 
 const PAGE_SIZE = 16;
 
@@ -282,7 +282,8 @@ const ShopPage = () => {
         onSelect={selectLine}
       />
 
-      <div className="max-w-7xl mx-auto font-montserrat px-4 md:px-6">
+      <div className="bg-chibi-bone">
+      <div className="max-w-7xl mx-auto font-montserrat px-5 sm:px-6 lg:px-8 pb-10 md:pb-14">
         <FilterBarModern
           categories={categories}
           hasActiveSearch={Boolean(searchTerm.trim())}
@@ -315,14 +316,15 @@ const ShopPage = () => {
         />
 
         {(committedSearch || line) && !selectedId && (
-          <div className="mt-4 text-sm text-gray-600">
+          <div className="mt-4 text-sm text-[#3b3d33]">
             {loading
               ? "Cargando…"
               : `${count} producto${count === 1 ? "" : "s"} encontrados`}
           </div>
         )}
 
-        <div className="mt-3">
+        {/* ProductList ya trae su propio contenedor con márgenes: se compensan aquí para alinear la rejilla */}
+        <div className="mt-1 -mx-5 sm:-mx-6 lg:-mx-8">
           <ProductList
             products={products}
             isHome={false}
@@ -335,20 +337,17 @@ const ShopPage = () => {
         </div>
 
         {!selectedId && (
-          <div className="mt-10 px-8 mb-6 flex items-center justify-between">
-            <PaginationClassic
+          <div className="mt-4 md:mt-6">
+            <PaginationBar
               page={page}
               totalPages={totalPages}
               hasPrev={Boolean(prevUrl)}
               hasNext={Boolean(nextUrl)}
               onPageChange={goToPage}
             />
-            <div className="text-sm text-gray-600 whitespace-nowrap flex-shrink-0">
-              Página <span className="font-medium text-gray-800">{page}</span>{" "}
-              de <span className="font-medium text-gray-800">{totalPages}</span>
-            </div>
           </div>
         )}
+      </div>
       </div>
 
       <ScrollToTopButton />

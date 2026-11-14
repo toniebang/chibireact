@@ -17,6 +17,7 @@ import 'swiper/css/navigation';
 
 // Importa los datos de testimonios
 import testimonials from '../data/testimonials';
+import SectionHeading from './SectionHeading';
 
 const CustomerFeedback = () => {
   const sectionVariants = {
@@ -36,17 +37,15 @@ const CustomerFeedback = () => {
   return (
     <motion.section
       id="feedbacks" // Añadimos el ID para navegación si es necesario
-      className="faq-testimonial-section section-padding py-16 bg-gray-50"
+      className="faq-testimonial-section section-padding py-14 md:py-24 bg-chibi-green text-chibi-ink"
       initial="hidden"
       whileInView="visible"
       viewport={{ once: true, amount: 0.3 }}
       variants={sectionVariants}
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="section-title text-center mb-12">
-          <h1 className="text-4xl font-light text-gray-800">
-            <span className="border-b-4 border-chibi-green pb-1">Lo que dicen nuestros clientes</span>
-          </h1>
+      <div className="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8">
+        <div className="section-title mb-10 md:mb-12">
+          <SectionHeading>Lo que dicen nuestros clientes</SectionHeading>
         </div>
 
         <div className="testimonial-carousel-wrapper">
@@ -65,7 +64,7 @@ const CustomerFeedback = () => {
               dynamicBullets: true, // Puntos dinámicos para mayor estética
             }}
             navigation={false} // Flechas de navegación
-            className="mySwiper" // Clase para CSS adicional si es necesario
+            className="mySwiper chibi-swiper" // estilos de marca en index.css
             breakpoints={{
               // Cuando el ancho de la pantalla sea >= 768px (md)
               768: {
@@ -81,25 +80,25 @@ const CustomerFeedback = () => {
           >
             {testimonials.map((testimonial) => (
               <SwiperSlide key={testimonial.id}>
-                <div className="single-testimonial-carousel bg-white p-8 rounded-lg shadow-md flex flex-col items-center text-center h-full">
-                  <div className="qoute-icon-box mb-4 text-chibi-green text-3xl">
+                <figure className="single-testimonial-carousel border-t-2 border-chibi-ink pt-5 flex flex-col text-left h-full">
+                  <div className="qoute-icon-box mb-4 text-chibi-ink text-xl" aria-hidden="true">
                   
                     <FaQuoteLeft />
                  
                   </div>
-                  <div className="testimonial-text-box flex-grow">
-                    <p className="text-gray-700 text-sm mb-4 leading-relaxed">"{testimonial.quote}"</p>
-                    <span className="name font-bold text-gray-800 text-l block mb-2">{testimonial.name}</span>
-                    <div className="review-box flex justify-center">
+                  <div className="testimonial-text-box flex-grow flex flex-col">
+                    <blockquote className="text-chibi-ink text-[17px] md:text-[19px] font-medium leading-normal mb-6 flex-grow">"{testimonial.quote}"</blockquote>
+                    <figcaption className="name chibi-display text-chibi-ink text-2xl md:text-[26px] block mb-2">{testimonial.name}</figcaption>
+                    <div className="review-box flex gap-0.5" role="img" aria-label={`${testimonial.rating} de 5 estrellas`}>
                       {[...Array(5)].map((_, i) => (
                         <FaStar
                           key={i}
-                          className={`text-lg ${i < testimonial.rating ? 'text-yellow-400' : 'text-gray-300'}`}
+                          className={`text-sm ${i < testimonial.rating ? 'text-chibi-ink' : 'text-chibi-ink/25'}`}
                         />
                       ))}
                     </div>
                   </div>
-                </div>
+                </figure>
               </SwiperSlide>
             ))}
           </Swiper>

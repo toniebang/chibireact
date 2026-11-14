@@ -20,14 +20,14 @@ from veluxapp.models import (
     CartItem
 )
 
-# Obtener el modelo de usuario activo, que es tu CustomUser
+# Obtener el modelo de usuario activo, que es CustomUser
 User = get_user_model()
 
 
 # --- Admin para CustomUser ---
 class CustomUserAdmin(BaseUserAdmin):
     # Asegúrate de que los fieldsets tengan el formato correcto: (nombre_seccion, {'fields': ('campo1', 'campo2')})
-    # Aquí lo corregimos si no lo estaba ya:
+   
     fieldsets = BaseUserAdmin.fieldsets + (
         ('Información Adicional', {'fields': ('profile_picture', 'google_id')}),
     )

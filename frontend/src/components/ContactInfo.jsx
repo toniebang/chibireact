@@ -3,8 +3,10 @@ import React from 'react';
 import { motion } from 'framer-motion';
 // Importa los iconos de Font Awesome que necesitas de react-icons/fa
 import { FaMapMarkerAlt, FaPhone, FaEnvelope, FaRegClock } from 'react-icons/fa';
+import SectionHeading from './SectionHeading';
 
-const ContactInfo = () => {
+// `id` permite enlazar a esta sección (p. ej. /sobre-chibi/#contact)
+const ContactInfo = ({ id }) => {
   const sectionVariants = {
     hidden: { opacity: 0, y: 50 },
     visible: {
@@ -14,17 +16,16 @@ const ContactInfo = () => {
         duration: 0.8,
         ease: "easeOut",
         when: "beforeChildren",
-        staggerChildren: 0.2
+        staggerChildren: 0.15
       },
     },
   };
 
   const itemVariants = {
-    // Mantendremos las animaciones de los items
-    hidden: { opacity: 0, x: -50 },
+    hidden: { opacity: 0, y: 20 },
     visible: {
       opacity: 1,
-      x: 0,
+      y: 0,
       transition: {
         duration: 0.5,
         ease: "easeOut",
@@ -32,88 +33,67 @@ const ContactInfo = () => {
     },
   };
 
+  const row = "flex items-start gap-4 py-5 border-t border-chibi-line";
+  const icon = "text-chibi-green text-lg mt-1 flex-shrink-0";
+
   return (
     <motion.section
-      className="contact-section contact-page py-16 bg-gray-100"
+      id={id}
+      className="contact-section contact-page bg-chibi-ink text-white py-14 md:py-28 scroll-mt-16 md:scroll-mt-20"
       initial="hidden"
       whileInView="visible"
-      viewport={{ once: true, amount: 0.3 }}
+      viewport={{ once: true, amount: 0.15 }}
       variants={sectionVariants}
+      aria-label="Info de contacto"
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Sección de Título */}
-        <div className="section-title text-center mb-12">
-          <h1 className="text-4xl font-light text-gray-800">
-            <span className="border-b-4 border-chibi-green pb-1">Info de Contacto</span>
-          </h1>
+      <div className="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8 grid md:grid-cols-2 gap-8 md:gap-20 md:items-start">
+        {/* Título */}
+        <div className="flex flex-col gap-5 md:gap-6">
+          <SectionHeading eyebrow="Malabo" tone="light" className="section-title">
+            Info de Contacto
+          </SectionHeading>
+          <p className="text-lg md:text-[22px] font-medium leading-snug">Colaboración o pregunta?</p>
         </div>
 
-        {/* CAJA DE INFORMACIÓN PRINCIPAL */}
-        {/* max-w-5xl mx-auto: para que sea más ancho y centrado */}
-        {/* p-8: padding amplio como en versiones anteriores */}
-        {/* shadow-lg: sombra */}
-        {/* NOTA: Eliminado 'rounded-xl' o 'rounded-lg' */}
-        <div className="contact-info-box bg-white p-8 shadow-sm max-w-5xl mx-auto">
-          <h2 className="text-3xl font-ligth text-gray-900 mb-8 text-center">Colaboración o pregunta?</h2> {/* Aumentado el mb para separar del contenido */}
-          
-          {/* CONTENEDOR INTERNO DIVIDIDO EN DOS COLUMNAS */}
-          {/* grid-cols-1 en móviles, md:grid-cols-2 en pantallas medianas y grandes */}
-          {/* gap-x-12: para un buen espacio horizontal entre las dos columnas de info */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-y-8 md:gap-x-12">
-            {/* BLOQUE IZQUIERDO (Ubicación y Teléfono) */}
-            <div>
-              <ul className="space-y-6"> {/* Espacio vertical entre los ítems de cada bloque */}
-                <motion.li variants={itemVariants} className="flex items-start">
-                  <div className="icon-box text-chibi-green text-xl mr-4 flex-shrink-0">
-                    <FaMapMarkerAlt />
-                  </div>
-                  <div className="text-box text-gray-700 text-lg">
-                    <p>Malabo</p>
-                    <p>Calle Kenya, detrás del antiguo Ayuntamiento. Al lado de Hotel Annobon</p>
-                  </div>
-                </motion.li>
-                <motion.li variants={itemVariants} className="flex items-start">
-                  <div className="icon-box text-chibi-green text-xl mr-4 flex-shrink-0">
-                    <FaPhone />
-                  </div>
-                  <div className="text-box text-gray-700 text-lg">
-                    <p>Teléfono: +240 555 308 250</p>
-                  </div>
-                </motion.li>
-              </ul>
+        {/* Datos */}
+        <ul className="contact-info-box border-b border-chibi-line text-[15px] md:text-base leading-relaxed text-[#e4e6da]">
+          <motion.li variants={itemVariants} className={row}>
+            <FaMapMarkerAlt className={icon} aria-hidden="true" />
+            <div className="text-box">
+              <p className="font-semibold text-white">Malabo</p>
+              <p>Calle Kenya, detrás del antiguo Ayuntamiento. Al lado de Hotel Annobon</p>
             </div>
+          </motion.li>
 
-            {/* BLOQUE DERECHO (Email y Horarios) */}
-            <div>
-              <ul className="space-y-6"> {/* Espacio vertical entre los ítems de cada bloque */}
-                <motion.li variants={itemVariants} className="flex items-start">
-                  <div className="icon-box text-chibi-green text-xl mr-4 flex-shrink-0">
-                    <FaEnvelope />
-                  </div>
-                  <div className="text-box text-gray-700 text-lg">
-                    <p>chibifeelgood@hotmail.com</p>
-                  </div>
-                </motion.li>
-                <motion.li variants={itemVariants} className="flex items-start">
-                  <div className="icon-box text-chibi-green text-xl mr-4 flex-shrink-0">
-                    <FaRegClock />
-                  </div>
-                  <div className="text-box text-gray-700 text-lg">
-                    <p className="flex justify-between">
-                        <span>Días semanales</span><span>: 09:00 – 18:00</span>
-                    </p>
-                    <p className="flex justify-between">
-                        <span>Sábado</span><span>: 10:00 – 14:00</span>
-                    </p>
-                    <p className="flex justify-between">
-                        <span>Domingo</span><span>: Cerrado</span>
-                    </p>
-                  </div>
-                </motion.li>
-              </ul>
+          <motion.li variants={itemVariants} className={row}>
+            <FaPhone className={icon} aria-hidden="true" />
+            <div className="text-box">
+              <p>Teléfono: +240 555 308 250</p>
             </div>
-          </div>
-        </div>
+          </motion.li>
+
+          <motion.li variants={itemVariants} className={row}>
+            <FaEnvelope className={icon} aria-hidden="true" />
+            <div className="text-box">
+              <p className="break-all">chibifeelgood@hotmail.com</p>
+            </div>
+          </motion.li>
+
+          <motion.li variants={itemVariants} className={row}>
+            <FaRegClock className={icon} aria-hidden="true" />
+            <div className="text-box flex-1 max-w-sm">
+              <p className="flex justify-between gap-6">
+                <span>Días semanales</span><span>09:00 – 18:00</span>
+              </p>
+              <p className="flex justify-between gap-6">
+                <span>Sábado</span><span>10:00 – 14:00</span>
+              </p>
+              <p className="flex justify-between gap-6">
+                <span>Domingo</span><span>Cerrado</span>
+              </p>
+            </div>
+          </motion.li>
+        </ul>
       </div>
     </motion.section>
   );

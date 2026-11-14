@@ -3,6 +3,8 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
 
+import SectionHeading from './SectionHeading';
+
 import offerProducts1 from '../assets/trainer.jpg';
 import offerProducts22 from '../assets/offer-products-2.jpg';
 import offerProducts3 from '../assets/offer-products-3.jpg';
@@ -136,7 +138,7 @@ const Modal = ({ open, onClose, title, image, alt, desc, bullets, ctaTo, ctaText
 
           {/* Dialog */}
           <motion.div
-            className="relative z-10 w-full max-w-3xl bg-white rounded-2xl shadow-2xl overflow-hidden"
+            className="relative z-10 w-full max-w-3xl bg-white shadow-2xl overflow-hidden"
             initial={{ y: 40, opacity: 0 }}
             animate={{ y: 0, opacity: 1, transition: { duration: 0.25, ease: 'easeOut' } }}
             exit={{ y: 20, opacity: 0, transition: { duration: 0.2 } }}
@@ -187,7 +189,7 @@ const Modal = ({ open, onClose, title, image, alt, desc, bullets, ctaTo, ctaText
                 <div className="mt-6 flex flex-wrap items-center gap-3">
                   <Link
                     to={ctaTo}
-                    className="inline-flex items-center bg-chibi-green text-white px-4 py-2 rounded-full text-sm font-medium hover:bg-black transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-black/40"
+                    className="inline-flex items-center bg-chibi-ink text-white px-5 py-2.5 rounded-full text-sm font-semibold hover:bg-chibi-olive transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-black/40"
                   >
                     {ctaText}
                   </Link>
@@ -217,92 +219,60 @@ const ServicesSection = () => {
 
   return (
     <motion.section
-      className="shop-cta py-14 md:py-16"
+      className="shop-cta bg-chibi-panel text-white py-14 md:py-28"
       initial="hidden"
       whileInView="visible"
-      viewport={{ once: true, amount: 0.25 }}
+      viewport={{ once: true, amount: 0.15 }}
       variants={container}
       aria-label="Servicios de Chibi"
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header limpio (sin descripción, sin degradado, sin imagen a la derecha) */}
-        <motion.div variants={headingL} className="mb-10 text-center md:text-left space-y-2">
-          <div className="inline-flex items-center gap-2">
-            <span className="inline-block px-2.5 py-1 text-[11px] tracking-widest bg-black text-white">
-              CHIBI
-            </span>
-            <span className="text-[11px] uppercase tracking-widest text-gray-500">
-              Servicios
-            </span>
-          </div>
-
-          <h2 className="text-3xl md:text-4xl text-gray-900">
-            Nuestros servicios
-          </h2>
-
-          <span className="block h-[3px] w-16 bg-chibi-green rounded-full mx-auto md:mx-0 mt-2" />
+      <div className="max-w-7xl mx-auto">
+        <motion.div variants={headingL} className="px-5 sm:px-6 lg:px-8 mb-7 md:mb-14 flex flex-wrap items-end justify-between gap-6">
+          <SectionHeading eyebrow="Chibi · Servicios" tone="light">Nuestros servicios</SectionHeading>
+          <Link to="/packs" className="chibi-btn chibi-btn-ghost-white hidden md:inline-flex">
+            Ver packs
+          </Link>
         </motion.div>
 
-        {/* Grid 2 cols mobile / 4 desktop */}
-        <motion.div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
-          {services.map((s) => (
+        {/* Móvil: fila deslizable. Escritorio: 4 columnas escalonadas */}
+        <motion.div className="flex gap-3.5 overflow-x-auto no-scrollbar touch-scroll snap-x px-5 sm:px-6 pb-2 md:grid md:grid-cols-4 md:gap-6 md:overflow-visible md:px-6 lg:px-8 md:pb-0 md:items-start">
+          {services.map((s, i) => (
             <motion.button
               key={s.id}
               type="button"
               onClick={() => open(s.id)}
               variants={item}
-              whileHover={{ y: -6 }}
               whileTap={{ scale: 0.98 }}
               aria-haspopup="dialog"
               aria-label={`Abrir información de ${s.title}`}
               className={[
-                'group relative block p-[1px] rounded-2xl',
-                'bg-gradient-to-br from-gray-200 via-gray-100 to-white',
-                'shadow-sm hover:shadow-md transition-shadow duration-300',
-                'focus:outline-none focus-visible:ring-2 focus-visible:ring-black/60',
+                'group flex flex-col gap-3.5 md:gap-[18px] text-left cursor-pointer',
+                'w-[258px] shrink-0 snap-start md:w-auto',
+                i % 2 === 1 ? 'md:mt-14' : '',
+                'focus:outline-none focus-visible:ring-2 focus-visible:ring-chibi-green focus-visible:ring-offset-4 focus-visible:ring-offset-chibi-panel',
               ].join(' ')}
             >
-              {/* inner card */}
-              <div className="relative rounded-2xl overflow-hidden bg-white">
-                {/* imagen */}
-                <div className="relative aspect-[4/5]">
-                  <img
-                    src={s.image}
-                    alt={s.alt}
-                    loading="lazy"
-                    className="w-full h-full object-cover motion-reduce:transition-none transition-transform duration-500 group-hover:scale-[1.03]"
-                  />
+              <span className="relative block w-full h-[310px] md:h-[360px] overflow-hidden bg-[#1d2016]">
+                <img
+                  src={s.image}
+                  alt={s.alt}
+                  loading="lazy"
+                  className="w-full h-full object-cover motion-reduce:transition-none transition-transform duration-700 ease-out group-hover:scale-[1.04]"
+                />
+                <span className="absolute left-3 top-2.5 md:left-4 md:top-3 chibi-display text-chibi-green text-[52px] md:text-[64px]" aria-hidden="true">
+                  {String(i + 1).padStart(2, '0')}
+                </span>
+              </span>
 
-                  {/* overlays */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/10 to-transparent pointer-events-none" />
-                  <div className="absolute inset-x-0 bottom-0 p-3 sm:p-4 flex items-end">
-                    <div className="backdrop-blur-[2px] bg-white/5 px-3 py-2 rounded-md border border-white/10">
-                      <h3 className="text-sm sm:text-base font-semibold text-white leading-tight">
-                        {s.title}
-                      </h3>
-                    </div>
-                  </div>
-
-                  {/* shine */}
-                  <span
-                    className="pointer-events-none absolute -inset-1 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-                    aria-hidden="true"
-                  >
-                    <span className="absolute -top-1/4 -left-1/2 h-[200%] w-[200%] rotate-12 bg-gradient-to-r from-transparent via-white/15 to-transparent" />
-                  </span>
-                </div>
-
-                {/* footer pill + CTA sutil */}
-                <div className="flex items-center justify-between px-3 sm:px-4 py-3">
-                  <span className="text-xs text-gray-600">Ver más</span>
-                  <span className="text-xs px-2 py-1 border border-gray-200 rounded-full text-gray-700 group-hover:border-gray-300">
-                    Abrir
-                  </span>
-                </div>
-              </div>
-
-              {/* focus ring accesible */}
-              <span className="absolute inset-0 rounded-2xl ring-2 ring-transparent group-focus-visible:ring-black/60 transition" />
+              <h3 className="chibi-display text-[28px] md:text-[34px] text-white">{s.title}</h3>
+              <span className="block text-sm leading-relaxed text-chibi-mist">{s.desc}</span>
+              <span className="inline-flex items-center gap-2 min-h-11 text-xs md:text-[13px] font-semibold uppercase tracking-[0.14em] text-white transition-colors duration-200 group-hover:text-chibi-green">
+                Ver más
+                <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M5 12h14" />
+                  <path d="M13 6l6 6-6 6" />
+                </svg>
+              </span>
             </motion.button>
           ))}
         </motion.div>

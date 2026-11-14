@@ -7,7 +7,7 @@ import {
   FaEnvelope,
   FaCaretRight,
   FaGithub,
-  FaGooglePlusG,
+  FaRegEnvelope,
   FaLinkedinIn,
   FaLink
 } from 'react-icons/fa';
@@ -28,8 +28,8 @@ const Footer = () => {
   return (
     <>
       {/* Main footer */}
-      <footer className="bg-black font-montserrat text-gray-300 py-12" role="contentinfo">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <footer className="bg-chibi-ink font-montserrat text-chibi-mist pt-14 md:pt-20 pb-12 border-t border-chibi-line" role="contentinfo">
+        <div className="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8">
           <div className="flex flex-wrap -mx-4">
             {/* Columna 1: Logo y Descripción */}
             <div className="w-full lg:w-4/12 px-4 mb-8 lg:mb-0">
@@ -49,7 +49,7 @@ const Footer = () => {
 
                   <Link
                     to="/sobre-chibi"
-                    className="inline-flex items-center mt-3.5 justify-center bg-chibi-green text-white font-medium py-2 px-4 text-xs rounded-full transition duration-300 hover:bg-white hover:text-black focus:outline-none focus:ring-2 focus:ring-white/60 focus:ring-offset-2 focus:ring-offset-black"
+                    className="inline-flex items-center mt-4 justify-center border border-white text-white font-semibold h-11 px-5 text-xs tracking-wide rounded-full transition duration-300 hover:bg-white hover:text-black focus:outline-none focus:ring-2 focus:ring-white/60 focus:ring-offset-2 focus:ring-offset-black"
                     aria-label="Conoce más sobre Chibi"
                   >
                     ACERCA DE NOSOTROS
@@ -62,7 +62,7 @@ const Footer = () => {
             {/* Columna 2: Links Directos */}
             <div className="w-full md:w-1/2 lg:w-4/12 px-4 mb-8 md:mb-0">
               <div className="single-footer-widget">
-                <h3 className="title text-lg font-bold text-white mb-3">Links Directos</h3>
+                <h3 className="title text-[11px] font-semibold uppercase tracking-[0.24em] text-white/60 mb-4">Links Directos</h3>
                 <div className="flex justify-between gap-6">
                   <ul className="quick-links w-1/2 space-y-2 text-sm">
                     <li><Link to="/" className="hover:text-chibi-green transition-colors duration-200">Inicio</Link></li>
@@ -83,7 +83,7 @@ const Footer = () => {
             {/* Columna 3: Contacto */}
             <div className="w-full md:w-1/2 lg:w-4/12 px-4">
               <div className="single-footer-widget">
-                <h3 className="title text-lg font-bold text-white mb-3">Contacto</h3>
+                <h3 className="title text-[11px] font-semibold uppercase tracking-[0.24em] text-white/60 mb-4">Contacto</h3>
                 <address className="not-italic">
                   <ul className="contact space-y-3">
                     <li className="flex items-start">
@@ -133,7 +133,7 @@ const Footer = () => {
       </footer>
 
       {/* Footer bottom */}
-      <section className="bg-black text-gray-400 py-4 border-t border-white/10">
+      <section className="bg-chibi-ink text-gray-400 py-5 border-t border-chibi-line">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row justify-between items-center text-center md:text-left gap-3">
             <div className="copy-right">
@@ -186,7 +186,7 @@ const Footer = () => {
                   aria-label="Enviar email"
                   title="Email"
                 >
-                  <FaGooglePlusG className="text-lg" />
+                  <FaRegEnvelope className="text-lg" />
                 </a>
 
                 <a

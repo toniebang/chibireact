@@ -8,6 +8,7 @@ import pic from '../assets/pic.jpg'; // Importa la imagen si es necesario
 import look from '../assets/photo.jpg'; // Importa la imagen si es necesario
 import photo2 from '../assets/photo2.jpg'; // Importa la imagen si es necesario
 import photo3 from '../assets/aestetic.jpg'; // Importa la imagen si es necesario
+import SectionHeading from './SectionHeading';
 // Datos de ejemplo para la galería
 const galleryItems = [
   { id: 1, src: img, alt: 'Nuestra tienda' }, // Asegúrate de que la ruta sea correcta
@@ -59,52 +60,52 @@ const HorizontalGallery = () => {
   };
 
   return (
-    <section className="py-16 bg-gray-100">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h2 className="text-3xl font-light text-gray-900 text-center mb-8">
-          Nuestra Comunidad
-        </h2>
+    <section className="py-14 md:py-24 bg-chibi-panel" aria-label="Galería de la comunidad">
+      <div className="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8">
+        <SectionHeading tone="light" className="mb-8 md:mb-12">Nuestra Comunidad</SectionHeading>
 
         <div className="relative">
           {showLeftArrow && (
             <button
               onClick={() => scrollGallery('left')}
-              className="hidden lg:block absolute left-0 top-1/2 -translate-y-1/2 bg-white/70 p-2 rounded-full shadow-lg z-10
-                         hover:bg-white transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-chibi-green"
+              className="hidden lg:block absolute left-3 top-1/2 -translate-y-1/2 bg-white p-3 rounded-full shadow-lg z-10 cursor-pointer
+                         hover:bg-chibi-green transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-chibi-green"
               aria-label="Desplazar a la izquierda"
             >
-              <FaChevronLeft className="text-gray-700 text-xl" />
+              <FaChevronLeft className="text-gray-900 text-base" />
             </button>
           )}
 
           {showRightArrow && (
             <button
               onClick={() => scrollGallery('right')}
-              className="hidden lg:block absolute right-0 top-1/2 -translate-y-1/2 bg-white/70 p-2 rounded-full shadow-lg z-10
-                         hover:bg-white transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-chibi-green"
+              className="hidden lg:block absolute right-3 top-1/2 -translate-y-1/2 bg-white p-3 rounded-full shadow-lg z-10 cursor-pointer
+                         hover:bg-chibi-green transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-chibi-green"
               aria-label="Desplazar a la derecha"
             >
-              <FaChevronRight className="text-gray-700 text-xl" />
+              <FaChevronRight className="text-gray-900 text-base" />
             </button>
           )}
 
-          <div ref={galleryRef} className="overflow-x-auto whitespace-nowrap pb-6 custom-scrollbar"> 
-            <div className="inline-flex space-x-2 pr-4">
+          <div ref={galleryRef} className="overflow-x-auto whitespace-nowrap custom-scrollbar touch-scroll"> 
+            <div className="inline-flex space-x-3 pr-4">
               {galleryItems.map((item) => (
                 <div 
                   key={item.id} 
-                  className="flex-shrink-0 w-64 h-80 bg-white shadow-md overflow-hidden relative cursor-pointer
-                             transform transition-transform duration-300 hover:-translate-y-1"
+                  className="group flex-shrink-0 w-60 h-80 md:w-72 md:h-96 bg-chibi-line overflow-hidden relative"
                   // Se elimina el onClick para abrir el modal
                 >
                   <img 
                     src={item.src} 
                     alt={item.alt} 
-                    className="w-full h-full object-cover" 
+                    loading="lazy"
+                    className="w-full h-full object-cover motion-reduce:transition-none transition-transform duration-700 ease-out group-hover:scale-[1.04]" 
                   />
-                  <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/70 to-transparent text-white">
-                    <p className="font-semibold text-sm">{item.alt}</p>
-                  </div>
+                  {item.alt && (
+                    <div className="absolute bottom-0 left-0 right-0 p-4 pt-10 bg-gradient-to-t from-black/75 to-transparent text-white">
+                      <p className="font-semibold text-sm whitespace-normal">{item.alt}</p>
+                    </div>
+                  )}
                 </div>
               ))}
             </div>

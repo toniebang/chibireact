@@ -23,36 +23,27 @@ const ShopHero = ({
   };
 
   return (
-   <section
-  className="relative font-montserrat h-[30vh] md:h-[35vh] flex items-center justify-center"
-  style={{
-    backgroundImage: `url(${backgroundImage})`,
-    backgroundSize: 'cover',
-    backgroundPosition: 'center',
-  }}
->
-      {/* Overlay oscuro */}
-      <div className="absolute inset-0 bg-black/40" />
+    <section className="relative font-montserrat bg-chibi-bone text-chibi-ink pt-24 md:pt-36 pb-7 md:pb-12">
+      <div className="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8 grid md:grid-cols-2 gap-10 md:gap-16 md:items-end">
+        <div className="flex flex-col gap-[18px] md:gap-[22px]">
+          <p className="chibi-eyebrow text-chibi-olive flex items-center gap-3.5">
+            <span className="inline-block h-[3px] w-9 md:w-12 bg-chibi-green" aria-hidden="true" />
+            Tienda online
+          </p>
 
-      {/* Contenido centrado */}
-      <div className="relative z-10 w-full px-4 text-center">
-        <h1 className="text-3xl md:text-5xl pt-8 font-bold text-white drop-shadow">
-          <span className="">CHIBI</span> SHOP
-        </h1>
-        <p className="mt-3 text-white/90 text-sm md:text-base">
-          Cremas, jabones, productos, accesorios, tés y más.
-        </p>
+          <h1 className="chibi-display leading-[0.82] text-[clamp(4rem,20vw,5rem)] sm:text-[7rem] lg:text-[clamp(7.5rem,12vw,11rem)]">
+            Chibi Shop
+          </h1>
 
-        {/* Contenedor animado del buscador */}
-        <div
-          className={[
-            "mt-6 mx-auto transition-all duration-300 ease-out",
-            "transform will-change-transform",
-            focused ? "max-w-3xl scale-[1.02]" : "max-w-2xl"
-          ].join(' ')}
-        >
-          <div className="relative group focus-within:shadow-xl focus-within:ring-2 focus-within:ring-chibi-green rounded-full transition-shadow duration-300">
+          <p className="text-[15px] md:text-lg leading-normal text-[#3b3d33]">
+            Cremas, jabones, productos, accesorios, tés y más.
+          </p>
+
+          {/* Buscador */}
+          <div className="relative max-w-[560px] rounded-full transition-shadow duration-300 focus-within:shadow-xl focus-within:ring-2 focus-within:ring-chibi-green">
+            <label htmlFor="shop-search" className="sr-only">Buscar productos</label>
             <input
+              id="shop-search"
               ref={inputRef}
               type="search"
               value={searchTerm}
@@ -66,13 +57,13 @@ const ShopHero = ({
                   setFocused(false);
                 }, 150);
               }}
-              placeholder="  Buscar..."
+              placeholder="Buscar..."
               className={[
-                "w-full bg-white text-gray-800",
-                "pl-4 pr-12 py-3 md:py-3.5 rounded-full",
-                "border border-gray-300",
-                "focus:outline-none transition-all duration-300",
-                focused ? "shadow-lg" : "shadow"
+                "w-full h-[58px] md:h-[62px] bg-white text-chibi-ink placeholder:text-[#5b5d50]",
+                "pl-6 pr-16 rounded-full text-base",
+                "border-[1.5px] border-chibi-ink",
+                "focus:outline-none transition-shadow duration-300",
+                focused ? "shadow-lg" : ""
               ].join(' ')}
             />
 
@@ -80,10 +71,10 @@ const ShopHero = ({
             <button
               type="button"
               onClick={() => onSearchSubmit?.()}
-              className="absolute right-2 top-1/2 -translate-y-1/2 bg-chibi-green hover:bg-green-700 text-white p-2 md:p-2.5 rounded-full transition-colors"
+              className="absolute right-2 top-1/2 -translate-y-1/2 h-11 w-11 md:h-[46px] md:w-[46px] flex items-center justify-center bg-chibi-ink hover:bg-chibi-olive text-white rounded-full transition-colors cursor-pointer"
               aria-label="Buscar"
             >
-              <IoSearch size={18} />
+              <IoSearch size={20} />
             </button>
 
             {/* Sugerencias con fade/slide */}
@@ -91,7 +82,7 @@ const ShopHero = ({
               <div
                 className={[
                   "absolute left-0 right-0 top-[calc(100%+0.5rem)] z-20",
-                  "bg-white border border-gray-200 rounded-md shadow-xl overflow-hidden",
+                  "bg-white border border-chibi-rule shadow-xl overflow-hidden text-left",
                   "transition-all duration-200 ease-out origin-top",
                   showSuggestions ? "opacity-100 scale-y-100" : "opacity-0 scale-y-95"
                 ].join(' ')}
@@ -128,6 +119,15 @@ const ShopHero = ({
             )}
           </div>
         </div>
+
+        {/* Foto de la tienda */}
+        {backgroundImage && (
+          <img
+            src={backgroundImage}
+            alt="Interior de Chibi Shop en Malabo"
+            className="hidden md:block w-full h-[360px] object-cover"
+          />
+        )}
       </div>
     </section>
   );
